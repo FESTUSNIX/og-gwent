@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import {
 	Sheet,
@@ -9,15 +11,17 @@ import {
 	SheetTitle,
 	SheetTrigger
 } from '@/components/ui/sheet'
-import React from 'react'
+import React, { useState } from 'react'
 import { CardForm } from './components/CardForm'
 
 type Props = {}
 
 export const CardCreator = (props: Props) => {
+	const [isOpen, setIsOpen] = useState(false)
+
 	return (
 		<div>
-			<Sheet>
+			<Sheet open={isOpen} onOpenChange={open => setIsOpen(open)}>
 				<SheetTrigger asChild>
 					<Button size={'sm'}>Add new card</Button>
 				</SheetTrigger>
@@ -27,7 +31,7 @@ export const CardCreator = (props: Props) => {
 					</SheetHeader>
 
 					<div className='py-8'>
-						<CardForm />
+						<CardForm setIsOpen={setIsOpen} />
 					</div>
 
 					<SheetFooter>

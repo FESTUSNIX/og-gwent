@@ -39,9 +39,6 @@ export const MultiSelectField = <T extends FieldValues>({
 								selected={field.value}
 								setSelected={e => field.onChange(e)}
 								placeholder={placeholder}
-								onChange={e => {
-									console.log(e)
-								}}
 							/>
 						) : (
 							<Skeleton className='h-10 w-full' />
