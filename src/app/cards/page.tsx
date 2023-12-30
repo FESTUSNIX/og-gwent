@@ -1,26 +1,40 @@
 import { Card } from '@/components/Card'
-import { CARDS } from '@/constants/CARDS'
-import React from 'react'
+import { FACTIONS } from '@/constants/FACTIONS'
+import { getCards } from '@/queries/cards'
 import { CardCreator } from './components/CardCreator'
+import { FactionSwitch } from './components/FactionSwitch'
+import { Suspense } from 'react'
 
-type Props = {}
+type Props = {
+	searchParams: { [key: string]: string | string[] | undefined }
+}
 
-const CardsPage = (props: Props) => {
+const CardsPage = async ({ searchParams }: Props) => {
+	const cards = await getCards()
+
+	const factionParam =
+		(Array.isArray(searchParams.faction) ? searchParams.faction[0] : searchParams.faction) ?? FACTIONS[0].slug
+	const currentFaction = FACTIONS.find(f => f.slug === factionParam)?.slug ?? FACTIONS[0].slug
+
 	return (
 		<main className='grid-container pt-12'>
 			<h1 className='text-4xl'>Gwent cards</h1>
 
 			<section className='my-16'>
+				<h2 className='mb-4 text-2xl'>All cards</h2>
 				<div className='mb-8 flex items-center justify-between'>
-					<h2 className='text-2xl'>All cards</h2>
-
+					<Suspense>
+						<FactionSwitch />
+					</Suspense>
 					<CardCreator />
 				</div>
 
 				<ul className='grid grid-cols-6 gap-4'>
-					{CARDS.map(card => (
-						<Card key={card.id} card={card} mode='preview' />
-					))}
+					{cards
+						.filter(c => c.factions.includes(currentFaction))
+						.map(card => (
+							<Card key={card.id} card={card} mode='preview' />
+						))}
 				</ul>
 			</section>
 		</main>

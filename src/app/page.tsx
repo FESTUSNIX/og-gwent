@@ -1,8 +1,6 @@
+import { buttonVariants } from '@/components/ui/button'
 import { Player } from '@/types/Player'
-import { Board } from './components/Board'
-import { CardStash } from './components/CardStash'
-import { Hand } from './components/Hand'
-import { Sidebar } from './components/Sidebar'
+import Link from 'next/link'
 
 export const host: Player = {
 	id: 0,
@@ -19,20 +17,16 @@ export const opponent: Player = {
 
 export default function Home() {
 	return (
-		<main className='grid grow grid-cols-[375px_1fr]'>
-			<Sidebar host={host} opponent={opponent} />
+		<main className='grid-container py-24'>
+			<header className='mx-auto text-center'>
+				<h1 className='text-4xl'>Gwent Multiplayer</h1>
+				<p className='mt-4 text-muted-foreground'>Play Gwent with your friends online!</p>
+			</header>
 
-			<div className='flex h-full border-l bg-stone-600 pb-16 pl-12'>
-				<div className='flex h-full grow flex-col'>
-					<Board />
-
-					<Hand player={host} />
-				</div>
-
-				<div className='flex h-full flex-col items-center justify-between border-l bg-stone-800 px-4 pt-8'>
-					<CardStash player={opponent} side='opponent' />
-					<CardStash player={host} side='host' />
-				</div>
+			<div className='mt-8 flex justify-center'>
+				<Link href='/play/test-room' className={buttonVariants()}>
+					Create a room
+				</Link>
 			</div>
 		</main>
 	)

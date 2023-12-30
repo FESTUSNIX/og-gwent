@@ -1,0 +1,380 @@
+{
+	"cards": [
+		{
+			"id": 0,
+			"name": "Yarpen Zigrin",
+			"strength": 2,
+			"isHero": false,
+			"type": "melee",
+			"factions": ["northern-realms"]
+		},
+		{
+			"id": 1,
+			"name": "Ves",
+			"strength": 6,
+			"isHero": false,
+			"type": "melee",
+			"factions": ["northern-realms"]
+		},
+		{
+			"id": 2,
+			"name": "Trebuchet",
+			"strength": 8,
+			"isHero": false,
+			"type": "siege",
+			"factions": ["northern-realms"]
+		},
+		{
+			"id": 3,
+			"name": "Keira Metz",
+			"strength": 6,
+			"isHero": false,
+			"type": "range",
+			"factions": ["northern-realms"]
+		},
+		{
+			"id": 4,
+			"name": "Fringilla Vigo",
+			"strength": 6,
+			"isHero": false,
+			"type": "range",
+			"factions": ["nilfgaard"]
+		},
+		{
+			"id": 5,
+			"name": "Cahir Mawr Dyffryn aep Ceallach",
+			"strength": 6,
+			"isHero": false,
+			"type": "melee",
+			"factions": ["nilfgaard"]
+		},
+		{
+			"name": "Redanian Foot Soldier",
+			"strength": 1,
+			"type": "melee",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 6
+		},
+		{
+			"name": "Poor Fucking Infantry",
+			"strength": 1,
+			"type": "melee",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 7
+		},
+		{
+			"name": "Blue Stripes Commando",
+			"strength": 4,
+			"type": "melee",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 8
+		},
+		{
+			"name": "Sheldon Skaggs",
+			"strength": 4,
+			"type": "range",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 9
+		},
+		{
+			"name": "Thaler",
+			"strength": 1,
+			"type": "siege",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 10
+		},
+		{
+			"name": "Kaedweni Siege Expert",
+			"strength": 1,
+			"type": "siege",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 11
+		},
+		{
+			"name": "Sabrina Glevissig",
+			"strength": 4,
+			"type": "range",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 12
+		},
+		{
+			"name": "Sigismund Dijkstra",
+			"strength": 4,
+			"type": "melee",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 13
+		},
+		{
+			"name": "Dun Banner Medic",
+			"strength": 5,
+			"type": "siege",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 14
+		},
+		{
+			"name": "Crinfrid Reavers Dragon Hunter",
+			"strength": 5,
+			"type": "range",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 15
+		},
+		{
+			"name": "Prince Stennis",
+			"strength": 5,
+			"type": "melee",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 16
+		},
+		{
+			"name": "Sheala de Tancarville",
+			"strength": 5,
+			"type": "range",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 17
+		},
+		{
+			"name": "Keira Metz",
+			"strength": 5,
+			"type": "range",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 18
+		},
+		{
+			"name": "Siegfried of Denesle",
+			"strength": 5,
+			"type": "melee",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 19
+		},
+		{
+			"name": "Ves",
+			"strength": 5,
+			"type": "melee",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 20
+		},
+		{
+			"name": "Siege Tower",
+			"strength": 6,
+			"type": "siege",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 21
+		},
+		{
+			"name": "Ballista",
+			"strength": 6,
+			"type": "siege",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 22
+		},
+		{
+			"name": "Trebuchet",
+			"strength": 5,
+			"type": "siege",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 23
+		},
+		{
+			"name": "Dethmold",
+			"strength": 6,
+			"type": "range",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 24
+		},
+		{
+			"name": "Catapult",
+			"strength": 8,
+			"type": "siege",
+			"factions": ["northern-realms"],
+			"isHero": false,
+			"id": 25
+		},
+		{
+			"name": "Philippa Eilhart",
+			"strength": 10,
+			"type": "range",
+			"factions": ["northern-realms"],
+			"isHero": true,
+			"id": 26
+		},
+		{
+			"name": "Esterad Thyssen",
+			"strength": 10,
+			"type": "melee",
+			"factions": ["northern-realms"],
+			"isHero": true,
+			"id": 27
+		},
+		{
+			"name": "John Natalis",
+			"strength": 10,
+			"type": "melee",
+			"factions": ["northern-realms"],
+			"isHero": true,
+			"id": 28
+		},
+		{
+			"name": "Vernon Roche",
+			"strength": 10,
+			"type": "melee",
+			"factions": ["northern-realms"],
+			"isHero": true,
+			"id": 29
+		},
+		{
+			"name": "Impera Brigade Guard",
+			"strength": 3,
+			"type": "melee",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 30
+		},
+		{
+			"name": "Puttkammer",
+			"strength": 3,
+			"type": "range",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 31
+		},
+		{
+			"name": "Rotten Mangonel",
+			"strength": 3,
+			"type": "siege",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 32
+		},
+		{
+			"name": "Stefan Skellen",
+			"strength": 9,
+			"type": "melee",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 33
+		},
+		{
+			"name": "Heavy Zerrikanian Fire Scorpion",
+			"strength": 10,
+			"type": "siege",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 34
+		},
+		{
+			"name": "Black Infantry Archer",
+			"strength": 10,
+			"type": "range",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 35
+		},
+		{
+			"name": "Tibor Eggebracht",
+			"strength": 10,
+			"type": "range",
+			"factions": ["nilfgaard"],
+			"isHero": true,
+			"id": 36
+		},
+		{
+			"name": "Young Emissary",
+			"strength": 5,
+			"type": "melee",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 37
+		},
+		{
+			"name": "Zerrikanian Fire Scorpion",
+			"strength": 5,
+			"type": "siege",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 38
+		},
+		{
+			"name": "Renuald aep Matsen",
+			"strength": 5,
+			"type": "range",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 39
+		},
+		{
+			"name": "Siege Engineer",
+			"strength": 6,
+			"type": "siege",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 40
+		},
+		{
+			"name": "Fringilla Vigo",
+			"strength": 6,
+			"type": "range",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 42
+		},
+		{
+			"name": "Assire var Anahid",
+			"strength": 6,
+			"type": "range",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 43
+		},
+		{
+			"name": "Shilard Fitz-Oesterlen",
+			"strength": 7,
+			"type": "melee",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 44
+		},
+		{
+			"name": "Menno Coehorn",
+			"strength": 10,
+			"type": "melee",
+			"factions": ["nilfgaard"],
+			"isHero": true,
+			"id": 45
+		},
+		{
+			"name": "Vattier de Rideaux",
+			"strength": 4,
+			"type": "melee",
+			"factions": ["nilfgaard"],
+			"isHero": false,
+			"id": 46
+		},
+		{
+			"name": "Morvran Voorhis",
+			"strength": 10,
+			"type": "siege",
+			"factions": ["nilfgaard"],
+			"isHero": true,
+			"id": 47
+		}
+	]
+}

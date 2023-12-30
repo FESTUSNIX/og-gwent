@@ -22,7 +22,11 @@ export const Card = ({ card, mode = 'preview', className }: Props) => {
 				{/* IMAGE */}
 			</div>
 
-			<div className='absolute left-0 top-0 flex h-12 w-12 items-center justify-center rounded-full border-2 border-yellow-500 bg-stone-800'>
+			<div
+				className={cn(
+					'absolute left-0 top-0 flex h-12 w-12 items-center justify-center rounded-full border-2 border-yellow-500 bg-stone-800',
+					card.isHero && 'bg-yellow-600'
+				)}>
 				<span className='text-2xl'>{card.strength}</span>
 			</div>
 
@@ -49,7 +53,7 @@ export const Card = ({ card, mode = 'preview', className }: Props) => {
 					)}
 					{card.type === 'siege' && (
 						<div className=''>
-							<span className='font-bold text-black'>S</span>
+							<Icons.Catapult className='h-6 w-6 text-black' />
 							<span className='sr-only'>Melee</span>
 						</div>
 					)}

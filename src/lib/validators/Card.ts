@@ -12,3 +12,5 @@ export const CardValidator = z.object({
 	factions: z.array(z.enum([...FactionsEnum])).min(1),
 	isHero: z.boolean()
 })
+
+export type CardPayload = z.infer<typeof CardValidator>
