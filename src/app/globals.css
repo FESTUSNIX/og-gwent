@@ -77,3 +77,24 @@
 		@apply flex min-h-full flex-col bg-background font-body text-foreground;
 	}
 }
+
+@layer components {
+	.grid-container {
+		@apply grid gap-x-4 md:gap-x-8;
+		grid-template-columns:
+			[full-start] 1fr [wrapper-start]
+			minmax(0, 75rem) [wrapper-end] 1fr [full-end];
+	}
+
+	.grid-container > * {
+		@apply col-start-[wrapper] col-end-[wrapper];
+	}
+
+	.grid-container > .fill-container {
+		@apply col-start-[full] col-end-[full];
+	}
+
+	.layout-grid {
+		@apply grid grid-cols-4 gap-x-2 md:grid-cols-12 md:gap-x-2.5 xl:gap-x-8;
+	}
+}

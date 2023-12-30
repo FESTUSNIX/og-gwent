@@ -19,7 +19,7 @@ export const CARDS: Card[] = [
 	},
 	{
 		id: 2,
-		name: 'Trebeusz',
+		name: 'Trebuchet',
 		strength: 8,
 		isHero: false,
 		type: 'siege',
