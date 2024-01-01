@@ -1,7 +1,7 @@
 import { FactionType } from './Faction'
 import { RowType } from './RowType'
 
-export type Card = {
+type Card = {
 	id: number
 	name: string
 	strength: number
@@ -9,3 +9,5 @@ export type Card = {
 	factions: FactionType[]
 	isHero: boolean
 }
+
+export { type Card, type Card as CardType }

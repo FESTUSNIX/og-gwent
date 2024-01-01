@@ -2,16 +2,18 @@
 
 import { Card } from '@/components/Card'
 import { Button } from '@/components/ui/button'
+import { getCurrentPlayerId } from '@/lib/getCurrentPlayerId'
 import { Card as CardType } from '@/types/Card'
 import { FactionType } from '@/types/Faction'
+import { Player } from '@/types/Player'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { useDebounce } from 'usehooks-ts'
+import useGameContext from '../../../hooks/useGameContext'
+import { mockPlayers, opponentMockDeck } from '../../../page'
 import { CardTypeSwitch } from './CardTypeSwitch'
 import { DeckDetails } from './DeckDetails'
 import { LeaderCardSelector } from './LeaderCardSelector'
-import { toast } from 'sonner'
-import useGameContext from '../../../hooks/useGameContext'
-import { host, opponent, opponentMockDeck } from '../../../page'
 
 type Props = {
 	cards: CardType[]
@@ -19,6 +21,9 @@ type Props = {
 	collectionCardTypeParam: string
 	inDeckCardTypeParam: string
 }
+
+const host: Player = mockPlayers.find(p => p.id === getCurrentPlayerId())!
+const opponent: Player = mockPlayers.find(p => p.id !== getCurrentPlayerId())!
 
 export const ClientDeckSelector = ({ cards, currentFaction, collectionCardTypeParam, inDeckCardTypeParam }: Props) => {
 	const { acceptGame } = useGameContext()
@@ -85,7 +90,7 @@ export const ClientDeckSelector = ({ cards, currentFaction, collectionCardTypePa
 							variant={'secondary'}
 							size={'sm'}
 							onClick={() => {
-								toast('Game started!')
+								toast('Accepted game!')
 
 								acceptGame({ ...host, faction: currentFaction }, selectedDeck)
 								acceptGame({ ...opponent, faction: 'nilfgaard' }, opponentMockDeck)

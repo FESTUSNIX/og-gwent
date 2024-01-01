@@ -1,21 +1,23 @@
-import { Player } from '@/types/Player'
-import { DeckSelector } from './components/DeckSelector'
-import { GameContextProvider } from './context/GameContext'
-import { GameStateDisplay } from './components/GameStateDisplay'
 import { getCards } from '@/queries/cards'
 import { Card } from '@/types/Card'
+import { Player } from '@/types/Player'
+import { DeckSelector } from './components/DeckSelector'
 import { GameBoard } from './components/GameBoard'
+import { GameControls } from './components/GameControls'
+import { GameContextProvider } from './context/GameContext'
 
-export const host: Player = {
+const player1: Player = {
 	id: 0,
 	name: 'Geralt of Rivia',
 	faction: 'northern-realms'
 }
-export const opponent: Player = {
+const player2: Player = {
 	id: 1,
 	name: 'Yennefer',
 	faction: 'nilfgaard'
 }
+
+export const mockPlayers = [player1, player2]
 
 type Props = {
 	params: { room: string }
@@ -32,7 +34,7 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 
 				<GameBoard />
 
-				<GameStateDisplay />
+				<GameControls />
 			</GameContextProvider>
 		</main>
 	)

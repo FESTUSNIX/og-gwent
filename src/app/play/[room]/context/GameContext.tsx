@@ -3,18 +3,21 @@
 import { Card } from '@/types/Card'
 import { GamePlayer, GameRow, GameState } from '@/types/Game'
 import { Player } from '@/types/Player'
-import React, { createContext, useReducer } from 'react'
+import { RowType } from '@/types/RowType'
+import React, { createContext, useEffect, useReducer } from 'react'
+import { Action, actions } from '../actions'
 
-const initialGameState: GameState = {
+export const initialGameState: GameState = {
 	players: [],
 	rounds: []
 }
 
-const initialRow: GameRow = {
+export const initialRow: GameRow = {
 	cards: []
 }
 
-const initialPlayer: Omit<GamePlayer, 'id' | 'name' | 'faction'> = {
+export const initialPlayer: Omit<GamePlayer, 'id' | 'name' | 'faction'> = {
+	preview: null,
 	gameStatus: 'select-deck',
 	hasPassed: false,
 	lives: 2,
@@ -28,106 +31,52 @@ const initialPlayer: Omit<GamePlayer, 'id' | 'name' | 'faction'> = {
 	}
 }
 
-type ACCEPT_GAME = {
-	type: 'ACCEPT_GAME'
-	player: Player
-	startingDeck: Card[]
-}
-
-type ADD_CARDS_TO_HAND = {
-	type: 'ADD_CARDS_TO_HAND'
-	playerId: number
-	cards: Card[]
-	shouldReplace?: boolean
-}
-
-type MOVE_CARDS_TO_DECK = {
-	type: 'MOVE_CARDS_TO_DECK'
-	playerId: number
-	cards: Card[]
-	shouldReplace?: boolean
-}
+export type CardContainers = 'deck' | 'hand' | 'discardPile'
 
 type CUSTOM = {
 	type: 'CUSTOM'
 	gameState: GameState
 }
 
-const gameReducer = (state: GameState, action: ACCEPT_GAME | ADD_CARDS_TO_HAND | MOVE_CARDS_TO_DECK | CUSTOM) => {
-	if (action.type === 'CUSTOM') {
-		return action.gameState
-	} else if (action.type === 'ACCEPT_GAME') {
-		const newPlayer: GamePlayer = {
-			...initialPlayer,
-			...action.player,
-			deck: action.startingDeck,
-			gameStatus: 'accepted'
-		}
-
-		const newPlayers = state.players.length < 2 ? [...state.players, newPlayer] : state.players
-
-		const payload: GameState = {
-			...state,
-			players: newPlayers
-		}
-
-		return payload
-	} else if (action.type === 'ADD_CARDS_TO_HAND') {
-		const player = state.players.find(p => p.id === action.playerId)
-		if (!player) return state
-
-		const newHand = action.shouldReplace
-			? action.cards
-			: [...player.hand, ...action.cards].filter((c, i, a) => a.indexOf(c) === i)
-
-		const newPlayerState: GamePlayer = {
-			...player,
-			hand: newHand,
-			deck: player.deck.filter(c => !action.cards.includes(c))
-		}
-
-		const newPlayersState = state.players.map(p => (p.id === action.playerId ? newPlayerState : p))
-
-		return {
-			...state,
-			players: newPlayersState
-		}
-	} else if (action.type === 'MOVE_CARDS_TO_DECK') {
-		const player = state.players.find(p => p.id === action.playerId)
-		if (!player) return state
-
-		const newDeck = action.shouldReplace
-			? action.cards
-			: [...player.deck, ...action.cards].filter((c, i, a) => a.indexOf(c) === i)
-
-		const newPlayerState: GamePlayer = {
-			...player,
-			deck: newDeck
-		}
-
-		const newPlayersState = state.players.map(p => (p.id === action.playerId ? newPlayerState : p))
-
-		return {
-			...state,
-			players: newPlayersState
-		}
-	} else {
-		return initialGameState
+const gameReducer = (state: GameState, action: Action | CUSTOM) => {
+	switch (action.type) {
+		case 'CUSTOM':
+			return action.gameState
+		case 'ACCEPT_GAME':
+			return actions.acceptGame(state, action)
+		case 'ADD_TO_CONTAINER':
+			return actions.addToContainer(state, action)
+		case 'REMOVE_FROM_CONTAINER':
+			return actions.removeFromContainer(state, action)
+		case 'ADD_TO_ROW':
+			return actions.addToRow(state, action)
+		case 'ADD_TO_PREVIEW':
+			return actions.addToPreview(state, action)
+		case 'CLEAR_PREVIEW':
+			return actions.clearPreview(state, action)
+		default:
+			return initialGameState
 	}
 }
 
 type GameContextProps = {
 	acceptGame: (player: Player, startingDeck: Card[]) => void
-	addCardsToHand: (playerId: number, cards: Card[], shouldReplace?: boolean) => void
-	moveCardsToDeck: (playerId: number, cards: Card[], shouldReplace?: boolean) => void
+	addToContainer: (playerId: number, cards: Card[], destination: CardContainers, shouldReplace?: boolean) => void
+	removeFromContainer: (playerId: number, cards: Card[], source: CardContainers) => void
+	addToRow: (playerId: number, card: Card, rowType: RowType) => void
+	addToPreview: (playerId: number, card: Card) => void
+	clearPreview: (playerId: number) => void
 	setGameState: (newGameState: GameState) => void
 	gameState: GameState
 }
 
 const initialState: GameContextProps = {
 	acceptGame: () => {},
-	addCardsToHand: () => {},
-	moveCardsToDeck: () => {},
+	addToContainer: () => {},
+	removeFromContainer: () => {},
+	addToRow: () => {},
+	addToPreview: () => {},
+	clearPreview: () => {},
 	setGameState: () => {},
 	gameState: initialGameState
 }
@@ -137,17 +86,19 @@ export const GameContext = createContext(initialState)
 export const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
 	const [gameState, dispatch] = useReducer(gameReducer, initialGameState)
 
-	const acceptGame = (player: Player, startingDeck: Card[]) => {
-		dispatch({ type: 'ACCEPT_GAME', player, startingDeck })
-	}
+	const acceptGame = (player: Player, startingDeck: Card[]) => dispatch({ type: 'ACCEPT_GAME', player, startingDeck })
 
-	const addCardsToHand = (playerId: number, cards: Card[], shouldReplace?: boolean) => {
-		dispatch({ type: 'ADD_CARDS_TO_HAND', playerId, cards, shouldReplace })
-	}
+	const addToContainer = (playerId: number, cards: Card[], destination: CardContainers, shouldReplace?: boolean) =>
+		dispatch({ type: 'ADD_TO_CONTAINER', playerId, cards, destination, shouldReplace })
 
-	const moveCardsToDeck = (playerId: number, cards: Card[], shouldReplace?: boolean) => {
-		dispatch({ type: 'MOVE_CARDS_TO_DECK', playerId, cards, shouldReplace })
-	}
+	const removeFromContainer = (playerId: number, cards: Card[], source: CardContainers) =>
+		dispatch({ type: 'REMOVE_FROM_CONTAINER', playerId, cards, source })
+
+	const addToRow = (playerId: number, card: Card, rowType: RowType) =>
+		dispatch({ type: 'ADD_TO_ROW', playerId, card, rowType })
+
+	const addToPreview = (playerId: number, card: Card) => dispatch({ type: 'ADD_TO_PREVIEW', playerId, card })
+	const clearPreview = (playerId: number) => dispatch({ type: 'CLEAR_PREVIEW', playerId })
 
 	const setGameState = (newGameState: GameState) => {
 		dispatch({
@@ -156,8 +107,35 @@ export const GameContextProvider = ({ children }: { children: React.ReactNode })
 		})
 	}
 
+	// On mount, load the state from local storage
+	useEffect(() => {
+		const gameStateFromLocalStorage = window.localStorage.getItem('gameState')
+
+		if (gameStateFromLocalStorage) {
+			const parsedGameState = JSON.parse(gameStateFromLocalStorage)
+			dispatch({ type: 'CUSTOM', gameState: parsedGameState })
+		}
+	}, [])
+
+	// On change save the state to local storage
+	useEffect(() => {
+		if (gameState === initialGameState) return
+
+		window.localStorage.setItem('gameState', JSON.stringify(gameState))
+	}, [gameState])
+
 	return (
-		<GameContext.Provider value={{ gameState, acceptGame, addCardsToHand, moveCardsToDeck, setGameState }}>
+		<GameContext.Provider
+			value={{
+				gameState,
+				acceptGame,
+				addToContainer,
+				removeFromContainer,
+				addToRow,
+				addToPreview,
+				clearPreview,
+				setGameState
+			}}>
 			{children}
 		</GameContext.Provider>
 	)

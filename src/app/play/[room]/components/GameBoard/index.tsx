@@ -1,6 +1,7 @@
 'use client'
 
 import { Hand } from '@/app/play/[room]/components/GameBoard/components/Hand'
+import { getCurrentPlayerId } from '@/lib/getCurrentPlayerId'
 import useGameContext from '../../hooks/useGameContext'
 import { CardPiles } from './components/CardPiles'
 import { Reroll } from './components/Reroll'
@@ -13,16 +14,10 @@ type Props = {}
 export const GameBoard = (props: Props) => {
 	const { gameState } = useGameContext()
 
-	const host = gameState.players.find(p => p.id === 0)
-	const opponent = gameState.players.find(p => p.id === 1)
+	const host = gameState.players.find(p => p.id === getCurrentPlayerId())
+	const opponent = gameState.players.find(p => p.id !== getCurrentPlayerId())
 
-	if (!host || !opponent)
-		return (
-			<div>
-				<h1>Game not found</h1>
-				<p>Please make sure you have entered the correct room code.</p>
-			</div>
-		)
+	if (!host || !opponent) return null
 
 	const gameAccepted = host.gameStatus !== 'select-deck' && opponent.gameStatus !== 'select-deck'
 	const gameStarted = host.gameStatus === 'play' && opponent.gameStatus === 'play'
@@ -37,18 +32,21 @@ export const GameBoard = (props: Props) => {
 
 			<Sidebar host={host} opponent={opponent} />
 
-			<div className='flex h-full min-w-0 border-l bg-stone-600 pb-16 pl-12'>
+			<div className='flex h-full min-w-0 border-l bg-stone-600 pb-12 pl-12'>
 				<div className='flex h-full min-w-0 grow flex-col'>
-					<div className='grid h-full grid-rows-2 gap-y-6 bg-stone-600 py-2'>
+					<div className='grid h-full grid-rows-7 gap-y-2 bg-stone-600 pt-2'>
 						<Side player={opponent} side='opponent' />
 						<Side player={host} side='host' />
-					</div>
 
-					<Hand player={host} />
+						<Hand player={host} />
+					</div>
 				</div>
 
-				<div className='flex h-full min-w-max flex-col items-center justify-between border-l bg-stone-800 px-4 pt-8'>
+				<div className='flex h-full min-w-max flex-col items-center justify-between gap-y-4 border-l bg-stone-800 pl-6 pr-4 pt-8'>
 					<CardPiles player={opponent} side='opponent' />
+
+					<div id='card-preview-container' className='relative flex w-full grow items-center justify-center'></div>
+
 					<CardPiles player={host} side='host' />
 				</div>
 			</div>

@@ -15,7 +15,7 @@ const startingHandSize = 10
 const maxRerolls = 2
 
 export const Reroll = ({ currentPlayer }: Props) => {
-	const { gameState, addCardsToHand, moveCardsToDeck, setGameState } = useGameContext()
+	const { gameState, addToContainer, removeFromContainer, setGameState } = useGameContext()
 
 	const gameAccepted = gameState.players.filter(p => p.gameStatus === 'accepted').length === 2
 
@@ -38,9 +38,12 @@ export const Reroll = ({ currentPlayer }: Props) => {
 				newHand.push(newCard)
 			}
 
-			addCardsToHand(currentPlayer.id, newHand)
+			addToContainer(currentPlayer.id, newHand, 'hand')
+			removeFromContainer(currentPlayer.id, newHand, 'deck')
 			setHand(newHand)
 		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [gameAccepted])
 
 	function selectRandomCard(deck: CardType[]): CardType | undefined {
@@ -60,7 +63,7 @@ export const Reroll = ({ currentPlayer }: Props) => {
 		// 	...gameState,
 		// 	players: gameState.players.map(p => (p.id === currentPlayer.id ? newPlayer : p))
 		// }
-
+		
 		const newGameState = {
 			...gameState,
 			players: gameState.players.map(p => ({ ...p, gameStatus: newStatus }))
@@ -80,13 +83,25 @@ export const Reroll = ({ currentPlayer }: Props) => {
 		const newHand = hand
 		newHand[cardToChange] = newCard
 
-		addCardsToHand(currentPlayer?.id, newHand, true)
-		moveCardsToDeck(currentPlayer?.id, [card])
+		addToContainer(currentPlayer?.id, newHand, 'hand', true)
+
+		console.log('removing')
+		removeFromContainer(currentPlayer?.id, [newCard], 'deck')
+		addToContainer(currentPlayer?.id, [card], 'deck')
+
 		setHand(newHand)
 		setRerolls(prevRerolls => prevRerolls + 1)
-
-		if (rerolls === maxRerolls - 1) setGameStatus('play')
 	}
+
+	useEffect(() => {
+		if (rerolls === maxRerolls) {
+			setTimeout(() => {
+				setGameStatus('play')
+			}, 0)
+		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [rerolls])
 
 	if (!currentPlayer) return null
 
@@ -106,7 +121,7 @@ export const Reroll = ({ currentPlayer }: Props) => {
 					<div className='mx-auto grid max-w-screen-xl grid-cols-5 gap-8 px-16'>
 						{hand.map((card, i) => (
 							<button key={i} onClick={() => reroll(card)}>
-								<Card card={card} />
+								<Card card={card} mode='preview' />
 							</button>
 						))}
 					</div>

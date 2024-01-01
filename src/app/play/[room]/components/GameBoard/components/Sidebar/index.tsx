@@ -9,7 +9,7 @@ type Props = {
 
 export const Sidebar = ({ host, opponent }: Props) => {
 	return (
-		<div className='relative flex flex-col justify-between pb-16 pt-8'>
+		<div className='relative flex flex-col justify-between pb-12 pt-8'>
 			<PlayerStats player={opponent} side='opponent' />
 
 			<WeatherCardSlots />

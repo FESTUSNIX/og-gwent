@@ -7,6 +7,7 @@ export type GameRow = {
 }
 
 export type GamePlayer = Player & {
+	preview: Card | null
 	hasPassed: boolean
 	gameStatus: 'select-deck' | 'accepted' | 'play'
 	lives: 0 | 1 | 2

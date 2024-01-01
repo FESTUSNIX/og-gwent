@@ -1,19 +1,13 @@
-'use client'
-
-import useGameContext from '@/app/play/[room]/hooks/useGameContext'
+import { Card } from '@/components/Card'
 import { CardType } from '@/types/Card'
-import { GamePlayer } from '@/types/Game'
-import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
-import { Card } from './components/Card'
+import { motion } from 'framer-motion'
 
 type Props = {
-	player: GamePlayer
+	cards: CardType[]
 }
 
-export const Hand = ({ player }: Props) => {
-	const { setGameState, addToPreview, clearPreview, gameState } = useGameContext()
-
+export const Cards = ({ cards }: Props) => {
 	const cardRef = useRef<HTMLDivElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
 	const sliderRef = useRef<HTMLDivElement>(null)
@@ -21,7 +15,7 @@ export const Hand = ({ player }: Props) => {
 	const minGap = -42
 	const maxGap = 2
 
-	const numberOfCards = player.hand.length
+	const numberOfCards = cards.length
 
 	const [gap, setGap] = useState(0)
 	const [widthConstraints, setWidthConstraints] = useState(0)
@@ -33,7 +27,7 @@ export const Hand = ({ player }: Props) => {
 		if (!cardWidth || !containerWidth) return
 
 		const initialGap = Math.max(Math.min(containerWidth / numberOfCards - cardWidth, maxGap), minGap)
-		const newGap = Math.max(Math.min((containerWidth - 16 + initialGap) / numberOfCards - cardWidth, maxGap), minGap)
+		const newGap = Math.max(Math.min((containerWidth + initialGap) / numberOfCards - cardWidth, maxGap), minGap)
 
 		setGap(newGap)
 	}
@@ -69,32 +63,21 @@ export const Hand = ({ player }: Props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [numberOfCards])
 
-	const [selectedCard, setSelectedCard] = useState<CardType | null>(null)
-
-	useEffect(() => {
-		if (selectedCard) {
-			addToPreview(player.id, selectedCard)
-		} else {
-			clearPreview(player.id)
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedCard])
-
 	return (
-		<div ref={containerRef} className='order-last h-full w-full overflow-x-clip border bg-stone-700 py-1'>
+		<div ref={containerRef} className='h-full w-full overflow-x-clip border'>
 			<motion.div
 				drag={gap <= minGap && 'x'}
 				dragConstraints={{ right: widthConstraints, left: -widthConstraints }}
 				ref={sliderRef}
 				style={{ paddingRight: -gap }}
-				className='flex h-full w-full max-w-full auto-cols-fr items-center justify-center'>
-				{player.hand.map((card, i) => (
+				className='flex h-full w-full max-w-full items-center justify-center'>
+				{cards.map((card, i) => (
 					<div
 						key={i}
 						style={{ marginRight: gap }}
 						ref={cardRef}
-						className='group relative flex aspect-[3/4] h-full w-auto max-w-full items-center justify-center duration-100 hover:z-10'>
-						<Card card={card} setSelectedCard={setSelectedCard} selectedCard={selectedCard} />
+						className='relative flex aspect-[3/4] h-full w-auto max-w-full items-center justify-center border duration-100 hover:z-10 hover:mb-6'>
+						<Card key={card.id} card={card} mode='game' />
 					</div>
 				))}
 			</motion.div>
