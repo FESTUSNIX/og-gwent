@@ -10,6 +10,8 @@ import { CardTypeSwitch } from './CardTypeSwitch'
 import { DeckDetails } from './DeckDetails'
 import { LeaderCardSelector } from './LeaderCardSelector'
 import { toast } from 'sonner'
+import useGameContext from '../../../hooks/useGameContext'
+import { host, opponent, opponentMockDeck } from '../../../page'
 
 type Props = {
 	cards: CardType[]
@@ -19,6 +21,8 @@ type Props = {
 }
 
 export const ClientDeckSelector = ({ cards, currentFaction, collectionCardTypeParam, inDeckCardTypeParam }: Props) => {
+	const { acceptGame } = useGameContext()
+
 	const [selectedDeck, setSelectedDeck] = useState<CardType[]>([])
 	const debouncedSelectedDeck = useDebounce(selectedDeck, 1000)
 
@@ -81,16 +85,10 @@ export const ClientDeckSelector = ({ cards, currentFaction, collectionCardTypePa
 							variant={'secondary'}
 							size={'sm'}
 							onClick={() => {
-								toast('Game started!', {
-									description: (
-										<div className='flex flex-col'>
-											<p className='font-bold'>Your deck:</p>
-											{selectedDeck.map(card => (
-												<p key={card.id}>{card.name}</p>
-											))}
-										</div>
-									)
-								})
+								toast('Game started!')
+
+								acceptGame({ ...host, faction: currentFaction }, selectedDeck)
+								acceptGame({ ...opponent, faction: 'nilfgaard' }, opponentMockDeck)
 							}}>
 							Start game
 						</Button>

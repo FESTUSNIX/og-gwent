@@ -1,10 +1,10 @@
-import { Player } from '@/types/Player'
+import { GamePlayer } from '@/types/Game'
 import { PlayerStats } from './components/PlayerStats'
 import { WeatherCardSlots } from './components/WeatherCardSlots'
 
 type Props = {
-	opponent: Player
-	host: Player
+	opponent: GamePlayer
+	host: GamePlayer
 }
 
 export const Sidebar = ({ host, opponent }: Props) => {

@@ -1,27 +1,16 @@
+'use client'
+
 import { FactionSwitch } from '@/app/cards/components/FactionSwitch'
 import { FACTIONS } from '@/constants/FACTIONS'
 import { ROW_TYPES } from '@/constants/ROW_TYPES'
 import { getFirstParamValue } from '@/lib/utils'
-import { getCards } from '@/queries/cards'
-import { Player } from '@/types/Player'
+import { Card } from '@/types/Card'
 import { Suspense } from 'react'
 import { ClientDeckSelector } from './components/ClientDeckSelector'
-
-export const host: Player = {
-	id: 0,
-	name: 'Geralt of Rivia',
-	faction: 'northern-realms',
-	deck: [0, 1, 2, 3]
-}
-export const opponent: Player = {
-	id: 1,
-	name: 'Yennefer',
-	faction: 'nilfgaard',
-	deck: [4, 5]
-}
+import useGameContext from '../../hooks/useGameContext'
 
 type Props = {
-	roomId: string
+	cards: Card[]
 	searchParams: { [key: string]: string | string[] | undefined }
 }
 
@@ -36,8 +25,10 @@ const cardTypesOptions = [
 	}))
 ]
 
-export const DeckSelector = async ({ roomId, searchParams }: Props) => {
-	const cards = await getCards()
+export const DeckSelector = ({ cards, searchParams }: Props) => {
+	const { gameState } = useGameContext()
+
+	if (gameState.players.filter(p => p.gameStatus !== 'select-deck').length === 2) return null
 
 	const factionParam = getFirstParamValue(searchParams.faction, FACTIONS[0].slug)
 	const currentFaction = FACTIONS.find(f => f.slug === factionParam)?.slug ?? FACTIONS[0].slug

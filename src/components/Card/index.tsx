@@ -2,16 +2,19 @@ import { cn } from '@/lib/utils'
 import { Card as CardType } from '@/types/Card'
 import { Sword } from 'lucide-react'
 import { Icons } from '../Icons'
+import { CSSProperties } from 'react'
 
 type Props = {
 	card: CardType
 	mode?: 'game' | 'preview'
 	className?: string
+	style?: CSSProperties
 }
 
-export const Card = ({ card, mode = 'preview', className }: Props) => {
+export const Card = ({ card, mode = 'preview', className, style }: Props) => {
 	return (
 		<div
+			style={style}
 			className={cn(
 				'relative flex aspect-[40/60] h-full w-auto max-w-full flex-col bg-stone-500',
 				mode === 'preview' && 'rounded-lg',

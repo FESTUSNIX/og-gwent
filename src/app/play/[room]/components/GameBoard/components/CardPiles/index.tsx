@@ -1,17 +1,16 @@
-import React from 'react'
-import { Cemetery } from './components/Cemetery'
+import { GamePlayer } from '@/types/Game'
 import { Deck } from './components/Deck'
-import { Player } from '@/types/Player'
+import { DiscardPile } from './components/DiscardPile'
 
 type Props = {
-	player: Player
+	player: GamePlayer
 	side: 'host' | 'opponent'
 }
 
-export const CardStash = ({ player, side }: Props) => {
+export const CardPiles = ({ player, side }: Props) => {
 	return (
 		<div className='flex items-center justify-between gap-10'>
-			<Cemetery deck={player.deck} side={side} />
+			<DiscardPile discardPile={player.discardPile} side={side} />
 			<Deck deck={player.deck} side={side} faction={player.faction} />
 		</div>
 	)
