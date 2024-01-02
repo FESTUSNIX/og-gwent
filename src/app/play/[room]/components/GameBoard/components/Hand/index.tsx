@@ -12,7 +12,7 @@ type Props = {
 }
 
 export const Hand = ({ player }: Props) => {
-	const { setGameState, addToPreview, clearPreview, gameState } = useGameContext()
+	const { gameState, addToPreview, clearPreview } = useGameContext()
 
 	const cardRef = useRef<HTMLDivElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
@@ -22,6 +22,7 @@ export const Hand = ({ player }: Props) => {
 	const maxGap = 2
 
 	const numberOfCards = player.hand.length
+	const isMyTurn = gameState.turn === player.id
 
 	const [gap, setGap] = useState(0)
 	const [widthConstraints, setWidthConstraints] = useState(0)
@@ -94,7 +95,7 @@ export const Hand = ({ player }: Props) => {
 						style={{ marginRight: gap }}
 						ref={cardRef}
 						className='group relative flex aspect-[3/4] h-full w-auto max-w-full items-center justify-center duration-100 hover:z-10'>
-						<Card card={card} setSelectedCard={setSelectedCard} selectedCard={selectedCard} />
+						<Card card={card} setSelectedCard={setSelectedCard} selectedCard={selectedCard} disabled={!isMyTurn} />
 					</div>
 				))}
 			</motion.div>

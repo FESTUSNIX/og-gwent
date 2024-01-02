@@ -8,21 +8,30 @@ import { Reroll } from './components/Reroll'
 import { Side } from './components/Side'
 import { Sidebar } from './components/Sidebar'
 import { WaitForStartBanner } from './components/WaitForStartBanner'
+import { useEffect } from 'react'
 
 type Props = {}
 
 export const GameBoard = (props: Props) => {
-	const { gameState } = useGameContext()
+	const { gameState, setTurn } = useGameContext()
 
 	const host = gameState.players.find(p => p.id === getCurrentPlayerId())
 	const opponent = gameState.players.find(p => p.id !== getCurrentPlayerId())
 
+	const gameStarted = host?.gameStatus === 'play' && opponent?.gameStatus === 'play'
+	const gameAccepted = host?.gameStatus !== 'select-deck' && opponent?.gameStatus !== 'select-deck'
+	const waitingForOpponent = host?.gameStatus === 'play' && opponent?.gameStatus !== 'play'
+
+	useEffect(() => {
+		if (gameStarted && !gameState.turn) {
+			const startingPlayer = Math.random() < 0.5 ? host.id : opponent.id
+			setTurn(startingPlayer)
+		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [gameStarted, host?.id, opponent?.id])
+
 	if (!host || !opponent) return null
-
-	const gameAccepted = host.gameStatus !== 'select-deck' && opponent.gameStatus !== 'select-deck'
-	const gameStarted = host.gameStatus === 'play' && opponent.gameStatus === 'play'
-	const waitingForOpponent = host.gameStatus === 'play' && opponent.gameStatus !== 'play'
-
 	if (!gameAccepted) return null
 
 	return (
@@ -30,9 +39,9 @@ export const GameBoard = (props: Props) => {
 			{gameAccepted && !waitingForOpponent && !gameStarted && <Reroll currentPlayer={host} />}
 			{waitingForOpponent && <WaitForStartBanner />}
 
-			<Sidebar host={host} opponent={opponent} />
+			<Sidebar host={host} opponent={opponent} turn={gameState.turn} />
 
-			<div className='flex h-full min-w-0 border-l bg-stone-600 pb-12 pl-12'>
+			<div className='flex h-full min-w-0 border-l bg-stone-600 pb-12 pl-24'>
 				<div className='flex h-full min-w-0 grow flex-col'>
 					<div className='grid h-full grid-rows-7 gap-y-2 bg-stone-600 pt-2'>
 						<Side player={opponent} side='opponent' />

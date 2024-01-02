@@ -9,7 +9,8 @@ import { Action, actions } from '../actions'
 
 export const initialGameState: GameState = {
 	players: [],
-	rounds: []
+	rounds: [],
+	turn: null
 }
 
 export const initialRow: GameRow = {
@@ -54,6 +55,10 @@ const gameReducer = (state: GameState, action: Action | CUSTOM) => {
 			return actions.addToPreview(state, action)
 		case 'CLEAR_PREVIEW':
 			return actions.clearPreview(state, action)
+		case 'SET_TURN':
+			return actions.setTurn(state, action)
+		case 'SET_PLAYER_GAME_STATUS':
+			return actions.setPlayerGameStatus(state, action)
 		default:
 			return initialGameState
 	}
@@ -61,11 +66,13 @@ const gameReducer = (state: GameState, action: Action | CUSTOM) => {
 
 type GameContextProps = {
 	acceptGame: (player: Player, startingDeck: Card[]) => void
-	addToContainer: (playerId: number, cards: Card[], destination: CardContainers, shouldReplace?: boolean) => void
-	removeFromContainer: (playerId: number, cards: Card[], source: CardContainers) => void
-	addToRow: (playerId: number, card: Card, rowType: RowType) => void
-	addToPreview: (playerId: number, card: Card) => void
-	clearPreview: (playerId: number) => void
+	addToContainer: (playerId: Player['id'], cards: Card[], destination: CardContainers, shouldReplace?: boolean) => void
+	removeFromContainer: (playerId: Player['id'], cards: Card[], source: CardContainers) => void
+	addToRow: (playerId: Player['id'], card: Card, rowType: RowType) => void
+	addToPreview: (playerId: Player['id'], card: Card) => void
+	clearPreview: (playerId: Player['id']) => void
+	setTurn: (playerId: Player['id'] | null) => void
+	setPlayerGameStatus: (playerId: Player['id'], gameStatus: GamePlayer['gameStatus']) => void
 	setGameState: (newGameState: GameState) => void
 	gameState: GameState
 }
@@ -77,6 +84,8 @@ const initialState: GameContextProps = {
 	addToRow: () => {},
 	addToPreview: () => {},
 	clearPreview: () => {},
+	setTurn: () => {},
+	setPlayerGameStatus: () => {},
 	setGameState: () => {},
 	gameState: initialGameState
 }
@@ -88,17 +97,26 @@ export const GameContextProvider = ({ children }: { children: React.ReactNode })
 
 	const acceptGame = (player: Player, startingDeck: Card[]) => dispatch({ type: 'ACCEPT_GAME', player, startingDeck })
 
-	const addToContainer = (playerId: number, cards: Card[], destination: CardContainers, shouldReplace?: boolean) =>
-		dispatch({ type: 'ADD_TO_CONTAINER', playerId, cards, destination, shouldReplace })
+	const addToContainer = (
+		playerId: Player['id'],
+		cards: Card[],
+		destination: CardContainers,
+		shouldReplace?: boolean
+	) => dispatch({ type: 'ADD_TO_CONTAINER', playerId, cards, destination, shouldReplace })
 
-	const removeFromContainer = (playerId: number, cards: Card[], source: CardContainers) =>
+	const removeFromContainer = (playerId: Player['id'], cards: Card[], source: CardContainers) =>
 		dispatch({ type: 'REMOVE_FROM_CONTAINER', playerId, cards, source })
 
-	const addToRow = (playerId: number, card: Card, rowType: RowType) =>
+	const addToRow = (playerId: Player['id'], card: Card, rowType: RowType) =>
 		dispatch({ type: 'ADD_TO_ROW', playerId, card, rowType })
 
-	const addToPreview = (playerId: number, card: Card) => dispatch({ type: 'ADD_TO_PREVIEW', playerId, card })
-	const clearPreview = (playerId: number) => dispatch({ type: 'CLEAR_PREVIEW', playerId })
+	const addToPreview = (playerId: Player['id'], card: Card) => dispatch({ type: 'ADD_TO_PREVIEW', playerId, card })
+	const clearPreview = (playerId: Player['id']) => dispatch({ type: 'CLEAR_PREVIEW', playerId })
+
+	const setTurn = (playerId: Player['id'] | null) => dispatch({ type: 'SET_TURN', playerId })
+
+	const setPlayerGameStatus = (playerId: Player['id'], gameStatus: GamePlayer['gameStatus']) =>
+		dispatch({ type: 'SET_PLAYER_GAME_STATUS', playerId, status: gameStatus })
 
 	const setGameState = (newGameState: GameState) => {
 		dispatch({
@@ -134,6 +152,8 @@ export const GameContextProvider = ({ children }: { children: React.ReactNode })
 				addToRow,
 				addToPreview,
 				clearPreview,
+				setTurn,
+				setPlayerGameStatus,
 				setGameState
 			}}>
 			{children}

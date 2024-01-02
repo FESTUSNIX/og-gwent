@@ -23,7 +23,6 @@ type Props = {
 }
 
 const host: Player = mockPlayers.find(p => p.id === getCurrentPlayerId())!
-const opponent: Player = mockPlayers.find(p => p.id !== getCurrentPlayerId())!
 
 export const ClientDeckSelector = ({ cards, currentFaction, collectionCardTypeParam, inDeckCardTypeParam }: Props) => {
 	const { acceptGame } = useGameContext()
@@ -93,7 +92,6 @@ export const ClientDeckSelector = ({ cards, currentFaction, collectionCardTypePa
 								toast('Accepted game!')
 
 								acceptGame({ ...host, faction: currentFaction }, selectedDeck)
-								acceptGame({ ...opponent, faction: 'nilfgaard' }, opponentMockDeck)
 							}}>
 							Start game
 						</Button>

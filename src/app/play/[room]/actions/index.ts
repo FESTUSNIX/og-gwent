@@ -158,7 +158,50 @@ const clearPreview = (state: GameState, action: CLEAR_PREVIEW) => {
 	}
 }
 
-type Action = ACCEPT_GAME | ADD_TO_CONTAINER | ADD_TO_ROW | ADD_TO_PREVIEW | CLEAR_PREVIEW | REMOVE_FROM_CONTAINER
+type SET_TURN = {
+	type: 'SET_TURN'
+	playerId: Player['id'] | null
+}
+
+const setTurn = (state: GameState, action: SET_TURN) => {
+	return {
+		...state,
+		turn: action.playerId
+	}
+}
+
+type SET_PLAYER_GAME_STATUS = {
+	type: 'SET_PLAYER_GAME_STATUS'
+	playerId: Player['id']
+	status: GamePlayer['gameStatus']
+}
+
+const setPlayerGameStatus = (state: GameState, action: SET_PLAYER_GAME_STATUS) => {
+	const player = state.players.find(p => p.id === action.playerId)
+	if (!player) return state
+
+	const newPlayerState: GamePlayer = {
+		...player,
+		gameStatus: action.status
+	}
+
+	const newPlayersState = state.players.map(p => (p.id === action.playerId ? newPlayerState : p))
+
+	return {
+		...state,
+		players: newPlayersState
+	}
+}
+
+type Action =
+	| ACCEPT_GAME
+	| ADD_TO_CONTAINER
+	| ADD_TO_ROW
+	| ADD_TO_PREVIEW
+	| CLEAR_PREVIEW
+	| REMOVE_FROM_CONTAINER
+	| SET_TURN
+	| SET_PLAYER_GAME_STATUS
 
 const actions = {
 	acceptGame,
@@ -166,8 +209,9 @@ const actions = {
 	removeFromContainer,
 	addToRow,
 	addToPreview,
+	setTurn,
+	setPlayerGameStatus,
 	clearPreview
 }
 
 export { actions, type Action }
-

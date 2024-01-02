@@ -15,7 +15,7 @@ const startingHandSize = 10
 const maxRerolls = 2
 
 export const Reroll = ({ currentPlayer }: Props) => {
-	const { gameState, addToContainer, removeFromContainer, setGameState } = useGameContext()
+	const { gameState, addToContainer, removeFromContainer, setPlayerGameStatus } = useGameContext()
 
 	const gameAccepted = gameState.players.filter(p => p.gameStatus === 'accepted').length === 2
 
@@ -53,25 +53,6 @@ export const Reroll = ({ currentPlayer }: Props) => {
 		return deck[randomIndex]
 	}
 
-	const setGameStatus = (newStatus: GamePlayer['gameStatus']) => {
-		// const newPlayer = {
-		// 	...currentPlayer,
-		// 	gameStatus: newStatus
-		// }
-
-		// const newGameState = {
-		// 	...gameState,
-		// 	players: gameState.players.map(p => (p.id === currentPlayer.id ? newPlayer : p))
-		// }
-		
-		const newGameState = {
-			...gameState,
-			players: gameState.players.map(p => ({ ...p, gameStatus: newStatus }))
-		}
-
-		setGameState(newGameState)
-	}
-
 	function reroll(card: CardType) {
 		if (rerolls >= maxRerolls) return
 
@@ -85,7 +66,6 @@ export const Reroll = ({ currentPlayer }: Props) => {
 
 		addToContainer(currentPlayer?.id, newHand, 'hand', true)
 
-		console.log('removing')
 		removeFromContainer(currentPlayer?.id, [newCard], 'deck')
 		addToContainer(currentPlayer?.id, [card], 'deck')
 
@@ -96,7 +76,7 @@ export const Reroll = ({ currentPlayer }: Props) => {
 	useEffect(() => {
 		if (rerolls === maxRerolls) {
 			setTimeout(() => {
-				setGameStatus('play')
+				setPlayerGameStatus(currentPlayer.id, 'play')
 			}, 0)
 		}
 
@@ -129,7 +109,7 @@ export const Reroll = ({ currentPlayer }: Props) => {
 
 				<button
 					onClick={() => {
-						setGameStatus('play')
+						setPlayerGameStatus(currentPlayer.id, 'play')
 					}}
 					className='fixed right-4 top-4 flex items-center gap-2 bg-secondary px-2 py-0.5'>
 					<span className='text-sm'>Start game</span>

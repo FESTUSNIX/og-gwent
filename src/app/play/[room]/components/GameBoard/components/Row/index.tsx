@@ -5,6 +5,7 @@ import { GamePlayer } from '@/types/Game'
 import { RowType } from '@/types/RowType'
 import { CSSProperties } from 'react'
 import { Cards } from './components/Cards'
+import { ArrowBigUpDash } from 'lucide-react'
 
 type Props = {
 	rowType: RowType
@@ -15,10 +16,11 @@ type Props = {
 }
 
 export const Row = ({ rowType, player, side, className, style }: Props) => {
-	const { addToRow, removeFromContainer, clearPreview } = useGameContext()
+	const { gameState, addToRow, removeFromContainer, clearPreview, setTurn } = useGameContext()
 	const previewedCard = player.preview
 
 	const row = player.rows[rowType]
+	const opponent = gameState.players.find(p => p.id !== player.id)!
 
 	const canAdd = previewedCard && previewedCard?.type === rowType && player.id === getCurrentPlayerId()
 
@@ -27,25 +29,38 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 			addToRow(player.id, previewedCard, rowType)
 			removeFromContainer(player.id, [previewedCard], 'hand')
 
-			// Clear the preview
 			clearPreview(player.id)
+
+			setTurn(gameState.turn === player.id ? opponent.id : gameState.turn)
 		}
 	}
 
 	return (
-		<div className={cn('flex grow items-center', className)} style={style}>
+		<div className={cn('relative flex grow items-center', className)} style={style}>
+			<div className='absolute left-0 flex h-full -translate-x-full items-center'>
+				<div
+					className={cn(
+						'z-10 -mr-1.5 flex aspect-square h-12 w-12 translate-x-0.5 items-center justify-center rounded-full border-[3px] border-neutral-500 text-black',
+						side === 'host' ? 'bg-orange-300' : 'bg-blue-300'
+					)}>
+					<span className='text-2xl'>{row.cards.reduce((acc, card) => acc + card.strength, 0)}</span>
+				</div>
+				<div className='h-full w-3 rounded-l-md bg-neutral-500' />
+			</div>
 			<button className='flex aspect-square h-full w-auto cursor-auto items-center justify-center bg-stone-800'>
-				SLOT
+				<ArrowBigUpDash className='h-20 w-20 text-white/5' />
 			</button>
 			<button
 				className={cn(
-					'h-full w-full grow cursor-auto bg-stone-700',
+					'relative h-full w-full grow cursor-auto bg-stone-700',
 					canAdd && 'cursor-pointer ring-4 ring-inset ring-yellow-600'
 				)}
 				onClick={() => {
 					addCardToRow()
 				}}>
 				<Cards cards={row.cards} />
+
+				<div className='absolute'></div>
 			</button>
 		</div>
 	)
