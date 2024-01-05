@@ -1,11 +1,10 @@
 import useGameContext from '@/app/play/[room]/hooks/useGameContext'
-import { getCurrentPlayerId } from '@/lib/getCurrentPlayerId'
 import { cn } from '@/lib/utils'
 import { GamePlayer } from '@/types/Game'
 import { RowType } from '@/types/RowType'
+import { ArrowBigUpDash } from 'lucide-react'
 import { CSSProperties } from 'react'
 import { Cards } from './components/Cards'
-import { ArrowBigUpDash } from 'lucide-react'
 
 type Props = {
 	rowType: RowType
@@ -22,7 +21,7 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 	const row = player.rows[rowType]
 	const opponent = gameState.players.find(p => p.id !== player.id)!
 
-	const canAdd = previewedCard && previewedCard?.type === rowType && player.id === getCurrentPlayerId()
+	const canAdd = previewedCard && previewedCard?.type === rowType && player.id === player.id
 
 	const addCardToRow = () => {
 		if (canAdd) {
@@ -30,6 +29,8 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 			removeFromContainer(player.id, [previewedCard], 'hand')
 
 			clearPreview(player.id)
+
+			if (opponent.hasPassed) return
 
 			setTurn(gameState.turn === player.id ? opponent.id : gameState.turn)
 		}
@@ -53,7 +54,7 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 			<button
 				className={cn(
 					'relative h-full w-full grow cursor-auto bg-stone-700',
-					canAdd && 'cursor-pointer ring-4 ring-inset ring-yellow-600'
+					canAdd && side === 'host' && 'cursor-pointer ring-4 ring-inset ring-yellow-600'
 				)}
 				onClick={() => {
 					addCardToRow()

@@ -1,7 +1,10 @@
+import { UserAvatar } from '@/components/UserAvatar'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { FACTIONS } from '@/constants/FACTIONS'
+import { supabase } from '@/lib/supabase/supabase'
 import { cn } from '@/lib/utils'
 import { GamePlayer } from '@/types/Game'
+import { useEffect, useState } from 'react'
 
 type Props = {
 	player: GamePlayer
@@ -10,26 +13,44 @@ type Props = {
 	side: 'host' | 'opponent'
 }
 
+const calculateScore = (p: GamePlayer) => {
+	return Object.values(p.rows).reduce((acc, row) => acc + row.cards.reduce((acc, card) => acc + card.strength, 0), 0)
+}
+
 export const PlayerStats = ({ player, opponent, side, turn }: Props) => {
-	const calculateScore = (p: GamePlayer) => {
-		return Object.values(p.rows).reduce((acc, row) => acc + row.cards.reduce((acc, card) => acc + card.strength, 0), 0)
-	}
+	const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
 
 	const score = calculateScore(player)
 	const opponentScore = calculateScore(opponent)
-
 	const isWinning = score > opponentScore
+
+	useEffect(() => {
+		async function getAvatarUrl() {
+			try {
+				const { data: user } = await supabase.from('profiles').select('avatar_url').eq('id', player.id).single()
+
+				setAvatarUrl(user?.avatar_url)
+			} catch (error) {
+				console.log('Error fetching user: ', error)
+			}
+		}
+
+		getAvatarUrl()
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [supabase])
 
 	return (
 		<div className={cn('flex flex-col gap-6', side === 'opponent' && 'flex-col-reverse')}>
 			<div className='relative flex items-center gap-4 py-2.5 pl-12'>
-				<div className='flex aspect-square h-full items-center justify-center rounded-full border bg-stone-700'>
-					<Avatar className='h-full w-full'>
-						<AvatarFallback>{player.name.slice(0, 2).toUpperCase()}</AvatarFallback>
-					</Avatar>
+				<div className='relative flex aspect-square h-full w-auto items-center justify-center overflow-hidden rounded-full border bg-stone-700'>
+					<UserAvatar
+						user={{ username: player.name, avatar_url: avatarUrl }}
+						className='absolute h-full w-full object-cover'
+					/>
 				</div>
 
-				<div className={cn('flex grow flex-col gap-4 pr-10', side === 'opponent' && 'flex-col-reverse')}>
+				<div className={cn('flex grow flex-col gap-4 py-1 pr-10', side === 'opponent' && 'flex-col-reverse')}>
 					<div className='flex items-center gap-8'>
 						<div>
 							<span className='text-2xl'>{player.hand.length}</span>
@@ -46,7 +67,7 @@ export const PlayerStats = ({ player, opponent, side, turn }: Props) => {
 
 					<div>
 						<h3 className='font-bold'>{player.name}</h3>
-						<p className='text-sm'>{FACTIONS.find(f => f.slug === player.faction)?.name}</p>
+						<p className='w-max text-sm'>{FACTIONS.find(f => f.slug === player.faction)?.name}</p>
 					</div>
 				</div>
 

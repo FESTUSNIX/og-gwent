@@ -1,21 +1,23 @@
 import { buttonVariants } from '@/components/ui/button'
-import { Player } from '@/types/Player'
+import { Database } from '@/types/supabase'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
-export const host: Player = {
-	id: 0,
-	name: 'Geralt of Rivia',
-	faction: 'northern-realms',
-	deck: [0, 1, 2, 3]
-}
-export const opponent: Player = {
-	id: 1,
-	name: 'Yennefer',
-	faction: 'nilfgaard',
-	deck: [4, 5]
-}
+export default async function Home() {
+	const supabase = createServerComponentClient<Database>({
+		cookies
+	})
 
-export default function Home() {
+	const {
+		data: { session }
+	} = await supabase.auth.getSession()
+
+	if (!session) {
+		redirect('/login')
+	}
+
 	return (
 		<main className='grid-container py-24'>
 			<header className='mx-auto text-center'>

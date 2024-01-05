@@ -1,18 +1,22 @@
+import { supabaseServer } from '@/lib/supabase/supabaseServer'
 import { getCards } from '@/queries/cards'
 import { Card } from '@/types/Card'
 import { Player } from '@/types/Player'
+import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 import { DeckSelector } from './components/DeckSelector'
 import { GameBoard } from './components/GameBoard'
 import { GameControls } from './components/GameControls'
 import { GameContextProvider } from './context/GameContext'
+// import { supabase } from '@/lib/supabase/supabase'
 
 const player1: Player = {
-	id: 0,
+	id: 'player-1',
 	name: 'Geralt of Rivia',
 	faction: 'northern-realms'
 }
 const player2: Player = {
-	id: 1,
+	id: 'player-2',
 	name: 'Yennefer',
 	faction: 'nilfgaard'
 }
@@ -25,14 +29,32 @@ type Props = {
 }
 
 const RoomPage = async ({ params: { room }, searchParams }: Props) => {
+	const supabase = supabaseServer()
+
+	const {
+		data: { session }
+	} = await supabase.auth.getSession()
+
+	if (!session) {
+		return redirect('/login')
+	}
+
+	const { data: user } = await supabase
+		.from('profiles')
+		.select('id, username, avatar_url')
+		.eq('id', session?.user.id ?? '')
+		.single()
+
+	if (!user) return null
 	const cards = await getCards()
-
 	return (
-		<main className='flex grow flex-col'>
-			<GameContextProvider>
-				<DeckSelector searchParams={searchParams} cards={cards} />
+		<main className='relative z-10 flex grow flex-col bg-background'>
+			<GameContextProvider roomId={room} userId={user.id}>
+				<Suspense>
+					<DeckSelector searchParams={searchParams} cards={cards} user={user} />
+				</Suspense>
 
-				<GameBoard />
+				<GameBoard user={user} />
 
 				<GameControls />
 			</GameContextProvider>

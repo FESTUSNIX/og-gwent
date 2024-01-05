@@ -30,7 +30,7 @@ const acceptGame = (state: GameState, action: ACCEPT_GAME) => {
 
 type ADD_TO_CONTAINER = {
 	type: 'ADD_TO_CONTAINER'
-	playerId: number
+	playerId: Player['id']
 	cards: Card[]
 	destination: CardContainers
 	shouldReplace?: boolean
@@ -59,7 +59,7 @@ const addToContainer = (state: GameState, action: ADD_TO_CONTAINER) => {
 
 type REMOVE_FROM_CONTAINER = {
 	type: 'REMOVE_FROM_CONTAINER'
-	playerId: number
+	playerId: Player['id']
 	cards: Card[]
 	source: CardContainers
 }
@@ -83,7 +83,7 @@ const removeFromContainer = (state: GameState, action: REMOVE_FROM_CONTAINER) =>
 
 type ADD_TO_ROW = {
 	type: 'ADD_TO_ROW'
-	playerId: number
+	playerId: Player['id']
 	card: Card
 	rowType: RowType
 }
@@ -115,7 +115,7 @@ const addToRow = (state: GameState, action: ADD_TO_ROW) => {
 
 type ADD_TO_PREVIEW = {
 	type: 'ADD_TO_PREVIEW'
-	playerId: number
+	playerId: Player['id']
 	card: Card
 }
 
@@ -138,7 +138,7 @@ const addToPreview = (state: GameState, action: ADD_TO_PREVIEW) => {
 
 type CLEAR_PREVIEW = {
 	type: 'CLEAR_PREVIEW'
-	playerId: number
+	playerId: Player['id']
 }
 
 const clearPreview = (state: GameState, action: CLEAR_PREVIEW) => {

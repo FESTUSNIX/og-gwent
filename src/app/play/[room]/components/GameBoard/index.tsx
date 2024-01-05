@@ -1,22 +1,24 @@
 'use client'
 
 import { Hand } from '@/app/play/[room]/components/GameBoard/components/Hand'
-import { getCurrentPlayerId } from '@/lib/getCurrentPlayerId'
+import { Tables } from '@/types/supabase'
+import { useEffect } from 'react'
 import useGameContext from '../../hooks/useGameContext'
 import { CardPiles } from './components/CardPiles'
 import { Reroll } from './components/Reroll'
 import { Side } from './components/Side'
 import { Sidebar } from './components/Sidebar'
 import { WaitForStartBanner } from './components/WaitForStartBanner'
-import { useEffect } from 'react'
 
-type Props = {}
+type Props = {
+	user: Pick<Tables<'profiles'>, 'id' | 'username'>
+}
 
-export const GameBoard = (props: Props) => {
+export const GameBoard = ({ user }: Props) => {
 	const { gameState, setTurn } = useGameContext()
 
-	const host = gameState.players.find(p => p.id === getCurrentPlayerId())
-	const opponent = gameState.players.find(p => p.id !== getCurrentPlayerId())
+	const host = gameState.players.find(p => p.id === user.id)
+	const opponent = gameState.players.find(p => p.id !== user.id)
 
 	const gameStarted = host?.gameStatus === 'play' && opponent?.gameStatus === 'play'
 	const gameAccepted = host?.gameStatus !== 'select-deck' && opponent?.gameStatus !== 'select-deck'
@@ -30,6 +32,14 @@ export const GameBoard = (props: Props) => {
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [gameStarted, host?.id, opponent?.id])
+
+	useEffect(() => {
+		if (host?.hand.length === 0) {
+			// TODO: Set hosts hasPassed to true
+
+			opponent?.id && setTurn(opponent.id)
+		}
+	}, [host?.hand])
 
 	if (!host || !opponent) return null
 	if (!gameAccepted) return null

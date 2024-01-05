@@ -6,18 +6,18 @@ import { cn } from '@/lib/utils'
 import { Braces, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import useGameContext from '../hooks/useGameContext'
+import { initialGameState } from '../context/GameContext'
 
 type Props = {}
 
 export const GameControls = (props: Props) => {
-	const { gameState } = useGameContext()
+	const { gameState, setGameState } = useGameContext()
 
 	const [isVisible, setIsVisible] = useState(false)
 	const toggleDataVisibility = () => setIsVisible(!isVisible)
 
 	const resetGameState = () => {
-		localStorage.removeItem('gameState')
-		window.location.reload()
+		setGameState(initialGameState)
 	}
 
 	return (

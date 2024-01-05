@@ -1,5 +1,6 @@
 'use client'
 
+import { supabase } from '@/lib/supabase/supabase'
 import { Card } from '@/types/Card'
 import { GamePlayer, GameRow, GameState } from '@/types/Game'
 import { Player } from '@/types/Player'
@@ -92,7 +93,15 @@ const initialState: GameContextProps = {
 
 export const GameContext = createContext(initialState)
 
-export const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const GameContextProvider = ({
+	children,
+	roomId,
+	userId
+}: {
+	children: React.ReactNode
+	roomId: string
+	userId: string
+}) => {
 	const [gameState, dispatch] = useReducer(gameReducer, initialGameState)
 
 	const acceptGame = (player: Player, startingDeck: Card[]) => dispatch({ type: 'ACCEPT_GAME', player, startingDeck })
@@ -125,22 +134,45 @@ export const GameContextProvider = ({ children }: { children: React.ReactNode })
 		})
 	}
 
-	// On mount, load the state from local storage
-	useEffect(() => {
-		const gameStateFromLocalStorage = window.localStorage.getItem('gameState')
+	function onBroadcast(payload: { [key: string]: any; type: 'broadcast'; event: string }) {
+		const newOtherPlayer = payload.payload.otherPlayer
+		const currentOtherPlayer = gameState.players.find(player => player.id === newOtherPlayer?.id)
 
-		if (gameStateFromLocalStorage) {
-			const parsedGameState = JSON.parse(gameStateFromLocalStorage)
-			dispatch({ type: 'CUSTOM', gameState: parsedGameState })
+		const newGameState: GameState = {
+			...payload.payload,
+			players: [...gameState.players.filter(player => player.id !== newOtherPlayer?.id), newOtherPlayer]
 		}
-	}, [])
 
-	// On change save the state to local storage
+		if (!newOtherPlayer && deepEqual(newOtherPlayer ?? {}, currentOtherPlayer ?? {})) return null
+
+		dispatch({ type: 'CUSTOM', gameState: newGameState })
+	}
+
+	const currentPlayer = gameState.players.find(player => player.id === userId)
+
 	useEffect(() => {
-		if (gameState === initialGameState) return
+		const roomChannel = supabase.channel(`room=${roomId}`)
 
-		window.localStorage.setItem('gameState', JSON.stringify(gameState))
-	}, [gameState])
+		roomChannel
+			.on('broadcast', { event: 'game' }, payload => onBroadcast(payload))
+			.subscribe(status => {
+				if (status !== 'SUBSCRIBED') {
+					return null
+				}
+
+				const currentPlayerGameState = gameState.players.find(player => player.id === userId)
+
+				roomChannel.send({
+					type: 'broadcast',
+					event: 'game',
+					payload: { otherPlayer: currentPlayerGameState, turn: gameState.turn }
+				})
+			})
+
+		return () => {
+			roomChannel.unsubscribe()
+		}
+	}, [roomId, currentPlayer])
 
 	return (
 		<GameContext.Provider
@@ -159,4 +191,28 @@ export const GameContextProvider = ({ children }: { children: React.ReactNode })
 			{children}
 		</GameContext.Provider>
 	)
+}
+
+function deepEqual(object1: any, object2: any) {
+	const keys1 = Object.keys(object1)
+	const keys2 = Object.keys(object2)
+
+	if (keys1.length !== keys2.length) {
+		return false
+	}
+
+	for (const key of keys1) {
+		const val1 = object1[key]
+		const val2 = object2[key]
+		const areObjects = isObject(val1) && isObject(val2)
+		if ((areObjects && !deepEqual(val1, val2)) || (!areObjects && val1 !== val2)) {
+			return false
+		}
+	}
+
+	return true
+}
+
+function isObject(object: any) {
+	return object != null && typeof object === 'object'
 }

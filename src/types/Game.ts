@@ -25,8 +25,7 @@ export type GamePlayer = Player & {
 export type GameState = {
 	players: GamePlayer[]
 	rounds: {
-		players: GamePlayer[]
-		winner: number | 'draw'
+		winner: Player['id'] | 'draw'
 	}[]
 	turn: Player['id'] | null
 	// TODO: weatherCard

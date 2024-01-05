@@ -5,13 +5,15 @@ import { FACTIONS } from '@/constants/FACTIONS'
 import { ROW_TYPES } from '@/constants/ROW_TYPES'
 import { getFirstParamValue } from '@/lib/utils'
 import { Card } from '@/types/Card'
+import { Tables } from '@/types/supabase'
 import { Suspense } from 'react'
-import { ClientDeckSelector } from './components/ClientDeckSelector'
 import useGameContext from '../../hooks/useGameContext'
+import { ClientDeckSelector } from './components/ClientDeckSelector'
 
 type Props = {
 	cards: Card[]
 	searchParams: { [key: string]: string | string[] | undefined }
+	user: Pick<Tables<'profiles'>, 'id' | 'username'>
 }
 
 const cardTypesOptions = [
@@ -25,7 +27,7 @@ const cardTypesOptions = [
 	}))
 ]
 
-export const DeckSelector = ({ cards, searchParams }: Props) => {
+export const DeckSelector = ({ cards, searchParams, user }: Props) => {
 	const { gameState } = useGameContext()
 
 	if (gameState.players.filter(p => p.gameStatus !== 'select-deck').length === 2) return null
@@ -62,6 +64,7 @@ export const DeckSelector = ({ cards, searchParams }: Props) => {
 
 			<ClientDeckSelector
 				cards={cards}
+				user={user}
 				currentFaction={currentFaction}
 				collectionCardTypeParam={collectionCardTypeParam}
 				inDeckCardTypeParam={inDeckCardTypeParam}
