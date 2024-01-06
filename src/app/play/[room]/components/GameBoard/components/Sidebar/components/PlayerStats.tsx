@@ -19,6 +19,7 @@ const calculateScore = (p: GamePlayer) => {
 
 export const PlayerStats = ({ player, opponent, side, turn }: Props) => {
 	const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+	const supabaseClient = supabase()
 
 	const score = calculateScore(player)
 	const opponentScore = calculateScore(opponent)
@@ -27,7 +28,7 @@ export const PlayerStats = ({ player, opponent, side, turn }: Props) => {
 	useEffect(() => {
 		async function getAvatarUrl() {
 			try {
-				const { data: user } = await supabase.from('profiles').select('avatar_url').eq('id', player.id).single()
+				const { data: user } = await supabaseClient.from('profiles').select('avatar_url').eq('id', player.id).single()
 
 				setAvatarUrl(user?.avatar_url)
 			} catch (error) {

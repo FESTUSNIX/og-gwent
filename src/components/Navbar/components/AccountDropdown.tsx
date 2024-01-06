@@ -26,7 +26,7 @@ const AccountDropdown = async ({ session }: Props) => {
 
 	const { data, error } = await supabase
 		.from('profiles')
-		.select(`full_name, username, website, avatar_url`)
+		.select(`username, avatar_url`)
 		.eq('id', session?.user?.id as string)
 		.single()
 
@@ -35,10 +35,12 @@ const AccountDropdown = async ({ session }: Props) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<UserAvatar
-					user={{ avatar_url: user?.avatar_url ?? null, username: user?.username ?? null }}
-					className='cursor-pointer border duration-300 hover:shadow'
-				/>
+				<button className='rounded-full'>
+					<UserAvatar
+						user={{ avatar_url: user?.avatar_url ?? null, username: user?.username ?? null }}
+						className='cursor-pointer border duration-300 hover:shadow'
+					/>
+				</button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end' className='w-56'>
 				<DropdownMenuGroup>

@@ -13,7 +13,7 @@ type Props = SlotProps &
 
 export const SignOutShell = forwardRef<HTMLElement, Props>(({ onClick, signOutOptions, children, ...props }, ref) => {
 	const supabase = createClientComponentClient()
-    const router = useRouter()
+	const router = useRouter()
 
 	async function signOut() {
 		const { error } = await supabase.auth.signOut(signOutOptions)

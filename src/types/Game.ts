@@ -1,12 +1,15 @@
 import { Card } from './Card'
-import { Player } from './Player'
+import { FactionType } from './Faction'
 
 export type GameRow = {
 	cards: Card[]
 	// TODO: specialEffect
 }
 
-export type GamePlayer = Player & {
+export type GamePlayer = {
+	id: string
+	name: string
+	faction: FactionType
 	preview: Card | null
 	hasPassed: boolean
 	gameStatus: 'select-deck' | 'accepted' | 'play'
@@ -25,8 +28,11 @@ export type GamePlayer = Player & {
 export type GameState = {
 	players: GamePlayer[]
 	rounds: {
-		winner: Player['id'] | 'draw'
+		players: {
+			id: GamePlayer['id']
+			score: number
+		}[]
 	}[]
-	turn: Player['id'] | null
+	turn: GamePlayer['id'] | null
 	// TODO: weatherCard
 }

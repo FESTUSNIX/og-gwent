@@ -103,6 +103,7 @@ export const GameContextProvider = ({
 	userId: string
 }) => {
 	const [gameState, dispatch] = useReducer(gameReducer, initialGameState)
+	const supabaseClient = supabase()
 
 	const acceptGame = (player: Player, startingDeck: Card[]) => dispatch({ type: 'ACCEPT_GAME', player, startingDeck })
 
@@ -151,7 +152,7 @@ export const GameContextProvider = ({
 	const currentPlayer = gameState.players.find(player => player.id === userId)
 
 	useEffect(() => {
-		const roomChannel = supabase.channel(`room=${roomId}`)
+		const roomChannel = supabaseClient.channel(`room=${roomId}`)
 
 		roomChannel
 			.on('broadcast', { event: 'game' }, payload => onBroadcast(payload))

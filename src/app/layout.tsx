@@ -1,10 +1,9 @@
 import Providers from '@/components/Providers'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Outfit } from 'next/font/google'
 import './globals.css'
-import { Navbar } from '@/components/Navbar'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-body' })
+const body = Outfit({ subsets: ['latin'], variable: '--font-body' })
 
 export const metadata: Metadata = {
 	title: 'Gwent Multiplayer'
@@ -13,11 +12,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang='en' className='dark'>
-			<body className={inter.variable}>
-				<Providers>
-					<Navbar />
-					{children}
-				</Providers>
+			<body className={body.variable}>
+				<Providers>{children}</Providers>
 			</body>
 		</html>
 	)

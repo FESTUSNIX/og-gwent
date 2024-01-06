@@ -4,12 +4,27 @@ import { getCards } from '@/queries/cards'
 import { CardCreator } from './components/CardCreator'
 import { FactionSwitch } from './components/FactionSwitch'
 import { Suspense } from 'react'
+import { redirect } from 'next/navigation'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Database } from '@/types/supabase'
+import { cookies } from 'next/headers'
 
 type Props = {
 	searchParams: { [key: string]: string | string[] | undefined }
 }
 
 const CardsPage = async ({ searchParams }: Props) => {
+	const supabase = createServerComponentClient<Database>({
+		cookies
+	})
+
+	const {
+		data: { session }
+	} = await supabase.auth.getSession()
+
+	if (!session) redirect('/login')
+	if (session.user.role !== 'ADMIN') redirect('/')
+
 	const cards = await getCards()
 
 	const factionParam =

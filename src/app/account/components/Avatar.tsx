@@ -1,23 +1,23 @@
 'use client'
+
 import { UserAvatar } from '@/components/UserAvatar'
 import { Database } from '@/types/supabase'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import React, { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 type Profiles = Database['public']['Tables']['profiles']['Row']
 
 export default function Avatar({
 	uid,
 	url,
-	username,
-	onUpload
+	username
 }: {
 	uid: string
 	url: Profiles['avatar_url']
 	username: Profiles['username']
-	onUpload: (url: string) => void
 }) {
 	const supabase = createClientComponentClient<Database>()
-	const [avatarUrl, setAvatarUrl] = useState<Profiles['avatar_url']>(url)
+	const [avatarUrl, setAvatarUrl] = useState<Profiles['avatar_url']>(null)
 	const [uploading, setUploading] = useState(false)
 
 	useEffect(() => {
@@ -38,7 +38,7 @@ export default function Avatar({
 		if (url) downloadImage(url)
 	}, [url, supabase])
 
-	const uploadAvatar: React.ChangeEventHandler<HTMLInputElement> = async event => {
+	const uploadAvatar = async (event: ChangeEvent<HTMLInputElement>) => {
 		try {
 			setUploading(true)
 
@@ -56,38 +56,35 @@ export default function Avatar({
 				throw uploadError
 			}
 
-			onUpload(filePath)
+			console.log('uploaded', filePath)
+			return filePath
 		} catch (error) {
-			alert('Error uploading avatar!')
+			toast.error('Error uploading avatar!')
 		} finally {
 			setUploading(false)
 		}
 	}
 
 	return (
-		<div>
+		<label className='group relative flex h-36 w-36 cursor-pointer items-center justify-center overflow-hidden rounded-lg border'>
 			<UserAvatar
 				user={{ avatar_url: avatarUrl, username: username }}
 				useFormattedUrl
-				className='aspect-square h-auto w-36'
+				className='h-full w-full rounded-lg'
 			/>
 
-			<div className='mt-6 max-w-md border px-8 py-2.5 text-center'>
-				<label className='button primary block' htmlFor='single'>
-					{uploading ? 'Uploading ...' : 'Upload'}
-				</label>
-				<input
-					style={{
-						visibility: 'hidden',
-						position: 'absolute'
-					}}
-					type='file'
-					id='single'
-					accept='image/*'
-					onChange={uploadAvatar}
-					disabled={uploading}
-				/>
+			<input
+				type='file'
+				id='single'
+				accept='image/*'
+				onChange={uploadAvatar}
+				disabled={uploading}
+				className='invisible absolute inset-0'
+			/>
+
+			<div className='pointer-events-none absolute inset-0 flex items-center justify-center bg-black/80 opacity-0 duration-300 group-hover:opacity-100'>
+				<span className='text-xs font-bold uppercase'>Update avatar</span>
 			</div>
-		</div>
+		</label>
 	)
 }

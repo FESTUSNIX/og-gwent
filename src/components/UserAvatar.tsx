@@ -17,10 +17,10 @@ export const UserAvatar = ({ user, useFormattedUrl = false, ...props }: Props) =
 					src={useFormattedUrl ? user.avatar_url : urlFor('avatars', user.avatar_url).publicUrl}
 					alt={`${user.username}'s profile picture`}
 					referrerPolicy='no-referrer'
-					className='relative aspect-square h-full w-full'
+					className='aspect-square h-full w-full rounded-[inherit] object-cover'
 				/>
 			) : (
-				<AvatarFallback>
+				<AvatarFallback className='aspect-square h-full w-full rounded-[inherit] object-cover'>
 					<span className='sr-only'>{user.username?.slice(0, 2)}</span>
 					<UserIcon className='h-4 w-4' />
 				</AvatarFallback>
