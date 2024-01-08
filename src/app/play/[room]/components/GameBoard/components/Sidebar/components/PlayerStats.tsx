@@ -1,3 +1,4 @@
+import { Icons } from '@/components/Icons'
 import { UserAvatar } from '@/components/UserAvatar'
 import { FACTIONS } from '@/constants/FACTIONS'
 import { supabase } from '@/lib/supabase/supabase'
@@ -13,7 +14,7 @@ type Props = {
 }
 
 const calculateScore = (p: GamePlayer) => {
-	return Object.values(p.rows).reduce((acc, row) => acc + row.cards.reduce((acc, card) => acc + card.strength, 0), 0)
+	return Object.values(p?.rows).reduce((acc, row) => acc + row.cards.reduce((acc, card) => acc + card.strength, 0), 0)
 }
 
 export const PlayerStats = ({ player, opponent, side, turn }: Props) => {
@@ -23,6 +24,8 @@ export const PlayerStats = ({ player, opponent, side, turn }: Props) => {
 	const score = calculateScore(player)
 	const opponentScore = calculateScore(opponent)
 	const isWinning = score > opponentScore
+
+	const hasPassed = player.hasPassed
 
 	useEffect(() => {
 		async function getAvatarUrl() {
@@ -50,16 +53,18 @@ export const PlayerStats = ({ player, opponent, side, turn }: Props) => {
 					/>
 				</div>
 
-				<div className={cn('flex grow flex-col gap-4 py-1 pr-10', side === 'opponent' && 'flex-col-reverse')}>
+				<div
+					className={cn('flex grow flex-col gap-4 pr-10', side === 'opponent' ? 'flex-col-reverse pb-2.5' : 'pt-2.5')}>
 					<div className='flex items-center gap-8'>
-						<div>
+						<div className='flex items-center gap-2'>
+							<Icons.Cards className='h-6 w-6 stroke-black ' />
 							<span className='text-2xl'>{player.hand.length}</span>
 						</div>
 						<div className='flex items-center gap-1'>
 							{[0, 1].map((life, i) => (
 								<div
 									key={i}
-									className={cn('aspect-square w-7 rounded-full bg-red-500', i >= player.lives && 'bg-gray-600')}
+									className={cn('aspect-square w-9 rounded-full bg-red-500', i >= player.lives && 'bg-gray-600')}
 								/>
 							))}
 						</div>
@@ -70,6 +75,10 @@ export const PlayerStats = ({ player, opponent, side, turn }: Props) => {
 						<p className='w-max text-sm'>{FACTIONS.find(f => f.slug === player.faction)?.name}</p>
 					</div>
 				</div>
+
+				{hasPassed && (
+					<div className='absolute right-0 top-0 -translate-y-2 translate-x-1/2 text-2xl font-bold'>Passed</div>
+				)}
 
 				<div className='absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2'>
 					<div

@@ -30,7 +30,8 @@ const cardTypesOptions = [
 export const DeckSelector = ({ cards, searchParams, user }: Props) => {
 	const { gameState } = useGameContext()
 
-	if (gameState.players.filter(p => p.gameStatus !== 'select-deck').length === 2) return null
+	if (gameState.players.length === 2 && !(gameState.players.filter(p => p?.gameStatus === 'select-deck').length >= 1))
+		return null
 
 	const factionParam = getFirstParamValue(searchParams.faction, FACTIONS[0].slug)
 	const currentFaction = FACTIONS.find(f => f.slug === factionParam)?.slug ?? FACTIONS[0].slug

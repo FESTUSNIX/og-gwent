@@ -8,6 +8,7 @@ import { Tables } from '@/types/supabase'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useDebounce } from 'usehooks-ts'
+import { initialPlayer } from '../../../context/GameContext'
 import useGameContext from '../../../hooks/useGameContext'
 import { CardTypeSwitch } from './CardTypeSwitch'
 import { DeckDetails } from './DeckDetails'
@@ -28,13 +29,15 @@ export const ClientDeckSelector = ({
 	inDeckCardTypeParam,
 	user
 }: Props) => {
-	const { acceptGame, gameState } = useGameContext()
+	const { gameState, updatePlayerState } = useGameContext()
 
 	const [selectedDeck, setSelectedDeck] = useState<CardType[]>([])
 	const debouncedSelectedDeck = useDebounce(selectedDeck, 1000)
 
 	const minDeckLength = 18
 	const currentPlayer = gameState.players.find(p => p.id === user.id)
+
+	const accepted = currentPlayer?.gameStatus === 'accepted'
 
 	useEffect(() => {
 		if (debouncedSelectedDeck.length === 0) return
@@ -74,7 +77,8 @@ export const ClientDeckSelector = ({
 								key={card.id}
 								onClick={() => {
 									setSelectedDeck(prevDeck => [...prevDeck, card])
-								}}>
+								}}
+								disabled={accepted}>
 								<Card card={card} mode='preview' />
 							</button>
 						))}
@@ -97,10 +101,15 @@ export const ClientDeckSelector = ({
 							onClick={() => {
 								toast('Accepted game!')
 
-								acceptGame({ name: user.username as string, id: user.id, faction: currentFaction }, selectedDeck)
+								updatePlayerState(user.id, {
+									...initialPlayer,
+									gameStatus: !accepted ? 'accepted' : 'select-deck',
+									faction: currentFaction,
+									deck: selectedDeck
+								})
 							}}
-							disabled={selectedDeck.length < minDeckLength || currentPlayer?.gameStatus === 'accepted'}>
-							Start game
+							disabled={selectedDeck.length < minDeckLength}>
+							{!accepted ? 'Start game' : 'Cancel'}
 						</Button>
 					</div>
 				</div>
@@ -122,7 +131,8 @@ export const ClientDeckSelector = ({
 								key={card.id}
 								onClick={() => {
 									setSelectedDeck(prevDeck => [...prevDeck.filter(c => c.id !== card.id)])
-								}}>
+								}}
+								disabled={accepted}>
 								<Card key={card.id} card={card} mode='preview' />
 							</button>
 						))}

@@ -27,17 +27,6 @@ export const NewGameShell = forwardRef<HTMLButtonElement, Props>(({ children, se
 			})
 			if (createRoomError) throw Error(createRoomError.message)
 
-			const { error: createPlayerError } = await supabase.from('players').upsert({
-				id: session.user.id
-			})
-			if (createPlayerError) throw Error(createPlayerError.message)
-
-			const { error: connectRoomWithPlayerError } = await supabase.from('room_players').insert({
-				playerId: session.user.id,
-				roomId: id
-			})
-			if (connectRoomWithPlayerError) throw Error(connectRoomWithPlayerError.message)
-
 			router.push(`/play/${id}`)
 		} catch (error: any) {
 			toast.error(error.message ?? error.toString())

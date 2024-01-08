@@ -1,15 +1,12 @@
 import { supabaseServer } from '@/lib/supabase/supabaseServer'
-import { getCards } from '@/queries/cards'
 import { Card } from '@/types/Card'
-import { Player } from '@/types/Player'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
+import cardsJson from '../../../../db/cards.json'
 import { DeckSelector } from './components/DeckSelector'
 import { GameBoard } from './components/GameBoard'
 import { GameControls } from './components/GameControls'
 import { GameContextProvider } from './context/GameContext'
-import cardsJson from '../../../../db/cards.json'
-import { toast } from 'sonner'
 
 type Props = {
 	params: { room: string }
@@ -29,34 +26,42 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 
 	const { data: user } = await supabase
 		.from('profiles')
-		.select('id, username, avatar_url')
+		.select('id, username, avatar_url, role')
 		.eq('id', session?.user.id ?? '')
 		.single()
 
 	if (!user) return null
 
 	const { data: roomPlayers } = await supabase.from('room_players').select('playerId').eq('roomId', room)
+	const { data: roomExists } = await supabase.from('rooms').select('id').eq('id', room)
 
 	const isInRoom = roomPlayers?.find(p => p.playerId === user.id)
 
-	if (roomPlayers && roomPlayers?.length >= 2 && !isInRoom) {
-		return redirect('/')
-	}
+	if ((roomPlayers && roomPlayers?.length >= 2 && !isInRoom) || !roomExists) return redirect('/')
 
 	if (!isInRoom) {
+		if (!roomExists) {
+			console.error('Room does not exist')
+			return redirect('/')
+		}
+
 		const { data } = await supabase
 			.from('players')
-			.insert({
-				id: user.id
+			.upsert({
+				id: user.id,
+				name: user.username
 			})
 			.select('id')
 
 		if (!data) return
 
-		const { data: roomInsertData } = await supabase.from('room_players').insert({
-			playerId: user.id,
-			roomId: room
-		})
+		const { data: roomInsertData } = await supabase
+			.from('room_players')
+			.insert({
+				playerId: user.id,
+				roomId: room
+			})
+			.select('roomId')
 
 		if (!roomInsertData) return
 	}
@@ -71,9 +76,9 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 					<DeckSelector searchParams={searchParams} cards={cards} user={user} />
 				</Suspense>
 
-				<GameBoard user={user} />
+				<GameBoard user={user} roomId={room} />
 
-				<GameControls />
+				<GameControls roomId={room} />
 			</GameContextProvider>
 		</main>
 	)

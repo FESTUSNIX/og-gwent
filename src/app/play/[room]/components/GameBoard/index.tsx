@@ -2,6 +2,7 @@
 
 import { Hand } from '@/app/play/[room]/components/GameBoard/components/Hand'
 import { Tables } from '@/types/supabase'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect } from 'react'
 import useGameContext from '../../hooks/useGameContext'
 import { CardPiles } from './components/CardPiles'
@@ -12,42 +13,39 @@ import { WaitForStartBanner } from './components/WaitForStartBanner'
 
 type Props = {
 	user: Pick<Tables<'profiles'>, 'id' | 'username'>
+	roomId: string
 }
 
-export const GameBoard = ({ user }: Props) => {
+export const GameBoard = ({ user, roomId }: Props) => {
 	const { gameState, setTurn } = useGameContext()
+	const supabase = createClientComponentClient()
 
-	const host = gameState.players.find(p => p.id === user.id)
-	const opponent = gameState.players.find(p => p.id !== user.id)
+	const host = gameState.players.find(p => p?.id === user.id)
+	const opponent = gameState.players.find(p => p?.id !== user.id)
 
 	const gameStarted = host?.gameStatus === 'play' && opponent?.gameStatus === 'play'
-	const gameAccepted = host?.gameStatus !== 'select-deck' && opponent?.gameStatus !== 'select-deck'
-	const waitingForOpponent = host?.gameStatus === 'play' && opponent?.gameStatus !== 'play'
 
 	useEffect(() => {
-		if (gameStarted && !gameState.turn) {
-			const startingPlayer = Math.random() < 0.5 ? host.id : opponent.id
-			setTurn(startingPlayer)
+		const updateTurn = async () => {
+			if (gameStarted && !gameState.turn) {
+				const { data } = await supabase.from('rooms').select('turn').eq('id', roomId).single()
+				const startingPlayer = data?.turn ?? (Math.random() < 0.5 ? host.id : opponent.id)
+
+				setTurn(startingPlayer)
+			}
 		}
 
+		updateTurn()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [gameStarted, host?.id, opponent?.id])
-
-	useEffect(() => {
-		if (host?.hand.length === 0) {
-			// TODO: Set hosts hasPassed to true
-
-			opponent?.id && setTurn(opponent.id)
-		}
-	}, [host?.hand])
+	}, [gameStarted])
 
 	if (!host || !opponent) return null
-	if (!gameAccepted) return null
+	if (gameState.players.filter(p => p?.gameStatus === 'select-deck').length >= 1) return null
 
 	return (
 		<div className='grid grow grid-cols-[375px_1fr]'>
-			{gameAccepted && !waitingForOpponent && !gameStarted && <Reroll currentPlayer={host} />}
-			{waitingForOpponent && <WaitForStartBanner />}
+			{host.gameStatus === 'accepted' && <Reroll currentPlayer={host} />}
+			{host.gameStatus === 'play' && opponent.gameStatus === 'accepted' && <WaitForStartBanner />}
 
 			<Sidebar host={host} opponent={opponent} turn={gameState.turn} />
 
