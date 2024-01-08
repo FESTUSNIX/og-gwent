@@ -18,7 +18,7 @@ const acceptGame = (state: GameState, action: ACCEPT_GAME) => {
 		gameStatus: 'accepted'
 	}
 
-	const newPlayers = state.players.length < 2 ? [...state.players, newPlayer] : state.players
+	const newPlayers = state.players.map(p => (p.id === action.player.id ? newPlayer : p))
 
 	const payload: GameState = {
 		...state,
@@ -193,6 +193,49 @@ const setPlayerGameStatus = (state: GameState, action: SET_PLAYER_GAME_STATUS) =
 	}
 }
 
+type UPDATE_PLAYER_STATE = {
+	type: 'UPDATE_PLAYER_STATE'
+	playerId: Player['id']
+	playerState: Partial<GamePlayer>
+}
+
+const updatePlayerState = (state: GameState, action: UPDATE_PLAYER_STATE) => {
+	const player = state.players.find(p => p.id === action.playerId)
+	if (!player) return state
+
+	const newPlayerState: GamePlayer = {
+		...player,
+		...action.playerState
+	}
+
+	const newPlayersState = state.players.map(p => (p.id === action.playerId ? newPlayerState : p))
+
+	return {
+		...state,
+		players: newPlayersState
+	}
+}
+
+type SAVE_ROUND_SCORES = {
+	type: 'SAVE_ROUND_SCORES'
+	players: {
+		id: GamePlayer['id']
+		score: number
+	}[]
+}
+
+const saveRoundScores = (state: GameState, action: SAVE_ROUND_SCORES) => {
+	return {
+		...state,
+		rounds: [
+			...state.rounds,
+			{
+				players: action.players
+			}
+		]
+	}
+}
+
 type Action =
 	| ACCEPT_GAME
 	| ADD_TO_CONTAINER
@@ -202,6 +245,8 @@ type Action =
 	| REMOVE_FROM_CONTAINER
 	| SET_TURN
 	| SET_PLAYER_GAME_STATUS
+	| UPDATE_PLAYER_STATE
+	| SAVE_ROUND_SCORES
 
 const actions = {
 	acceptGame,
@@ -211,7 +256,9 @@ const actions = {
 	addToPreview,
 	setTurn,
 	setPlayerGameStatus,
-	clearPreview
+	clearPreview,
+	updatePlayerState,
+	saveRoundScores
 }
 
 export { actions, type Action }

@@ -28,10 +28,13 @@ export const ClientDeckSelector = ({
 	inDeckCardTypeParam,
 	user
 }: Props) => {
-	const { acceptGame } = useGameContext()
+	const { acceptGame, gameState } = useGameContext()
 
 	const [selectedDeck, setSelectedDeck] = useState<CardType[]>([])
 	const debouncedSelectedDeck = useDebounce(selectedDeck, 1000)
+
+	const minDeckLength = 18
+	const currentPlayer = gameState.players.find(p => p.id === user.id)
 
 	useEffect(() => {
 		if (debouncedSelectedDeck.length === 0) return
@@ -95,7 +98,8 @@ export const ClientDeckSelector = ({
 								toast('Accepted game!')
 
 								acceptGame({ name: user.username as string, id: user.id, faction: currentFaction }, selectedDeck)
-							}}>
+							}}
+							disabled={selectedDeck.length < minDeckLength || currentPlayer?.gameStatus === 'accepted'}>
 							Start game
 						</Button>
 					</div>

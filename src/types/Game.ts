@@ -12,7 +12,7 @@ export type GamePlayer = {
 	faction: FactionType
 	preview: Card | null
 	hasPassed: boolean
-	gameStatus: 'select-deck' | 'accepted' | 'play'
+	gameStatus: 'select-deck' | 'accepted' | 'play' | 'game-over'
 	lives: 0 | 1 | 2
 	deck: Card[]
 	hand: Card[]

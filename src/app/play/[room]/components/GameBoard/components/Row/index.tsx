@@ -21,7 +21,7 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 	const row = player.rows[rowType]
 	const opponent = gameState.players.find(p => p.id !== player.id)!
 
-	const canAdd = previewedCard && previewedCard?.type === rowType && player.id === player.id
+	const canAdd = previewedCard && previewedCard?.type === rowType && player.id === player.id && !player.hasPassed
 
 	const addCardToRow = () => {
 		if (canAdd) {

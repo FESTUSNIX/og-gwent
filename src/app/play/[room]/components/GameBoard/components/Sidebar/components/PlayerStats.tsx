@@ -1,5 +1,4 @@
 import { UserAvatar } from '@/components/UserAvatar'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { FACTIONS } from '@/constants/FACTIONS'
 import { supabase } from '@/lib/supabase/supabase'
 import { cn } from '@/lib/utils'
@@ -30,7 +29,7 @@ export const PlayerStats = ({ player, opponent, side, turn }: Props) => {
 			try {
 				const { data: user } = await supabaseClient.from('profiles').select('avatar_url').eq('id', player.id).single()
 
-				setAvatarUrl(user?.avatar_url)
+				setAvatarUrl(user?.avatar_url ?? null)
 			} catch (error) {
 				console.log('Error fetching user: ', error)
 			}
