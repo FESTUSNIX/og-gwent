@@ -2,10 +2,12 @@ import { JoinGameForm } from '@/components/JoinGameForm'
 import { Navbar } from '@/components/Navbar'
 import { NewGameShell } from '@/components/NewGameShell'
 import { H2 } from '@/components/ui/Typography/H2'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { Database } from '@/types/supabase'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 export default async function Home() {
@@ -21,6 +23,8 @@ export default async function Home() {
 		redirect('/login')
 	}
 
+	const { data: room } = await supabase.from('room_players').select('roomId').eq('playerId', session.user.id).single()
+
 	return (
 		<>
 			<Navbar />
@@ -31,22 +35,38 @@ export default async function Home() {
 				</header>
 
 				<div className='mx-auto mt-16 flex w-full max-w-lg flex-col items-center gap-16'>
-					<section className=''>
-						<NewGameShell session={session}>
-							<Button className='rounded-full px-6 py-7 font-normal md:text-lg'>Create a new room</Button>
-						</NewGameShell>
-					</section>
+					{!room && (
+						<>
+							<section className=''>
+								<NewGameShell session={session}>
+									<Button className='rounded-full px-6 py-7 font-normal md:text-lg'>Create a new room</Button>
+								</NewGameShell>
+							</section>
 
-					<section className='w-full'>
-						<div>
-							<H2 className='pb-0'>Join a room</H2>
-							<p className='text-muted-foreground'>Enter the room code provided by your friend to join their game.</p>
-						</div>
+							<section className='w-full'>
+								<div>
+									<H2 className='pb-0'>Join a room</H2>
+									<p className='text-muted-foreground'>
+										Enter the room code provided by your friend to join their game.
+									</p>
+								</div>
 
-						<div className='my-6'>
-							<JoinGameForm />
-						</div>
-					</section>
+								<div className='my-6'>
+									<JoinGameForm />
+								</div>
+							</section>
+						</>
+					)}
+
+					{room && (
+						<section className='flex flex-col items-center gap-4'>
+							<H2>You are already in a game.</H2>
+
+							<Link href={`/play/${room.roomId}`} className={cn(buttonVariants())}>
+								Click here to rejoin.
+							</Link>
+						</section>
+					)}
 				</div>
 			</main>
 		</>

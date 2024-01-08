@@ -20,6 +20,10 @@ export const Navbar = async (props: Props) => {
 
 	const user = session?.user
 
+	const { data: room } = user
+		? await supabase.from('room_players').select('roomId').eq('playerId', user.id).single()
+		: { data: null }
+
 	return (
 		<nav className='grid-container sticky top-0 z-50 w-full border-b bg-background py-4'>
 			<div className='flex items-center justify-between'>
@@ -28,10 +32,16 @@ export const Navbar = async (props: Props) => {
 				</Link>
 
 				<div className='hidden sm:block'>
-					{user && (
+					{user && !room && (
 						<NewGameShell session={session}>
 							<Button className='rounded-full'>Start a new game</Button>
 						</NewGameShell>
+					)}
+
+					{room && (
+						<Link href={`/play/${room.roomId}`} className={cn(buttonVariants(), 'rounded-full')}>
+							Continue playing
+						</Link>
 					)}
 				</div>
 

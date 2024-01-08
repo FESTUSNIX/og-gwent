@@ -20,6 +20,12 @@ export const NewGameShell = forwardRef<HTMLButtonElement, Props>(({ children, se
 
 	const createNewRoom = async () => {
 		try {
+			const { data } = await supabase.from('room_players').select('playerId').eq('playerId', session.user.id).single()
+
+			if (data?.playerId) {
+				throw Error('You are already in a room!')
+			}
+
 			const id = createId()
 
 			const { error: createRoomError } = await supabase.from('rooms').insert({
