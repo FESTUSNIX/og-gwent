@@ -25,7 +25,7 @@ export const Navbar = async (props: Props) => {
 		: { data: null }
 
 	return (
-		<nav className='grid-container sticky top-0 z-50 w-full border-b bg-background py-4'>
+		<nav className='grid-container sticky top-0 z-40 w-full border-b bg-background py-4'>
 			<div className='flex items-center justify-between'>
 				<Link href={'/'}>
 					<div className='text-2xl font-black'>Gwent</div>

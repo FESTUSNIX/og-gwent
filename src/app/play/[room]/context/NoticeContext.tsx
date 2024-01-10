@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useReducer, useState } fro
 import Notice from '../components/Notice'
 
 type NoticeContent = {
-	title: string
+	title?: string
 	description?: string
 	image?: string
 	onClose?: () => void
@@ -48,7 +48,7 @@ const noticeReducer = (
 }
 
 type NoticeContext = {
-	notice: (sheetType: NOTICE_TYPES, noticeContent?: NoticeContent, component?: JSX.Element) => Promise<void>
+	notice: (noticeContent?: NoticeContent, component?: JSX.Element) => Promise<void>
 	closeNotice: () => void
 	noticeState: NoticeState
 	isResolving: boolean
@@ -77,7 +77,7 @@ export const NoticeProvider = ({ children }: { children: React.ReactNode }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [noticeState.show])
 
-	const notice = (type: NOTICE_TYPES, noticeContent?: NoticeContent, component?: JSX.Element) => {
+	const notice = (noticeContent?: NoticeContent, component?: JSX.Element) => {
 		return new Promise<void>(resolve => {
 			setResolveShow(() => {
 				setIsResolving(true) // Set isResolving to true before resolving
@@ -87,7 +87,7 @@ export const NoticeProvider = ({ children }: { children: React.ReactNode }) => {
 				}
 			})
 			noticeDispatch({
-				type,
+				type: 'CUSTOM',
 				noticeContent,
 				component
 			})

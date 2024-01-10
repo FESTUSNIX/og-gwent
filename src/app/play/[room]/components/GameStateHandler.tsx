@@ -1,17 +1,18 @@
 'use client'
 
-import { Loader2 } from 'lucide-react'
-import React, { useEffect, useMemo } from 'react'
-import { useNoticeContext } from '../context/NoticeContext'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Database } from '@/types/supabase'
-import useGameContext from '../hooks/useGameContext'
-import { useRouter } from 'next/navigation'
-import { GamePlayer, GameState } from '@/types/Game'
-import { toast } from 'sonner'
 import { deepEqual } from '@/lib/utils'
-import { initialRow } from '../context/GameContext'
 import { CardType } from '@/types/Card'
+import { GamePlayer, GameState } from '@/types/Game'
+import { Database } from '@/types/supabase'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Loader2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useMemo } from 'react'
+import { toast } from 'sonner'
+import { initialRow } from '../context/GameContext'
+import { useNoticeContext } from '../context/NoticeContext'
+import useGameContext from '../hooks/useGameContext'
+import { GameOverNotice } from './GameOverNotice'
 
 type Props = {
 	roomId: string
@@ -115,7 +116,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		if (hostHasPassed && opponentHasPassed) return
 
 		if (hostHasPassed === true && disable !== 'disable-host') {
-			await notice('CUSTOM', {
+			await notice({
 				title: 'Round passed'
 			})
 
@@ -127,7 +128,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 			opponentHasPassed !== opponentPlayer?.hasPassed &&
 			disable !== 'disable-opponent'
 		) {
-			await notice('CUSTOM', {
+			await notice({
 				title: 'Your opponent has passed'
 			})
 
@@ -139,14 +140,14 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		if (!gameStarted) return
 
 		if (turn === currentPlayer.id) {
-			await notice('CUSTOM', {
+			await notice({
 				title: 'Your turn'
 			})
 			return
 		}
 
 		if (turn === opponentPlayer.id) {
-			await notice('CUSTOM', {
+			await notice({
 				title: "Opponent's turn"
 			})
 			return
@@ -176,18 +177,21 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		router.replace('/')
 	}
 
-	const onGameOver = async (host: GamePlayer, opponent: GamePlayer) => {
+	const onGameOver = async (host: GamePlayer, opponent: GamePlayer, rounds: GameState['rounds']) => {
 		if (!host || !opponent) return
 
-		const winner = host.lives === 0 && opponent.lives === 0 ? 'draw' : host.lives === 0 ? opponent.name : host.name
+		const gameResult: 'win' | 'lose' | 'draw' =
+			host.lives === 0 && opponent.lives === 0 ? 'draw' : host.lives === 0 ? 'lose' : 'win'
 
-		await notice('CUSTOM', {
-			title: winner === 'draw' ? 'Draw' : winner === host.name ? 'Victory!' : 'Defeat',
-			duration: 15000,
-			onClose: async () => {
-				await resetGameState()
-			}
-		})
+		await notice(
+			{
+				duration: 15000,
+				onClose: async () => {
+					await resetGameState()
+				}
+			},
+			<GameOverNotice gameResult={gameResult} rounds={rounds} players={[host, opponent]} />
+		)
 	}
 
 	const handleRoundEnd = async (host: GamePlayer, opponent: GamePlayer) => {
@@ -209,7 +213,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 
 		const gameOver = hostLives === 0 || opponentLives === 0
 
-		await notice('CUSTOM', {
+		await notice({
 			title:
 				winner === 'draw' ? 'Round draw' : winner === host.id ? 'You won the round!' : 'Your opponent won the round'
 		})
@@ -249,11 +253,11 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		setGameState(newGameState)
 
 		if (host && opponent && gameOver) {
-			await onGameOver({ ...host, lives: hostLives }, { ...opponent, lives: opponentLives })
+			await onGameOver({ ...host, lives: hostLives }, { ...opponent, lives: opponentLives }, newGameState.rounds)
 			return
 		}
 
-		await notice('CUSTOM', {
+		await notice({
 			title: 'Round Start'
 		})
 
