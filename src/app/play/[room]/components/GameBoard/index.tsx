@@ -29,7 +29,14 @@ export const GameBoard = ({ user, roomId }: Props) => {
 		const updateTurn = async () => {
 			if (gameStarted && !gameState.turn) {
 				const { data } = await supabase.from('rooms').select('turn').eq('id', roomId).single()
-				const startingPlayer = data?.turn ?? (Math.random() < 0.5 ? host.id : opponent.id)
+
+				const nonPassedPlayers = gameState.players.filter(p => p?.hasPassed === false)
+
+				const startingPlayer =
+					data?.turn ??
+					(nonPassedPlayers.length === 2
+						? nonPassedPlayers[Math.floor(Math.random() < 0.5 ? 0 : 1)]?.id
+						: nonPassedPlayers[0]?.id)
 
 				setTurn(startingPlayer)
 			}

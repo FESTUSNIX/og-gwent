@@ -7,9 +7,11 @@ import { Player } from '@/types/Player'
 import { RowType } from '@/types/RowType'
 import { Database } from '@/types/supabase'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useRouter } from 'next/navigation'
 import React, { createContext, useEffect, useMemo, useReducer } from 'react'
 import { toast } from 'sonner'
 import { Action, actions } from '../actions'
+import { useNoticeContext } from './NoticeContext'
 
 export const initialGameState: GameState = {
 	players: [],
@@ -115,7 +117,11 @@ export const GameContextProvider = ({
 	userId: string
 }) => {
 	const [gameState, dispatch] = useReducer(gameReducer, initialGameState)
+
 	const supabase = createClientComponentClient<Database>()
+	const { notice, isResolving } = useNoticeContext()
+
+	const router = useRouter()
 
 	// Actions
 
@@ -157,27 +163,6 @@ export const GameContextProvider = ({
 	const opponentPlayer = gameState.players.find(player => player?.id !== userId)
 
 	const gameStarted = currentPlayer?.gameStatus === 'play' && opponentPlayer?.gameStatus === 'play'
-
-	function onBroadcast(payload: { [key: string]: any; type: 'broadcast'; event: string }) {
-		const newOtherPlayer = payload.payload.otherPlayer
-		const currentOtherPlayer = gameState.players.find(player => player?.id === newOtherPlayer?.id)
-
-		const newGameState: GameState = {
-			...gameState,
-			turn: payload.payload.turn,
-			players: gameState.players.map(player => (player.id === newOtherPlayer?.id ? newOtherPlayer : player))
-		}
-
-		if (!newOtherPlayer && deepEqual(newOtherPlayer ?? {}, currentOtherPlayer ?? {})) {
-			return null
-		}
-
-		dispatch({ type: 'CUSTOM', gameState: newGameState })
-
-		if (currentPlayer?.hasPassed && newOtherPlayer?.hasPassed) {
-			handleRoundEnd(currentPlayer, newOtherPlayer)
-		}
-	}
 
 	const updateCurrentUserOnServer = async (newPlayerState: GamePlayer) => {
 		const { error } = await supabase
@@ -232,28 +217,115 @@ export const GameContextProvider = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [roomId])
 
-	const onGameEnd = (host: GamePlayer, opponent: GamePlayer) => {
-		if (!host || !opponent) return
+	async function onBroadcast(payload: { [key: string]: any; type: 'broadcast'; event: string }) {
+		const newOtherPlayer = payload.payload.otherPlayer
+		const currentOtherPlayer = gameState.players.find(player => player?.id === newOtherPlayer?.id)
 
-		// Winner is the player that doesnt have 0 lives (if both have 0 lives, it's a draw)
-		const winner = host.lives === 0 && opponent.lives === 0 ? 'draw' : host.lives === 0 ? opponent.name : host.name
+		const newGameState: GameState = {
+			...gameState,
+			turn: payload.payload.turn,
+			players: gameState.players.map(player => (player.id === newOtherPlayer?.id ? newOtherPlayer : player))
+		}
 
-		toast('Game over', {
-			description: winner === 'draw' ? 'It was a draw!' : `${winner} won!`
-		})
+		if (!newOtherPlayer && deepEqual(newOtherPlayer ?? {}, currentOtherPlayer ?? {})) return null
 
-		updatePlayerState(host.id, {
-			...initialPlayer,
-			gameStatus: 'game-over'
-		})
-		updatePlayerState(opponent.id, {
-			...initialPlayer,
-			gameStatus: 'game-over'
-		})
-		setTurn(null)
+		setGameState(newGameState)
+
+		if (currentPlayer && newOtherPlayer) {
+			await hasPassedNotice(currentPlayer.hasPassed, newOtherPlayer.hasPassed, 'disable-host')
+
+			if (currentPlayer.hasPassed && newOtherPlayer.hasPassed) {
+				await handleRoundEnd(currentPlayer, newOtherPlayer)
+			} else if (newGameState.turn && !isResolving && newGameState.players.filter(p => p.hasPassed).length === 0) {
+				await turnNotice(newGameState.turn)
+			}
+		}
 	}
 
-	const handleRoundEnd = (host: GamePlayer, opponent: GamePlayer) => {
+	const hasPassedNotice = async (
+		hostHasPassed: boolean,
+		opponentHasPassed: boolean,
+		disable?: 'disable-host' | 'disable-opponent'
+	) => {
+		if (hostHasPassed && opponentHasPassed) return
+
+		if (hostHasPassed === true && disable !== 'disable-host') {
+			await notice('CUSTOM', {
+				title: 'Round passed'
+			})
+
+			return
+		}
+
+		if (
+			opponentHasPassed === true &&
+			opponentHasPassed !== opponentPlayer?.hasPassed &&
+			disable !== 'disable-opponent'
+		) {
+			await notice('CUSTOM', {
+				title: 'Your opponent has passed'
+			})
+
+			return
+		}
+	}
+
+	const turnNotice = async (turn: string) => {
+		if (!gameStarted) return
+
+		if (turn === currentPlayer.id) {
+			await notice('CUSTOM', {
+				title: 'Your turn'
+			})
+			return
+		}
+
+		if (turn === opponentPlayer.id) {
+			await notice('CUSTOM', {
+				title: "Opponent's turn"
+			})
+			return
+		}
+	}
+
+	const resetGameState = async () => {
+		const { error: roomPlayersError, data: playerIds } = await supabase
+			.from('room_players')
+			.delete()
+			.eq('roomId', roomId)
+			.select('playerId')
+		if (roomPlayersError) return console.error(roomPlayersError)
+
+		const { error: playersError } = await supabase
+			.from('players')
+			.delete()
+			.in(
+				'id',
+				playerIds?.map(p => p.playerId)
+			)
+		if (playersError) return console.error(playersError)
+
+		const { error: roomError } = await supabase.from('rooms').delete().eq('id', roomId)
+		if (roomError) return console.error(roomError)
+
+		router.replace('/')
+	}
+
+	const onGameOver = async (host: GamePlayer, opponent: GamePlayer) => {
+		if (!host || !opponent) return
+
+		const winner = host.lives === 0 && opponent.lives === 0 ? 'draw' : host.lives === 0 ? opponent.name : host.name
+
+		await notice('CUSTOM', {
+			title: winner === 'draw' ? 'Draw' : winner === host.name ? 'Victory!' : 'Defeat',
+			duration: 15000,
+			onClose: async () => {
+				await resetGameState()
+			}
+		})
+	}
+
+	const handleRoundEnd = async (host: GamePlayer, opponent: GamePlayer) => {
 		if (!host?.hasPassed || !opponent?.hasPassed) return
 
 		const hostScore = Object.values(host?.rows ?? {}).reduce(
@@ -267,6 +339,16 @@ export const GameContextProvider = ({
 
 		const winner = hostScore === opponentScore ? 'draw' : hostScore > opponentScore ? host.id : opponent.id
 
+		const hostLives = winner === host.id ? host.lives : host.lives - 1
+		const opponentLives = winner === opponent.id ? opponent.lives : opponent.lives - 1
+
+		const gameOver = hostLives === 0 || opponentLives === 0
+
+		await notice('CUSTOM', {
+			title:
+				winner === 'draw' ? 'Round draw' : winner === host.id ? 'You won the round!' : 'Your opponent won the round'
+		})
+
 		const newGameState: GameState = {
 			rounds: [
 				...gameState.rounds,
@@ -277,7 +359,7 @@ export const GameContextProvider = ({
 					]
 				}
 			],
-			turn: winner === 'draw' ? (Math.random() < 0.5 ? host.id : opponent.id) : winner,
+			turn: gameOver ? null : winner === 'draw' ? (Math.random() < 0.5 ? host.id : opponent.id) : winner,
 			players: gameState.players.map(p =>
 				p.id === host.id
 					? {
@@ -293,13 +375,24 @@ export const GameContextProvider = ({
 								siege: initialRow
 							},
 							preview: null,
-							lives: (winner === p.id ? p.lives : p.lives - 1) as 0 | 1 | 2
+							lives: winner === p.id ? p.lives : p.lives - 1
 					  }
 					: p
 			)
 		}
 
 		setGameState(newGameState)
+
+		if (host && opponent && gameOver) {
+			await onGameOver({ ...host, lives: hostLives }, { ...opponent, lives: opponentLives })
+			return
+		}
+
+		await notice('CUSTOM', {
+			title: 'Round Start'
+		})
+
+		newGameState.turn && (await turnNotice(newGameState.turn))
 	}
 
 	const currentPlayerChangesToListenTo: Partial<GamePlayer> | {} = useMemo(() => {
@@ -336,8 +429,14 @@ export const GameContextProvider = ({
 					payload: { otherPlayer: currentPlayer, turn: gameState.turn, rounds: gameState.rounds }
 				})
 
-				if (currentPlayer?.hasPassed && opponentPlayer?.hasPassed) {
-					handleRoundEnd(currentPlayer, opponentPlayer)
+				if (currentPlayer && opponentPlayer) {
+					await hasPassedNotice(currentPlayer.hasPassed, opponentPlayer.hasPassed, 'disable-opponent')
+
+					if (currentPlayer.hasPassed && opponentPlayer.hasPassed) {
+						await handleRoundEnd(currentPlayer, opponentPlayer)
+					} else if (gameState.turn && !isResolving && gameState.players.filter(p => p.hasPassed).length === 0) {
+						await turnNotice(gameState.turn)
+					}
 				}
 
 				if (currentPlayer) await updateCurrentUserOnServer(currentPlayer)
@@ -347,15 +446,9 @@ export const GameContextProvider = ({
 		return () => {
 			roomChannel.unsubscribe()
 		}
-	}, [roomId, currentPlayerChangesToListenTo, gameState.turn])
-
-	useEffect(() => {
-		if (currentPlayer && opponentPlayer && (currentPlayer?.lives === 0 || opponentPlayer?.lives === 0)) {
-			onGameEnd(currentPlayer, opponentPlayer)
-		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [currentPlayer?.lives, opponentPlayer?.lives])
+	}, [roomId, currentPlayerChangesToListenTo, gameState.turn])
 
 	useEffect(() => {
 		const setPass = () => {
@@ -367,7 +460,31 @@ export const GameContextProvider = ({
 		}
 
 		setPass()
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentPlayer?.hand])
+
+	// useEffect(() => {
+	// 	const turnNotice = () => {
+	// 		if (!gameStarted) return
+
+	// 		if (gameState.turn === userId) {
+	// 			return notice('CUSTOM', {
+	// 				title: 'Your turn'
+	// 			})
+	// 		}
+
+	// 		if (gameState.turn === opponentPlayer.id) {
+	// 			return notice('CUSTOM', {
+	// 				title: "Opponent's turn"
+	// 			})
+	// 		}
+	// 	}
+
+	// 	turnNotice()
+
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [gameState.turn])
 
 	return (
 		<GameContext.Provider

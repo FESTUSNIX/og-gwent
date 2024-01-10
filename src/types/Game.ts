@@ -13,7 +13,7 @@ export type GamePlayer = {
 	preview: Card | null
 	hasPassed: boolean
 	gameStatus: 'select-deck' | 'accepted' | 'play' | 'game-over'
-	lives: 0 | 1 | 2
+	lives: number
 	deck: Card[]
 	hand: Card[]
 	discardPile: Card[]

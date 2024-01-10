@@ -7,6 +7,7 @@ import { DeckSelector } from './components/DeckSelector'
 import { GameBoard } from './components/GameBoard'
 import { GameControls } from './components/GameControls'
 import { GameContextProvider } from './context/GameContext'
+import { NoticeProvider } from './context/NoticeContext'
 
 type Props = {
 	params: { room: string }
@@ -71,15 +72,17 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 
 	return (
 		<main className='relative z-10 flex grow flex-col bg-background'>
-			<GameContextProvider roomId={room} userId={user.id}>
-				<Suspense>
-					<DeckSelector searchParams={searchParams} cards={cards} user={user} />
-				</Suspense>
+			<NoticeProvider>
+				<GameContextProvider roomId={room} userId={user.id}>
+					<Suspense>
+						<DeckSelector searchParams={searchParams} cards={cards} user={user} />
+					</Suspense>
 
-				<GameBoard user={user} roomId={room} />
+					<GameBoard user={user} roomId={room} />
 
-				<GameControls roomId={room} />
-			</GameContextProvider>
+					<GameControls roomId={room} />
+				</GameContextProvider>
+			</NoticeProvider>
 		</main>
 	)
 }

@@ -3,13 +3,13 @@
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
-import { Braces, Trash2 } from 'lucide-react'
-import { useState } from 'react'
-import useGameContext from '../hooks/useGameContext'
-import { initialGameState } from '../context/GameContext'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/types/supabase'
-import { redirect } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Braces, Trash2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { initialGameState } from '../context/GameContext'
+import useGameContext from '../hooks/useGameContext'
 
 type Props = {
 	roomId: string
@@ -17,7 +17,9 @@ type Props = {
 
 export const GameControls = ({ roomId }: Props) => {
 	const { gameState, setGameState } = useGameContext()
+
 	const supabase = createClientComponentClient<Database>()
+	const router = useRouter()
 
 	const [isVisible, setIsVisible] = useState(false)
 	const toggleDataVisibility = () => setIsVisible(!isVisible)
@@ -44,7 +46,7 @@ export const GameControls = ({ roomId }: Props) => {
 		const { error: roomError } = await supabase.from('rooms').delete().eq('id', roomId)
 		if (roomError) return console.error(roomError)
 
-		redirect('/')
+		router.replace('/')
 	}
 
 	return (
