@@ -90,7 +90,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		const newGameState: GameState = {
 			...gameState,
 			turn: payload.payload.turn,
-			players: gameState.players.map(player => (player.id === newOtherPlayer?.id ? newOtherPlayer : player))
+			players: [...gameState.players.filter(player => player.id !== newOtherPlayer?.id), newOtherPlayer]
 		}
 
 		if (!newOtherPlayer && deepEqual(newOtherPlayer ?? {}, currentOtherPlayer ?? {})) return null
@@ -98,7 +98,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		setGameState(newGameState)
 
 		if (currentPlayer && newOtherPlayer) {
-			await hasPassedNotice(currentPlayer.hasPassed, newOtherPlayer.hasPassed, 'disable-host')
+			await hasPassedNotice(currentPlayer.hasPassed, newOtherPlayer.hasPassed, newGameState.turn, 'disable-host')
 
 			if (currentPlayer.hasPassed && newOtherPlayer.hasPassed) {
 				await handleRoundEnd(currentPlayer, newOtherPlayer)
@@ -111,6 +111,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 	const hasPassedNotice = async (
 		hostHasPassed: boolean,
 		opponentHasPassed: boolean,
+		turn: string | null,
 		disable?: 'disable-host' | 'disable-opponent'
 	) => {
 		if (hostHasPassed && opponentHasPassed) return
@@ -119,7 +120,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 			await notice({
 				title: 'Round passed'
 			})
-
+			turn && (await turnNotice(turn))
 			return
 		}
 
@@ -131,7 +132,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 			await notice({
 				title: 'Your opponent has passed'
 			})
-
+			turn && (await turnNotice(turn))
 			return
 		}
 	}
@@ -299,7 +300,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 				})
 
 				if (currentPlayer && opponentPlayer) {
-					await hasPassedNotice(currentPlayer.hasPassed, opponentPlayer.hasPassed, 'disable-opponent')
+					await hasPassedNotice(currentPlayer.hasPassed, opponentPlayer.hasPassed, gameState.turn, 'disable-opponent')
 
 					if (currentPlayer.hasPassed && opponentPlayer.hasPassed) {
 						await handleRoundEnd(currentPlayer, opponentPlayer)
