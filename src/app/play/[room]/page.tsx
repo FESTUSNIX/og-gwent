@@ -80,7 +80,7 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 
 					<GameBoard user={user} roomId={room} />
 
-					<GameControls roomId={room} />
+					{user.role === 'ADMIN' && <GameControls roomId={room} />}
 				</GameContextProvider>
 			</NoticeProvider>
 		</main>
