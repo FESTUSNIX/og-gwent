@@ -1,6 +1,7 @@
 'use client'
 
 import useGameContext from '@/app/play/[room]/hooks/useGameContext'
+import { CardsPreview, CardsPreviewTrigger } from '@/components/CardsPreview'
 import { CardType } from '@/types/Card'
 import { GamePlayer } from '@/types/Game'
 import { motion } from 'framer-motion'
@@ -83,22 +84,29 @@ export const Hand = ({ player }: Props) => {
 
 	return (
 		<div ref={containerRef} className='order-last h-full w-full overflow-x-clip border bg-stone-700 py-1'>
-			<motion.div
-				drag={gap <= minGap && 'x'}
-				dragConstraints={{ right: widthConstraints, left: -widthConstraints }}
-				ref={sliderRef}
-				style={{ paddingRight: -gap }}
-				className='flex h-full w-full max-w-full auto-cols-fr items-center justify-center'>
-				{player.hand.map((card, i) => (
-					<div
-						key={i}
-						style={{ marginRight: gap }}
-						ref={cardRef}
-						className='group relative flex aspect-[3/4] h-full w-auto max-w-full items-center justify-center duration-100 hover:z-10'>
-						<Card card={card} setSelectedCard={setSelectedCard} selectedCard={selectedCard} disabled={!isMyTurn} />
-					</div>
-				))}
-			</motion.div>
+			<CardsPreview
+				cards={player.hand}
+				onCardSelect={card => {
+					setSelectedCard(card)
+				}}>
+				<motion.div
+					drag={gap <= minGap && 'x'}
+					dragConstraints={{ right: widthConstraints, left: -widthConstraints }}
+					ref={sliderRef}
+					style={{ paddingRight: -gap }}
+					className='flex h-full w-full max-w-full auto-cols-fr items-center justify-center'>
+					{player.hand.map((card, i) => (
+						<CardsPreviewTrigger
+							key={i}
+							index={i}
+							style={{ marginRight: gap }}
+							ref={cardRef}
+							className='group relative flex aspect-[3/4] h-full w-auto max-w-full items-center justify-center duration-100 hover:z-10'>
+							<Card card={card} setSelectedCard={setSelectedCard} selectedCard={selectedCard} disabled={!isMyTurn} />
+						</CardsPreviewTrigger>
+					))}
+				</motion.div>
+			</CardsPreview>
 		</div>
 	)
 }

@@ -1,13 +1,15 @@
 import { Card } from '@/components/Card'
+import { CardsPreview, CardsPreviewTrigger } from '@/components/CardsPreview'
 import { FACTIONS } from '@/constants/FACTIONS'
-import { getCards } from '@/queries/cards'
+import { CardType } from '@/types/Card'
+import { Database } from '@/types/supabase'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
+import cardsJson from '../../../db/cards.json'
 import { CardCreator } from './components/CardCreator'
 import { FactionSwitch } from './components/FactionSwitch'
-import { Suspense } from 'react'
-import { redirect } from 'next/navigation'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Database } from '@/types/supabase'
-import { cookies } from 'next/headers'
 
 type Props = {
 	searchParams: { [key: string]: string | string[] | undefined }
@@ -23,13 +25,21 @@ const CardsPage = async ({ searchParams }: Props) => {
 	} = await supabase.auth.getSession()
 
 	if (!session) redirect('/login')
-	if (session.user.role !== 'ADMIN') redirect('/')
 
-	const cards = await getCards()
+	const { data: user } = await supabase
+		.from('profiles')
+		.select('id, username, avatar_url, role')
+		.eq('id', session?.user.id ?? '')
+		.single()
+
+	if (!user || user.role !== 'ADMIN') redirect('/')
 
 	const factionParam =
 		(Array.isArray(searchParams.faction) ? searchParams.faction[0] : searchParams.faction) ?? FACTIONS[0].slug
 	const currentFaction = FACTIONS.find(f => f.slug === factionParam)?.slug ?? FACTIONS[0].slug
+
+	// const cards = await getCards()
+	const cards = cardsJson.cards.filter(c => c.factions.includes(currentFaction)) as CardType[]
 
 	return (
 		<main className='grid-container pt-12'>
@@ -44,13 +54,15 @@ const CardsPage = async ({ searchParams }: Props) => {
 					<CardCreator />
 				</div>
 
-				<ul className='grid grid-cols-6 gap-4'>
-					{cards
-						.filter(c => c.factions.includes(currentFaction))
-						.map(card => (
-							<Card key={card.id} card={card} mode='preview' />
+				<CardsPreview cards={cards}>
+					<ul className='grid grid-cols-6 gap-4'>
+						{cards.map((card, i) => (
+							<CardsPreviewTrigger index={i} key={card.id}>
+								<Card card={card} mode='preview' />
+							</CardsPreviewTrigger>
 						))}
-				</ul>
+					</ul>
+				</CardsPreview>
 			</section>
 		</main>
 	)
