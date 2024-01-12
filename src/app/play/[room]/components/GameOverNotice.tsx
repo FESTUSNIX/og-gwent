@@ -7,9 +7,9 @@ import { GameState } from '@/types/Game'
 import { DialogContent } from '@radix-ui/react-dialog'
 import Image from 'next/image'
 import { useNoticeContext } from '../context/NoticeContext'
-import DrawImg from '/public/images/game/icons/end_draw.png'
-import LoseImg from '/public/images/game/icons/end_lose.png'
-import WinImg from '/public/images/game/icons/end_win.png'
+import DrawImg from '/public/game/icons/end_draw.png'
+import LoseImg from '/public/game/icons/end_lose.png'
+import WinImg from '/public/game/icons/end_win.png'
 
 type Props = {
 	gameResult: 'win' | 'lose' | 'draw'
