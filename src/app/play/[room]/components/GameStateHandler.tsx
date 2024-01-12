@@ -263,6 +263,8 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		})
 
 		newGameState.turn && (await turnNotice(newGameState.turn))
+
+		return newGameState
 	}
 
 	const currentPlayerChangesToListenTo: Partial<GamePlayer> | {} = useMemo(() => {
@@ -299,18 +301,24 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 					payload: { otherPlayer: currentPlayer, turn: gameState.turn, rounds: gameState.rounds }
 				})
 
+				let gameStateAfterRoundEnd = undefined
+
 				if (currentPlayer && opponentPlayer) {
 					await hasPassedNotice(currentPlayer.hasPassed, opponentPlayer.hasPassed, gameState.turn, 'disable-opponent')
 
 					if (currentPlayer.hasPassed && opponentPlayer.hasPassed) {
-						await handleRoundEnd(currentPlayer, opponentPlayer)
+						gameStateAfterRoundEnd = await handleRoundEnd(currentPlayer, opponentPlayer)
 					} else if (gameState.turn && !isResolving && gameState.players.filter(p => p.hasPassed).length === 0) {
 						await turnNotice(gameState.turn)
 					}
 				}
 
-				if (currentPlayer) await updateCurrentUserOnServer(currentPlayer)
 				await updateGameStateOnServer({ rounds: gameState.rounds, turn: gameState.turn })
+				if (currentPlayer) {
+					await updateCurrentUserOnServer(
+						gameStateAfterRoundEnd?.players.find(p => p.id === currentPlayer.id) ?? currentPlayer
+					)
+				}
 			})
 
 		return () => {
