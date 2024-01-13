@@ -196,7 +196,7 @@ export const CardsPreview = forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
 												<div
 													className={cn(
 														'relative h-full origin-top',
-														current === i && card && 'rounded-lg bg-primary p-1',
+														current === i && card && 'rounded-xl bg-primary p-1',
 														current === i && onCardSelect && 'cursor-pointer'
 													)}
 													onClick={() => {

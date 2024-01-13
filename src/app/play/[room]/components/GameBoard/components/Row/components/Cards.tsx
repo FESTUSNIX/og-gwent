@@ -76,7 +76,7 @@ export const Cards = ({ cards }: Props) => {
 						key={i}
 						style={{ marginRight: gap }}
 						ref={cardRef}
-						className='relative flex aspect-[3/4] h-full w-auto max-w-full items-center justify-center border duration-100 hover:z-10 hover:mb-6'>
+						className='relative flex aspect-[3/4] h-full w-auto max-w-full items-center justify-center duration-100 hover:z-10 hover:mb-6'>
 						<Card key={card.id} card={card} mode='game' />
 					</div>
 				))}

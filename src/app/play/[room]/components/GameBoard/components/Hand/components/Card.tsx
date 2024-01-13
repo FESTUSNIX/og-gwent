@@ -43,7 +43,7 @@ export const Card = ({ card, selectedCard, setSelectedCard, disabled }: Props) =
 						'relative h-full w-full max-w-full',
 						isPreviewing ? 'absolute aspect-[8/15] h-auto w-full py-6' : 'duration-100 group-hover:mb-10'
 					)}>
-					<CardUI card={card} mode={isPreviewing ? 'preview' : 'game'} className={cn('border', isPreviewing && '')} />
+					<CardUI card={card} mode={isPreviewing ? 'preview' : 'game'} />
 				</button>
 			</ConditionalWrapper>
 		</>

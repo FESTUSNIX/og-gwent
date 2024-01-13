@@ -7,10 +7,12 @@ const FactionsEnum: [FactionType, ...FactionType[]] = [FACTIONS[0].slug, ...FACT
 
 export const CardValidator = z.object({
 	name: z.string().min(2),
+	slug: z.string(),
 	strength: z.number().min(0).max(15),
 	type: z.enum([...ROW_TYPES]),
 	factions: z.array(z.enum([...FactionsEnum])).min(1),
-	isHero: z.boolean()
+	isHero: z.boolean(),
+	description: z.string().optional()
 })
 
 export type CardPayload = z.infer<typeof CardValidator>

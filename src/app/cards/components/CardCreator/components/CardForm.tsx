@@ -4,6 +4,7 @@ import { MultiSelectField } from '@/components/Forms/MultiSelectField'
 import { SelectField } from '@/components/Forms/SelectField'
 import { SwitchField } from '@/components/Forms/SwitchField'
 import { TextField } from '@/components/Forms/TextField'
+import { TextareaField } from '@/components/Forms/TextareaField'
 import { Form } from '@/components/ui/form'
 import { FACTIONS } from '@/constants/FACTIONS'
 import { CardPayload, CardValidator } from '@/lib/validators/Card'
@@ -26,7 +27,9 @@ export const CardForm = ({ setIsOpen }: Props) => {
 			strength: 0,
 			type: undefined,
 			factions: undefined,
-			isHero: false
+			isHero: false,
+			description: '',
+			slug: ''
 		}
 	})
 
@@ -57,7 +60,9 @@ export const CardForm = ({ setIsOpen }: Props) => {
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(e => createCard(e))} id='card-form' className='space-y-8'>
-				<TextField accessorKey='name' label='Name' placeholder='eg. Poor fucking infrantry' />
+				<TextField accessorKey='name' label='Name' placeholder='Poor fucking infantry' />
+
+				<TextField accessorKey='slug' label='Slug' placeholder='poor-fucking-infantry' />
 
 				<TextField accessorKey='strength' type='number' label='Strength' />
 
@@ -70,6 +75,12 @@ export const CardForm = ({ setIsOpen }: Props) => {
 				/>
 
 				<SwitchField accessorKey='isHero' label='Hero card' />
+
+				<TextareaField
+					accessorKey='description'
+					label='Description'
+					placeholder="I's a war veteran! ... spare me a crown?"
+				/>
 			</form>
 		</Form>
 	)

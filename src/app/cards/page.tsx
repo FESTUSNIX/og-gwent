@@ -32,7 +32,7 @@ const CardsPage = async ({ searchParams }: Props) => {
 		.eq('id', session?.user.id ?? '')
 		.single()
 
-	if (!user || user.role !== 'ADMIN') redirect('/')
+	if (!user) redirect('/')
 
 	const factionParam =
 		(Array.isArray(searchParams.faction) ? searchParams.faction[0] : searchParams.faction) ?? FACTIONS[0].slug
@@ -51,11 +51,11 @@ const CardsPage = async ({ searchParams }: Props) => {
 					<Suspense>
 						<FactionSwitch />
 					</Suspense>
-					<CardCreator />
+					{user.role === 'ADMIN' && <CardCreator />}
 				</div>
 
 				<CardsPreview cards={cards}>
-					<ul className='grid grid-cols-6 gap-4'>
+					<ul className='grid grid-cols-5 gap-4'>
 						{cards.map((card, i) => (
 							<CardsPreviewTrigger index={i} key={card.id}>
 								<Card card={card} mode='preview' />
