@@ -43,7 +43,7 @@ const CardsPage = async ({ searchParams }: Props) => {
 
 	return (
 		<main className='grid-container pt-12'>
-			<h1 className='text-4xl'>Gwent cards</h1>
+			<h1 className='font-heading text-4xl'>Gwent cards</h1>
 
 			<section className='my-16'>
 				<h2 className='mb-4 text-2xl'>All cards</h2>

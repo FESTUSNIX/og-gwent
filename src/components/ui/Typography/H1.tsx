@@ -6,5 +6,5 @@ type Props = {
 }
 
 export function H1({ children, className }: Props) {
-	return <h1 className={cn('scroll-m-20 text-3xl font-semibold tracking-tight', className)}>{children}</h1>
+	return <h1 className={cn('scroll-m-20 text-3xl font-heading font-semibold tracking-tight', className)}>{children}</h1>
 }

@@ -30,7 +30,7 @@ export default async function Home() {
 			<Navbar />
 			<main className='grid-container py-12'>
 				<header className='mx-auto text-center'>
-					<h1 className='text-3xl font-bold sm:text-4xl md:text-5xl'>Gwent Multiplayer</h1>
+					<h1 className='font-heading text-3xl font-bold sm:text-4xl md:text-5xl'>Gwent Multiplayer</h1>
 					<p className='mt-2 text-xl text-muted-foreground'>Play Gwent with your friends online!</p>
 				</header>
 

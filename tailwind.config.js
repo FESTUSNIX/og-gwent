@@ -13,7 +13,8 @@ module.exports = {
 		},
 		extend: {
 			fontFamily: {
-				body: ['var(--font-body)']
+				body: ['var(--font-body)'],
+				heading: ['var(--font-heading)']
 			},
 			colors: {
 				border: 'hsl(var(--border))',
