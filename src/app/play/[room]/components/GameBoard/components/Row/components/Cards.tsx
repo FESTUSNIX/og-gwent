@@ -1,16 +1,19 @@
 import { Card } from '@/components/Card'
+import { cn } from '@/lib/utils'
 import { CardType } from '@/types/Card'
-import { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
 import { GameRow } from '@/types/Game'
+import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 
 type Props = {
 	cards: CardType[]
 	row: GameRow
+	previewCard: CardType | null
+	handleDecoy: (card: CardType) => void
 }
 
-export const Cards = ({ cards, row }: Props) => {
-	const cardRef = useRef<HTMLDivElement>(null)
+export const Cards = ({ cards, row, previewCard, handleDecoy }: Props) => {
+	const cardRef = useRef<HTMLButtonElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
 	const sliderRef = useRef<HTMLDivElement>(null)
 
@@ -74,13 +77,19 @@ export const Cards = ({ cards, row }: Props) => {
 				style={{ paddingRight: -gap }}
 				className='flex h-full w-full max-w-full items-center justify-center'>
 				{cards.map((card, i) => (
-					<div
+					<button
 						key={i}
 						style={{ marginRight: gap }}
 						ref={cardRef}
-						className='relative flex aspect-[3/4] h-full w-auto max-w-full items-center justify-center duration-100 hover:z-10 hover:mb-6'>
+						className={cn(
+							'relative flex aspect-[3/4] h-full w-auto max-w-full cursor-auto items-center justify-center duration-100 hover:z-10 hover:mb-6',
+							previewCard?.ability === 'decoy' && card.type === 'unit' && 'cursor-pointer'
+						)}
+						onClick={() => {
+							handleDecoy(card)
+						}}>
 						<Card key={card.id} card={card} mode='game' row={row} />
-					</div>
+					</button>
 				))}
 			</motion.div>
 		</div>

@@ -33,7 +33,7 @@ export const FactionSwitch = (props: Props) => {
 
 	return (
 		<div className='flex items-center gap-4'>
-			{FACTIONS.filter(f => f.slug !== 'neutral').map(faction => (
+			{FACTIONS.map(faction => (
 				<button
 					key={faction.slug}
 					onClick={() => {
