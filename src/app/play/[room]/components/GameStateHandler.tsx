@@ -1,5 +1,6 @@
 'use client'
 
+import { calculateGameScore } from '@/lib/calculateScores'
 import { deepEqual } from '@/lib/utils'
 import { CardType } from '@/types/Card'
 import { GamePlayer, GameState } from '@/types/Game'
@@ -7,7 +8,7 @@ import { Database } from '@/types/supabase'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { toast } from 'sonner'
 import { initialRow } from '../context/GameContext'
 import { useNoticeContext } from '../context/NoticeContext'
@@ -198,14 +199,8 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 	const handleRoundEnd = async (host: GamePlayer, opponent: GamePlayer) => {
 		if (!host?.hasPassed || !opponent?.hasPassed) return
 
-		const hostScore = Object.values(host?.rows ?? {}).reduce(
-			(acc, row) => acc + row.cards.reduce((acc, card) => acc + (card.strength ?? 0), 0),
-			0
-		)
-		const opponentScore = Object.values(opponent?.rows ?? {}).reduce(
-			(acc, row) => acc + row.cards.reduce((acc, card) => acc + (card.strength ?? 0), 0),
-			0
-		)
+		const hostScore = calculateGameScore(host.rows)
+		const opponentScore = calculateGameScore(opponent.rows)
 
 		const winner = hostScore === opponentScore ? 'draw' : hostScore > opponentScore ? host.id : opponent.id
 

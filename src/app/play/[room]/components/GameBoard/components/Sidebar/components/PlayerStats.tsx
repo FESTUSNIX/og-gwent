@@ -1,6 +1,6 @@
 import { UserAvatar } from '@/components/UserAvatar'
 import { FACTIONS } from '@/constants/FACTIONS'
-import { calculateRowScore } from '@/lib/calculateScores'
+import { calculateGameScore } from '@/lib/calculateScores'
 import { supabase } from '@/lib/supabase/supabase'
 import { cn } from '@/lib/utils'
 import { GamePlayer } from '@/types/Game'
@@ -14,16 +14,12 @@ type Props = {
 	side: 'host' | 'opponent'
 }
 
-const calculateScore = (p: GamePlayer) => {
-	return Object.values(p?.rows).reduce((acc, row) => acc + calculateRowScore(row), 0)
-}
-
 export const PlayerStats = ({ player, opponent, side, turn }: Props) => {
 	const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
 	const supabaseClient = supabase()
 
-	const score = calculateScore(player)
-	const opponentScore = calculateScore(opponent)
+	const score = calculateGameScore(player.rows)
+	const opponentScore = calculateGameScore(opponent.rows)
 	const isWinning = score > opponentScore
 
 	const hasPassed = player.hasPassed
