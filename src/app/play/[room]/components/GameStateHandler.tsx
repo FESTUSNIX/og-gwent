@@ -199,11 +199,11 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		if (!host?.hasPassed || !opponent?.hasPassed) return
 
 		const hostScore = Object.values(host?.rows ?? {}).reduce(
-			(acc, row) => acc + row.cards.reduce((acc, card) => acc + card.strength, 0),
+			(acc, row) => acc + row.cards.reduce((acc, card) => acc + (card.strength ?? 0), 0),
 			0
 		)
 		const opponentScore = Object.values(opponent?.rows ?? {}).reduce(
-			(acc, row) => acc + row.cards.reduce((acc, card) => acc + card.strength, 0),
+			(acc, row) => acc + row.cards.reduce((acc, card) => acc + (card.strength ?? 0), 0),
 			0
 		)
 
@@ -267,20 +267,6 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		return newGameState
 	}
 
-	const currentPlayerChangesToListenTo: Partial<GamePlayer> | {} = useMemo(() => {
-		const { preview, ...rest } = currentPlayer ?? {}
-		return rest
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [
-		currentPlayer?.deck,
-		currentPlayer?.discardPile,
-		currentPlayer?.hand,
-		currentPlayer?.gameStatus,
-		currentPlayer?.hasPassed,
-		currentPlayer?.lives,
-		currentPlayer?.rows
-	])
-
 	useEffect(() => {
 		const roomChannel = supabase.channel(`room=${roomId}`, {
 			config: {
@@ -326,7 +312,17 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [roomId, currentPlayerChangesToListenTo, gameState.turn])
+	}, [
+		roomId,
+		currentPlayer?.deck,
+		currentPlayer?.discardPile,
+		currentPlayer?.hand,
+		currentPlayer?.gameStatus,
+		currentPlayer?.hasPassed,
+		currentPlayer?.lives,
+		currentPlayer?.rows,
+		gameState.turn
+	])
 
 	useEffect(() => {
 		const setPass = () => {

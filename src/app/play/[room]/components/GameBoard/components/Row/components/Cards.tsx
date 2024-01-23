@@ -2,12 +2,14 @@ import { Card } from '@/components/Card'
 import { CardType } from '@/types/Card'
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { GameRow } from '@/types/Game'
 
 type Props = {
 	cards: CardType[]
+	row: GameRow
 }
 
-export const Cards = ({ cards }: Props) => {
+export const Cards = ({ cards, row }: Props) => {
 	const cardRef = useRef<HTMLDivElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
 	const sliderRef = useRef<HTMLDivElement>(null)
@@ -77,7 +79,7 @@ export const Cards = ({ cards }: Props) => {
 						style={{ marginRight: gap }}
 						ref={cardRef}
 						className='relative flex aspect-[3/4] h-full w-auto max-w-full items-center justify-center duration-100 hover:z-10 hover:mb-6'>
-						<Card key={card.id} card={card} mode='game' />
+						<Card key={card.id} card={card} mode='game' row={row} />
 					</div>
 				))}
 			</motion.div>

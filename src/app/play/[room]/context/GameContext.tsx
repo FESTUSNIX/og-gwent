@@ -3,7 +3,7 @@
 import { Card } from '@/types/Card'
 import { GamePlayer, GameRow, GameState } from '@/types/Game'
 import { Player } from '@/types/Player'
-import { RowType } from '@/types/RowType'
+import { BoardRowTypes } from '@/types/RowType'
 import React, { createContext, useReducer } from 'react'
 import { Action, actions } from '../actions'
 import { GameStateHandler } from '../components/GameStateHandler'
@@ -15,7 +15,8 @@ export const initialGameState: GameState = {
 }
 
 export const initialRow: GameRow = {
-	cards: []
+	cards: [],
+	effect: null
 }
 
 export const initialPlayer: Omit<GamePlayer, 'id' | 'name' | 'faction'> = {
@@ -65,6 +66,8 @@ const gameReducer = (state: GameState, action: Action | CUSTOM) => {
 			return actions.updatePlayerState(state, action)
 		case 'SAVE_ROUND_SCORES':
 			return actions.saveRoundScores(state, action)
+		case 'SET_ROW_EFFECT':
+			return actions['setRowEffect'](state, action)
 		default:
 			return initialGameState
 	}
@@ -74,7 +77,7 @@ type GameContextProps = {
 	acceptGame: (player: Player, startingDeck: Card[]) => void
 	addToContainer: (playerId: Player['id'], cards: Card[], destination: CardContainers, shouldReplace?: boolean) => void
 	removeFromContainer: (playerId: Player['id'], cards: Card[], source: CardContainers) => void
-	addToRow: (playerId: Player['id'], card: Card, rowType: RowType) => void
+	addToRow: (playerId: Player['id'], card: Card, rowType: BoardRowTypes) => void
 	addToPreview: (playerId: Player['id'], card: Card) => void
 	clearPreview: (playerId: Player['id']) => void
 	setTurn: (playerId: Player['id'] | null) => void
@@ -82,6 +85,7 @@ type GameContextProps = {
 	updatePlayerState: (playerId: Player['id'], playerState: Partial<GamePlayer>) => void
 	setGameState: (newGameState: GameState) => void
 	saveRoundScores: (players: { id: GamePlayer['id']; score: number }[]) => void
+	setRowEffect: (playerId: Player['id'], effect: Card, rowType: BoardRowTypes) => void
 	gameState: GameState
 }
 
@@ -97,6 +101,7 @@ const initialState: GameContextProps = {
 	updatePlayerState: () => {},
 	setGameState: () => {},
 	saveRoundScores: () => {},
+	setRowEffect: () => {},
 	gameState: initialGameState
 }
 
@@ -125,7 +130,7 @@ export const GameContextProvider = ({
 	const removeFromContainer = (playerId: Player['id'], cards: Card[], source: CardContainers) =>
 		dispatch({ type: 'REMOVE_FROM_CONTAINER', playerId, cards, source })
 
-	const addToRow = (playerId: Player['id'], card: Card, rowType: RowType) =>
+	const addToRow = (playerId: Player['id'], card: Card, rowType: BoardRowTypes) =>
 		dispatch({ type: 'ADD_TO_ROW', playerId, card, rowType })
 
 	const addToPreview = (playerId: Player['id'], card: Card) => dispatch({ type: 'ADD_TO_PREVIEW', playerId, card })
@@ -145,6 +150,9 @@ export const GameContextProvider = ({
 	const saveRoundScores = (players: { id: GamePlayer['id']; score: number }[]) =>
 		dispatch({ type: 'SAVE_ROUND_SCORES', players })
 
+	const setRowEffect = (playerId: Player['id'], effect: Card, rowType: BoardRowTypes) =>
+		dispatch({ type: 'SET_ROW_EFFECT', playerId, rowType, effect })
+
 	return (
 		<GameContext.Provider
 			value={{
@@ -159,7 +167,8 @@ export const GameContextProvider = ({
 				setPlayerGameStatus,
 				updatePlayerState,
 				setGameState,
-				saveRoundScores
+				saveRoundScores,
+				setRowEffect
 			}}>
 			<GameStateHandler roomId={roomId} userId={userId} />
 			{children}

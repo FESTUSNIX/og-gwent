@@ -59,6 +59,21 @@ export const ClientDeckSelector = ({
 		}
 	}, [currentFaction])
 
+	const filterCards = (c: CardType, categoryParam: string, filterFor: 'collection' | 'selected') => {
+		if (!c.factions.includes('neutral') && !c.factions.includes(currentFaction)) return false
+
+		if (filterFor === 'collection' && selectedDeck.find(card => c.id === card.id)) return false
+		if (filterFor === 'selected' && !selectedDeck.find(card => c.id === card.id)) return false
+
+		if (categoryParam === 'hero') return c.type === 'hero'
+		if (categoryParam === 'special') return c.type === 'special'
+		if (categoryParam === 'weather') return c.type === 'weather'
+
+		if (categoryParam === 'all' || c.row === categoryParam) return true
+
+		return false
+	}
+
 	return (
 		<div className='grid grid-cols-[1fr_auto_1fr]'>
 			<section>
@@ -66,12 +81,7 @@ export const ClientDeckSelector = ({
 
 				<ul className='grid max-h-full grid-cols-3 gap-4 overflow-y-hidden'>
 					{cards
-						.filter(
-							c =>
-								c.factions.includes(currentFaction) &&
-								(collectionCardTypeParam === 'all' || c.type === collectionCardTypeParam) &&
-								!selectedDeck.find(card => card.id === c.id)
-						)
+						.filter(c => filterCards(c, collectionCardTypeParam, 'collection'))
 						.map(card => (
 							<button
 								key={card.id}
@@ -79,7 +89,7 @@ export const ClientDeckSelector = ({
 									setSelectedDeck(prevDeck => [...prevDeck, card])
 								}}
 								disabled={accepted}>
-								<Card card={card} mode='preview' />
+								<Card card={card} mode='preview' forceBanner={currentFaction} />
 							</button>
 						))}
 				</ul>
@@ -120,12 +130,7 @@ export const ClientDeckSelector = ({
 
 				<ul className='grid grid-cols-3 gap-4 overflow-y-hidden'>
 					{cards
-						.filter(
-							c =>
-								c.factions.includes(currentFaction) &&
-								(inDeckCardTypeParam === 'all' || c.type === inDeckCardTypeParam) &&
-								selectedDeck.find(card => card.id === c.id)
-						)
+						.filter(c => filterCards(c, inDeckCardTypeParam, 'selected'))
 						.map(card => (
 							<button
 								key={card.id}
@@ -133,7 +138,7 @@ export const ClientDeckSelector = ({
 									setSelectedDeck(prevDeck => [...prevDeck.filter(c => c.id !== card.id)])
 								}}
 								disabled={accepted}>
-								<Card key={card.id} card={card} mode='preview' />
+								<Card key={card.id} card={card} mode='preview' forceBanner={currentFaction} />
 							</button>
 						))}
 				</ul>

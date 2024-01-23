@@ -4,10 +4,10 @@ import { FactionType } from '@/types/Faction'
 import { GamePlayer } from '@/types/Game'
 import Image from 'next/image'
 
-type Props = Pick<GamePlayer, 'deck'> & { side: 'host' | 'opponent'; faction: FactionType }
+type Props = Pick<GamePlayer, 'deck'> & { side: 'host' | 'opponent'; faction: Omit<FactionType, 'neutral'> }
 
 export const Deck = ({ deck, side, faction }: Props) => {
-	const factionDeckImage = FACTIONS.find(f => f.slug === faction)?.images.deckBack
+	const factionDeckImage = FACTIONS.find(f => f.slug === faction)?.images?.deckBack
 
 	return (
 		<div className='relative z-0 flex aspect-[2/3] h-auto w-[6.5rem] items-center justify-center'>

@@ -1,4 +1,3 @@
-import { ROW_TYPES } from '@/constants/ROW_TYPES'
 import { GamePlayer } from '@/types/Game'
 import { Row } from './Row'
 
@@ -10,10 +9,10 @@ type Props = {
 export const Side = ({ player, side }: Props) => {
 	return (
 		<>
-			{ROW_TYPES.map((rowType, i) => (
+			{['melee', 'range', 'siege'].map((rowType, i) => (
 				<Row
 					key={rowType}
-					rowType={rowType}
+					rowType={rowType as 'melee' | 'range' | 'siege'}
 					player={player}
 					side={side}
 					style={{ order: side === 'opponent' ? -i : i }}

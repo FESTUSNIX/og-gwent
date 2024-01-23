@@ -1,8 +1,9 @@
 import { Card } from '@/types/Card'
 import { GamePlayer, GameState } from '@/types/Game'
 import { Player } from '@/types/Player'
-import { RowType } from '@/types/RowType'
+import { BoardRowTypes, RowType } from '@/types/RowType'
 import { CardContainers, initialPlayer } from '../context/GameContext'
+import { RowEffect } from '@/types/RowEffect'
 
 type ACCEPT_GAME = {
 	type: 'ACCEPT_GAME'
@@ -85,7 +86,7 @@ type ADD_TO_ROW = {
 	type: 'ADD_TO_ROW'
 	playerId: Player['id']
 	card: Card
-	rowType: RowType
+	rowType: BoardRowTypes
 }
 
 const addToRow = (state: GameState, action: ADD_TO_ROW) => {
@@ -101,6 +102,38 @@ const addToRow = (state: GameState, action: ADD_TO_ROW) => {
 			[action.rowType]: {
 				...rowToModify,
 				cards: [...rowToModify.cards, action.card]
+			}
+		}
+	}
+
+	const newPlayersState = state.players.map(p => (p.id === action.playerId ? newPlayerState : p))
+
+	return {
+		...state,
+		players: newPlayersState
+	}
+}
+
+type SET_ROW_EFFECT = {
+	type: 'SET_ROW_EFFECT'
+	playerId: Player['id']
+	effect: Card
+	rowType: BoardRowTypes
+}
+
+const setRowEffect = (state: GameState, action: SET_ROW_EFFECT) => {
+	const player = state.players.find(p => p.id === action.playerId)
+	if (!player) return state
+
+	const rowToModify = player.rows[action.rowType]
+
+	const newPlayerState: GamePlayer = {
+		...player,
+		rows: {
+			...player.rows,
+			[action.rowType]: {
+				...rowToModify,
+				effect: action.effect
 			}
 		}
 	}
@@ -247,6 +280,7 @@ type Action =
 	| SET_PLAYER_GAME_STATUS
 	| UPDATE_PLAYER_STATE
 	| SAVE_ROUND_SCORES
+	| SET_ROW_EFFECT
 
 const actions = {
 	acceptGame,
@@ -258,7 +292,8 @@ const actions = {
 	setPlayerGameStatus,
 	clearPreview,
 	updatePlayerState,
-	saveRoundScores
+	saveRoundScores,
+	setRowEffect
 }
 
 export { actions, type Action }

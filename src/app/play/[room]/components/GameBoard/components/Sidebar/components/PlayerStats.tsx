@@ -1,5 +1,6 @@
 import { UserAvatar } from '@/components/UserAvatar'
 import { FACTIONS } from '@/constants/FACTIONS'
+import { calculateRowScore } from '@/lib/calculateScores'
 import { supabase } from '@/lib/supabase/supabase'
 import { cn } from '@/lib/utils'
 import { GamePlayer } from '@/types/Game'
@@ -14,7 +15,7 @@ type Props = {
 }
 
 const calculateScore = (p: GamePlayer) => {
-	return Object.values(p?.rows).reduce((acc, row) => acc + row.cards.reduce((acc, card) => acc + card.strength, 0), 0)
+	return Object.values(p?.rows).reduce((acc, row) => acc + calculateRowScore(row), 0)
 }
 
 export const PlayerStats = ({ player, opponent, side, turn }: Props) => {
@@ -43,7 +44,7 @@ export const PlayerStats = ({ player, opponent, side, turn }: Props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [supabase])
 
-	const factionShieldImage = FACTIONS.find(f => f.slug === player.faction)?.images.deckShield
+	const factionShieldImage = FACTIONS.find(f => f.slug === player.faction)?.images?.deckShield
 
 	return (
 		<div className={cn('flex flex-col gap-6', side === 'opponent' && 'flex-col-reverse')}>

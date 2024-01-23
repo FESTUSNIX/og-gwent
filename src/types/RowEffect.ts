@@ -1,0 +1,1 @@
+export type RowEffect = 'horn' | 'mardroeme' | null

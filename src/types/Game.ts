@@ -3,7 +3,7 @@ import { FactionType } from './Faction'
 
 export type GameRow = {
 	cards: Card[]
-	// TODO: specialEffect
+	effect: Card | null
 }
 
 export type GamePlayer = {

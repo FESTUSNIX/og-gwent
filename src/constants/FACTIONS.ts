@@ -14,5 +14,10 @@ export const FACTIONS = [
 			deckBack: '/game/icons/deck_back_nilfgaard.jpg',
 			deckShield: '/game/icons/deck_shield_nilfgaard.png'
 		}
+	},
+	{
+		slug: 'neutral',
+		name: 'Neutral',
+		images: null
 	}
 ] as const

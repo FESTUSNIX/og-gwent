@@ -212,7 +212,7 @@ export const CardsPreview = forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
 															transform: `scale(${tweenValues[i - edgeToCenterAmount]})`
 														})
 													}}>
-													{card && <Card card={card} />}
+													{card && <Card card={card} mode='preview' />}
 												</div>
 											</CarouselItem>
 										))}

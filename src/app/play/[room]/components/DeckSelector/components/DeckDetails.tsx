@@ -11,21 +11,23 @@ export const DeckDetails = ({ deck }: Props) => {
 				<p className='text-sm text-muted-foreground'>Total cards in deck</p>
 				<p>{deck.length}</p>
 			</div>
-			{/* <div className='text-center'>
+			<div className='text-center'>
 				<p className='text-sm text-muted-foreground'>Number of Unit cards</p>
-				<p>22</p>
-			</div> */}
-			{/* <div className='text-center'>
+				<p>{deck.filter(card => ['unit', 'hero'].includes(card.type)).length}</p>
+			</div>
+			<div className='text-center'>
 				<p className='text-sm text-muted-foreground'>Special Cards</p>
-				<p>8/10</p>
-			</div> */}
+				<p>
+					{deck.filter(card => card.type === 'special').length}/10
+				</p>
+			</div>
 			<div className='text-center'>
 				<p className='text-sm text-muted-foreground'>Total Unit Card Strength</p>
-				<p>{deck.reduce((acc, card) => acc + card.strength, 0)}</p>
+				<p>{deck.reduce((acc, card) => acc + (card.strength ?? 0), 0)}</p>
 			</div>
 			<div className='text-center'>
 				<p className='text-sm text-muted-foreground'>Hero Cards</p>
-				<p>{deck.filter(card => card.isHero).length}</p>
+				<p>{deck.filter(card => card.type === 'hero').length}</p>
 			</div>
 		</div>
 	)

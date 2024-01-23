@@ -1,30 +1,51 @@
 import { cn } from '@/lib/utils'
 import { Card as CardType } from '@/types/Card'
 import Image from 'next/image'
-import { CSSProperties } from 'react'
+import { CSSProperties, HTMLAttributes } from 'react'
+import cardsJson from '../../../db/cards.json'
+import { FactionType } from '@/types/Faction'
+import { GameRow } from '@/types/Game'
+import { calculateCardScore } from '@/lib/calculateScores'
 
-type Props = {
-	card: CardType
-	mode?: 'game' | 'preview'
-	className?: string
-	style?: CSSProperties
-}
+type Props = (
+	| {
+			mode: 'preview'
+			card: CardType
+			row?: GameRow
+			forceBanner?: FactionType
+	  }
+	| {
+			mode: 'game'
+			card: CardType
+			row?: GameRow
+			forceBanner?: undefined
+	  }
+) &
+	HTMLAttributes<HTMLDivElement>
 
 const ASSET_PATH = '/game/card/'
 
-export const Card = ({ card, mode = 'preview', className, style }: Props) => {
+export const Card = ({ card: { id }, mode = 'preview', forceBanner, row, className, style, ...props }: Props) => {
+	const cards = cardsJson.cards as CardType[]
+	const card = cards.find(c => c.id === id)!
+
+	const useBanner = forceBanner ?? (card.factions[0] !== 'neutral' && mode === 'preview')
+	const cardScore = calculateCardScore(card, row)
 	return (
 		<div
+			{...props}
 			style={style}
 			className={cn(
-				'relative z-0 flex aspect-[3/4] h-full w-auto max-w-full flex-col',
+				'relative z-0 flex h-full w-auto max-w-full flex-col',
 				mode === 'preview' && 'aspect-[410/775] rounded-xl',
+				mode === 'game' && 'aspect-[3/4] rounded-sm',
 				className
 			)}>
 			<div
 				className={cn(
 					'relative z-0 w-full grow overflow-hidden object-cover',
-					mode === 'preview' && 'aspect-[2/3] h-auto w-full basis-3/4 rounded-t-lg'
+					mode === 'preview' && 'aspect-[2/3] h-auto w-full basis-3/4 rounded-t-lg',
+					mode === 'game' && 'rounded-[2%]'
 				)}>
 				<Image
 					src={ASSET_PATH + `image/${card.factions[0]}/${card.slug}.jpg`}
@@ -35,28 +56,35 @@ export const Card = ({ card, mode = 'preview', className, style }: Props) => {
 				/>
 			</div>
 
-			<div className='absolute left-0 top-0 z-20 aspect-square h-auto w-3/5'>
-				<div
-					className={cn(
-						'absolute left-0 top-0 z-20 h-full w-full font-medium text-black',
-						card.isHero && 'text-white'
-					)}>
-					<div className='flex h-1/2 w-1/2 items-center justify-center'>
-						<svg viewBox='0 0 35 35' className='h-full w-full'>
-							<text
-								x='50%'
-								y='50%'
-								textAnchor='middle'
-								dominantBaseline={'central'}
-								fill='currentColor'
-								className='opacity-90'>
-								{card.strength}
-							</text>
-						</svg>
+			<div className={cn('absolute left-0 top-0 z-20 aspect-square h-auto', mode === 'preview' ? 'w-3/5' : 'w-2/3')}>
+				{card.strength !== undefined && (
+					<div
+						className={cn(
+							'absolute left-0 top-0 z-20 h-full w-full font-medium text-black',
+							card.type === 'hero' && 'text-white',
+							cardScore && cardScore > card.strength && 'text-green-700',
+							cardScore && cardScore < card.strength && 'text-red-800'
+						)}>
+						<div className='flex h-1/2 w-1/2 items-center justify-center'>
+							<svg viewBox='0 0 35 35' className='h-full w-full'>
+								<text
+									x='50%'
+									y='50%'
+									textAnchor='middle'
+									dominantBaseline={'central'}
+									fill='currentColor'
+									className='opacity-90'>
+									{cardScore}
+								</text>
+							</svg>
+						</div>
 					</div>
-				</div>
+				)}
 				<Image
-					src={ASSET_PATH + `power/power_${card.isHero ? 'hero' : 'normal'}.png`}
+					src={
+						ASSET_PATH +
+						`power/${card.type === 'hero' ? 'hero' : card.type === 'special' ? card.ability : 'normal'}.png`
+					}
 					width={200}
 					height={200}
 					alt=''
@@ -64,29 +92,45 @@ export const Card = ({ card, mode = 'preview', className, style }: Props) => {
 				/>
 			</div>
 
-			<div
-				className={cn(
-					'absolute z-20 flex',
-					mode === 'preview'
-						? 'left-0 top-[30%] w-[30%] flex-col items-center gap-6'
-						: 'bottom-1.5 right-0 w-full flex-row-reverse items-center gap-1'
-				)}>
-				<div className={cn('aspect-square h-auto rounded-full', mode === 'preview' ? 'w-[85%]' : 'w-1/3')}>
-					<Image
-						src={ASSET_PATH + `row/row_${card.type}.png`}
-						alt=''
-						width={80}
-						height={80}
-						className={cn('pointer-events-none h-full w-full select-none')}
-					/>
+			{card.type !== 'special' && (
+				<div
+					className={cn(
+						'absolute z-20 flex',
+						mode === 'preview'
+							? 'left-0 top-[28%] w-[30%] flex-col items-center'
+							: 'bottom-[5%] right-0 w-full flex-row-reverse items-center'
+					)}>
+					<div className={cn('aspect-square h-auto rounded-full', mode === 'preview' ? 'w-[85%]' : 'w-[30%]')}>
+						<Image
+							src={ASSET_PATH + `row/row_${card.row}.png`}
+							alt=''
+							width={80}
+							height={80}
+							className={cn('pointer-events-none h-full w-full select-none')}
+						/>
+					</div>
+					{card.ability && (
+						<div
+							className={cn(
+								'aspect-square h-auto rounded-full',
+								mode === 'preview' ? 'mt-[25%] w-[85%]' : 'mr-[5%] w-[30%]'
+							)}>
+							<Image
+								src={ASSET_PATH + `ability/${card.ability}.png`}
+								alt=''
+								width={80}
+								height={80}
+								className={cn('pointer-events-none h-full w-full select-none')}
+							/>
+						</div>
+					)}
 				</div>
-				<div>{/* TODO: ABILITY */}</div>
-			</div>
+			)}
 
-			{mode === 'preview' && (
+			{useBanner && (
 				<div className='absolute left-0 z-10 flex h-full w-[30%] flex-col items-center'>
 					<Image
-						src={ASSET_PATH + `banner/banner_${card.factions[0]}.png`}
+						src={ASSET_PATH + `banner/banner_${forceBanner ?? card.factions[0]}.png`}
 						alt=''
 						width={80}
 						height={80}
@@ -97,7 +141,11 @@ export const Card = ({ card, mode = 'preview', className, style }: Props) => {
 
 			{mode === 'preview' && (
 				<div className='relative h-1/4 w-full shrink-0 basis-1/4 text-center'>
-					<h3 className='relative z-10 h-3/5 pl-[25%] pr-[5%] pt-[5%] text-sm font-bold leading-tight text-[#333]'>
+					<h3
+						className={cn(
+							'relative z-10 h-3/5 pr-[5%] pt-[5%] text-sm font-bold leading-tight text-[#333]',
+							useBanner ? 'pl-[25%]' : 'pl-[5%]'
+						)}>
 						<span className='sr-only'>{card.name}</span>
 						<svg viewBox='0 0 130 40' aria-hidden className='h-full w-full'>
 							<foreignObject x='0' y='0' width='100%' height='100%'>
@@ -116,7 +164,7 @@ export const Card = ({ card, mode = 'preview', className, style }: Props) => {
 						</div>
 					)}
 					<Image
-						src={ASSET_PATH + `details/details_${card.isHero ? 'hero' : 'normal'}.png`}
+						src={ASSET_PATH + `details/details_${card.type === 'hero' ? 'hero' : 'normal'}.png`}
 						alt=''
 						width={300}
 						height={150}
