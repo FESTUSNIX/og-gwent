@@ -67,7 +67,9 @@ const gameReducer = (state: GameState, action: Action | CUSTOM) => {
 		case 'SAVE_ROUND_SCORES':
 			return actions.saveRoundScores(state, action)
 		case 'SET_ROW_EFFECT':
-			return actions['setRowEffect'](state, action)
+			return actions.setRowEffect(state, action)
+		case 'REMOVE_FROM_ROW':
+			return actions.removeFromRow(state, action)
 		default:
 			return initialGameState
 	}
@@ -86,6 +88,7 @@ type GameContextProps = {
 	setGameState: (newGameState: GameState) => void
 	saveRoundScores: (players: { id: GamePlayer['id']; score: number }[]) => void
 	setRowEffect: (playerId: Player['id'], effect: Card, rowType: BoardRowTypes) => void
+	removeFromRow: (playerId: Player['id'], cards: (Card | undefined)[], rowType: BoardRowTypes) => void
 	gameState: GameState
 }
 
@@ -102,6 +105,7 @@ const initialState: GameContextProps = {
 	setGameState: () => {},
 	saveRoundScores: () => {},
 	setRowEffect: () => {},
+	removeFromRow: () => {},
 	gameState: initialGameState
 }
 
@@ -153,6 +157,9 @@ export const GameContextProvider = ({
 	const setRowEffect = (playerId: Player['id'], effect: Card, rowType: BoardRowTypes) =>
 		dispatch({ type: 'SET_ROW_EFFECT', playerId, rowType, effect })
 
+	const removeFromRow = (playerId: Player['id'], cards: (Card | undefined)[], rowType: BoardRowTypes) =>
+		dispatch({ type: 'REMOVE_FROM_ROW', playerId, rowType, cards })
+
 	return (
 		<GameContext.Provider
 			value={{
@@ -168,7 +175,8 @@ export const GameContextProvider = ({
 				updatePlayerState,
 				setGameState,
 				saveRoundScores,
-				setRowEffect
+				setRowEffect,
+				removeFromRow
 			}}>
 			<GameStateHandler roomId={roomId} userId={userId} />
 			{children}

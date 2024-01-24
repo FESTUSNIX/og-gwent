@@ -1,9 +1,8 @@
 import { Card } from '@/types/Card'
 import { GamePlayer, GameState } from '@/types/Game'
 import { Player } from '@/types/Player'
-import { BoardRowTypes, RowType } from '@/types/RowType'
+import { BoardRowTypes } from '@/types/RowType'
 import { CardContainers, initialPlayer } from '../context/GameContext'
-import { RowEffect } from '@/types/RowEffect'
 
 type ACCEPT_GAME = {
 	type: 'ACCEPT_GAME'
@@ -102,6 +101,40 @@ const addToRow = (state: GameState, action: ADD_TO_ROW) => {
 			[action.rowType]: {
 				...rowToModify,
 				cards: [...rowToModify.cards, action.card]
+			}
+		}
+	}
+
+	const newPlayersState = state.players.map(p => (p.id === action.playerId ? newPlayerState : p))
+
+	return {
+		...state,
+		players: newPlayersState
+	}
+}
+
+type REMOVE_FROM_ROW = {
+	type: 'REMOVE_FROM_ROW'
+	playerId: Player['id']
+	cards: (Card | undefined)[]
+	rowType: BoardRowTypes
+}
+
+const removeFromRow = (state: GameState, action: REMOVE_FROM_ROW) => {
+	const player = state.players.find(p => p.id === action.playerId)
+	if (!player) return state
+
+	const rowToModify = player.rows[action.rowType]
+
+	const newPlayerState: GamePlayer = {
+		...player,
+		rows: {
+			...player.rows,
+			[action.rowType]: {
+				...rowToModify,
+				cards: rowToModify.cards.filter(c =>
+					action.cards.map(actionCard => actionCard?.id === c.id).includes(true) ? false : true
+				)
 			}
 		}
 	}
@@ -281,6 +314,7 @@ type Action =
 	| UPDATE_PLAYER_STATE
 	| SAVE_ROUND_SCORES
 	| SET_ROW_EFFECT
+	| REMOVE_FROM_ROW
 
 const actions = {
 	acceptGame,
@@ -293,7 +327,8 @@ const actions = {
 	clearPreview,
 	updatePlayerState,
 	saveRoundScores,
-	setRowEffect
+	setRowEffect,
+	removeFromRow
 }
 
 export { actions, type Action }
