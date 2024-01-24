@@ -559,6 +559,14 @@
 			"ability": "decoy",
 			"factions": ["neutral"],
 			"id": 62
+		},
+		{
+			"name": "Scorch",
+			"slug": "scorch",
+			"type": "special",
+			"ability": "scorch",
+			"factions": ["neutral"],
+			"id": 63
 		}
 	]
 }
