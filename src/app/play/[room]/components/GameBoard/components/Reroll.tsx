@@ -15,7 +15,11 @@ const startingHandSize = 10
 const maxRerolls = 2
 
 export const Reroll = ({ currentPlayer }: Props) => {
-	const { gameState, addToContainer, removeFromContainer, setPlayerGameStatus } = useGameContext()
+	const {
+		gameState,
+		sync,
+		actions: { addToContainer, removeFromContainer, setPlayerGameStatus }
+	} = useGameContext()
 
 	const gameAccepted = gameState.players.filter(p => p.gameStatus === 'accepted').length === 2
 
@@ -41,6 +45,8 @@ export const Reroll = ({ currentPlayer }: Props) => {
 			addToContainer(currentPlayer.id, newHand, 'hand')
 			removeFromContainer(currentPlayer.id, newHand, 'deck')
 			setHand(newHand)
+
+			sync()
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,12 +77,15 @@ export const Reroll = ({ currentPlayer }: Props) => {
 
 		setHand(newHand)
 		setRerolls(prevRerolls => prevRerolls + 1)
+
+		sync()
 	}
 
 	useEffect(() => {
 		if (rerolls === maxRerolls) {
 			setTimeout(() => {
 				setPlayerGameStatus(currentPlayer.id, 'play')
+				sync()
 			}, 0)
 		}
 
@@ -110,6 +119,7 @@ export const Reroll = ({ currentPlayer }: Props) => {
 				<button
 					onClick={() => {
 						setPlayerGameStatus(currentPlayer.id, 'play')
+						sync()
 					}}
 					className='fixed right-4 top-4 flex items-center gap-2 bg-secondary px-2 py-0.5'>
 					<span className='text-sm'>Start game</span>

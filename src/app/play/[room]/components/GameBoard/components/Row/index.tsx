@@ -20,40 +20,54 @@ type Props = {
 export const Row = ({ rowType, player, side, className, style }: Props) => {
 	const {
 		gameState,
-		addToRow,
-		removeFromContainer,
-		clearPreview,
-		setTurn,
-		setRowEffect,
-		updatePlayerState,
-		removeFromRow,
-		addToContainer
+		sync,
+		actions: {
+			addToRow,
+			removeFromContainer,
+			clearPreview,
+			setTurn,
+			setRowEffect,
+			updatePlayerState,
+			removeFromRow,
+			addToContainer
+		}
 	} = useGameContext()
 	const cardToAdd = player.preview
 
 	const row = player.rows[rowType]
 	const opponent = gameState.players.find(p => p.id !== player.id)!
 
-	const cleanAfterPlay = (card?: CardType) => {
-		card && removeFromContainer(player.id, [card], 'hand')
-		clearPreview(player.id)
-
-		if (opponent.hasPassed) return
-		setTurn(gameState.turn === player.id ? opponent.id : gameState.turn)
-	}
+	const canPlay = side === 'host' && !player.hasPassed
 
 	const canAddUnit =
 		(cardToAdd?.type === 'unit' || cardToAdd?.type === 'hero') &&
 		((cardToAdd?.row === 'agile' && ['melee', 'range'].includes(rowType)) || cardToAdd?.row === rowType) &&
-		side === 'host' &&
-		!player.hasPassed
+		canPlay
 
 	const isDecoy = cardToAdd?.ability === 'decoy'
-	const canAddDecoy = isDecoy && row.cards.find(c => c.type === 'unit') && side === 'host' && !player.hasPassed
+	const canAddDecoy = isDecoy && row.cards.find(c => c.type === 'unit') && canPlay
+	const canScorch = cardToAdd?.ability === 'scorch' && canPlay
+
+	const cleanAfterPlay = (card?: CardType) => {
+		if (card) removeFromContainer(player.id, [card], 'hand')
+
+		clearPreview(player.id)
+
+		if (!opponent.hasPassed) {
+			setTurn(gameState.turn === player.id ? opponent.id : gameState.turn)
+		}
+
+		sync()
+	}
+
+	const handleCardPlace = () => {
+		if (isDecoy) return
+		if (canAddUnit) return handleCardAdd()
+		if (canScorch) return handleScorch()
+	}
 
 	const handleCardAdd = () => {
 		if (!canAddUnit) return
-		if (isDecoy) return
 		if (cardToAdd.ability === 'scorch') return handleScorch()
 
 		addToRow(player.id, cardToAdd, rowType)
@@ -64,8 +78,7 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 		cardToAdd?.row === 'effect' &&
 		['horn', 'mardroeme', null].includes(cardToAdd.ability ?? null) &&
 		!row.effect &&
-		side === 'host' &&
-		!player.hasPassed
+		canPlay
 
 	const handleEffectAdd = () => {
 		if (!canAddEffect) return
@@ -104,8 +117,6 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 				.map(([key, value]) => ({ ...value, owner: p.id, rowType: key as BoardRowTypes }))
 		})
 
-		const baseCards = allRows.flatMap(r => r.cards).filter(c => c.type === 'unit')
-
 		const cardsWithDetails = allRows
 			.flatMap(r =>
 				r.cards.map(c => ({
@@ -118,20 +129,24 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 			)
 			.filter(c => c.type === 'unit')
 
-		const rowsTotalScore = cardsWithDetails.reduce((prev, curr) => prev + (curr.strength ?? 0), 0)
+		const rowsTotalScore = allRows
+			.flatMap(r => r.cards.map(c => ({ strength: calculateCardScore(c, r) })))
+			.reduce((prev, curr) => prev + (curr.strength ?? 0), 0)
 
 		if (card.row && rowsTotalScore < 10) {
-			return addToRow(player.id, card, card.row)
+			addToRow(player.id, card, card.row)
+			cleanAfterPlay(card)
+			return
 		}
 
 		const highestStrength = cardsWithDetails.reduce((prev, curr) =>
 			(curr.strength ?? 0) > (prev.strength ?? 0) ? curr : prev
 		).strength
 
-		const removedCards = cardsWithDetails
+		cardsWithDetails
 			.filter(c => c.strength === highestStrength)
 			.map(card => {
-				const gameCard = baseCards.find(c => c.id === card.id)
+				const gameCard = allRows.flatMap(r => r.cards).find(c => c.id === card.id)
 
 				if (!gameCard) return
 
@@ -141,13 +156,9 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 				return gameCard
 			})
 
-		cleanAfterPlay(card)
+		card.row ? addToRow(player.id, card, card.row) : addToContainer(player.id, [card], 'discardPile')
 
-		if (card.row) {
-			addToRow(player.id, card, card.row)
-		} else {
-			addToContainer(player.id, [card], 'discardPile')
-		}
+		cleanAfterPlay(card)
 	}
 
 	return (
@@ -179,7 +190,7 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 					(canAddUnit || canAddDecoy) && 'cursor-pointer ring-4 ring-inset ring-yellow-600/50 hover:ring-yellow-600'
 				)}
 				onClick={() => {
-					handleCardAdd()
+					handleCardPlace()
 				}}>
 				<Cards cards={row.cards} row={row} previewCard={cardToAdd} handleDecoy={handleDecoy} />
 			</button>

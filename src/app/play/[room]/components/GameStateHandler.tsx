@@ -1,7 +1,6 @@
 'use client'
 
 import { calculateGameScore } from '@/lib/calculateScores'
-import { deepEqual } from '@/lib/utils'
 import { CardType } from '@/types/Card'
 import { GamePlayer, GameState } from '@/types/Game'
 import { Database } from '@/types/supabase'
@@ -21,7 +20,12 @@ type Props = {
 }
 
 export const GameStateHandler = ({ roomId, userId }: Props) => {
-	const { gameState, setGameState, updatePlayerState } = useGameContext()
+	const {
+		gameState,
+		synced,
+		sync,
+		actions: { setGameState, updatePlayerState }
+	} = useGameContext()
 	const { notice, isResolving } = useNoticeContext()
 
 	const supabase = createClientComponentClient<Database>()
@@ -31,19 +35,21 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 	const opponentPlayer = gameState.players.find(player => player?.id !== userId)
 	const gameStarted = currentPlayer?.gameStatus === 'play' && opponentPlayer?.gameStatus === 'play'
 
-	const updateCurrentUserOnServer = async (newPlayerState: GamePlayer) => {
-		const { error } = await supabase
-			.from('players')
-			.upsert({ ...newPlayerState })
-			.eq('id', userId)
+	const updateUsersOnServer = async (players: GamePlayer[]) => {
+		players.map(async player => {
+			const { error } = await supabase
+				.from('players')
+				.upsert({ ...player })
+				.in('id', [userId, opponentPlayer?.id])
 
-		if (error) {
-			console.error(error)
-			toast.error(error.message)
-		}
+			if (error) {
+				console.error(error)
+				toast.error(error.message)
+			}
+		})
 	}
 
-	const updateGameStateOnServer = async (newGameState: Pick<GameState, 'rounds' | 'turn'>) => {
+	const updateGameStateOnServer = async (newGameState: GameState) => {
 		const { error } = await supabase
 			.from('rooms')
 			.upsert({
@@ -68,7 +74,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 			const { data: roomData } = await supabase.from('rooms').select('turn, rounds').eq('id', roomId).limit(1)
 			if (!roomData) return
 
-			const newPlayers = players.map(player => player.playerId).flat(1)
+			const newPlayers = players.flatMap(player => player.playerId)
 
 			const newGameState: GameState = {
 				players: newPlayers as GameState['players'],
@@ -84,25 +90,21 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [roomId])
 
-	async function onBroadcast(payload: { [key: string]: any; type: 'broadcast'; event: string }) {
-		const newOtherPlayer = payload.payload.otherPlayer
-		const currentOtherPlayer = gameState.players.find(player => player?.id === newOtherPlayer?.id)
+	async function onRecieve(payload: { [key: string]: any; type: 'broadcast'; event: string }) {
+		if (synced === payload.payload.synced) return
 
-		const newGameState: GameState = {
-			...gameState,
-			turn: payload.payload.turn,
-			players: [...gameState.players.filter(player => player.id !== newOtherPlayer?.id), newOtherPlayer]
-		}
+		const { gameState: newGameState, synced: newSynced }: { gameState: GameState; synced: number } = payload.payload
 
-		if (!newOtherPlayer && deepEqual(newOtherPlayer ?? {}, currentOtherPlayer ?? {})) return null
+		const newOpponent = newGameState.players.find(player => player?.id !== userId)
 
 		setGameState(newGameState)
+		sync(newSynced)
 
-		if (currentPlayer && newOtherPlayer) {
-			await hasPassedNotice(currentPlayer.hasPassed, newOtherPlayer.hasPassed, newGameState.turn, 'disable-host')
+		if (currentPlayer && newOpponent) {
+			await hasPassedNotice(currentPlayer.hasPassed, newOpponent.hasPassed, newGameState.turn, 'disable-host')
 
-			if (currentPlayer.hasPassed && newOtherPlayer.hasPassed) {
-				await handleRoundEnd(currentPlayer, newOtherPlayer)
+			if (currentPlayer.hasPassed && newOpponent.hasPassed) {
+				await handleRoundEnd(currentPlayer, newOpponent)
 			} else if (newGameState.turn && !isResolving && newGameState.players.filter(p => p.hasPassed).length === 0) {
 				await turnNotice(newGameState.turn)
 			}
@@ -225,28 +227,25 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 				}
 			],
 			turn: gameOver ? null : winner === 'draw' ? (Math.random() < 0.5 ? host.id : opponent.id) : winner,
-			players: gameState.players.map(p =>
-				p.id === host.id
-					? {
-							...p,
-							hasPassed: false,
-							discardPile: [
-								...p.discardPile,
-								...Object.values(p.rows).reduce((acc, row) => [...acc, ...row.cards], [] as CardType[])
-							],
-							rows: {
-								melee: initialRow,
-								range: initialRow,
-								siege: initialRow
-							},
-							preview: null,
-							lives: winner === p.id ? p.lives : p.lives - 1
-					  }
-					: p
-			)
+			players: gameState.players.map(p => ({
+				...p,
+				hasPassed: false,
+				discardPile: [
+					...p.discardPile,
+					...Object.values(p.rows).reduce((acc, row) => [...acc, ...row.cards], [] as CardType[])
+				],
+				rows: {
+					melee: initialRow,
+					range: initialRow,
+					siege: initialRow
+				},
+				preview: null,
+				lives: winner === p.id ? p.lives : p.lives - 1
+			}))
 		}
 
 		setGameState(newGameState)
+		sync()
 
 		if (host && opponent && gameOver) {
 			await onGameOver({ ...host, lives: hostLives }, { ...opponent, lives: opponentLives }, newGameState.rounds)
@@ -270,7 +269,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		})
 
 		roomChannel
-			.on('broadcast', { event: 'game' }, payload => onBroadcast(payload))
+			.on('broadcast', { event: 'game' }, payload => onRecieve(payload))
 			.subscribe(async status => {
 				if (status !== 'SUBSCRIBED') {
 					return null
@@ -279,7 +278,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 				const broadcastResponse = await roomChannel.send({
 					type: 'broadcast',
 					event: 'game',
-					payload: { otherPlayer: currentPlayer, turn: gameState.turn, rounds: gameState.rounds }
+					payload: { gameState, synced }
 				})
 
 				let gameStateAfterRoundEnd = undefined
@@ -294,10 +293,10 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 					}
 				}
 
-				await updateGameStateOnServer({ rounds: gameState.rounds, turn: gameState.turn })
-				if (currentPlayer) {
-					await updateCurrentUserOnServer(
-						gameStateAfterRoundEnd?.players.find(p => p.id === currentPlayer.id) ?? currentPlayer
+				await updateGameStateOnServer(gameState)
+				if (currentPlayer && opponentPlayer) {
+					await updateUsersOnServer(
+						gameStateAfterRoundEnd ? gameStateAfterRoundEnd?.players : [currentPlayer, opponentPlayer]
 					)
 				}
 			})
@@ -307,17 +306,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [
-		roomId,
-		currentPlayer?.deck,
-		currentPlayer?.discardPile,
-		currentPlayer?.hand,
-		currentPlayer?.gameStatus,
-		currentPlayer?.hasPassed,
-		currentPlayer?.lives,
-		currentPlayer?.rows,
-		gameState.turn
-	])
+	}, [roomId, synced])
 
 	useEffect(() => {
 		const setPass = () => {
@@ -325,6 +314,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 				updatePlayerState(currentPlayer.id, {
 					hasPassed: true
 				})
+				sync()
 			}
 		}
 

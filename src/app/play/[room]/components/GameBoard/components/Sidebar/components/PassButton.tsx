@@ -11,7 +11,10 @@ type Props = {
 }
 
 export const PassButton = ({ player, opponent }: Props) => {
-	const { setTurn, updatePlayerState } = useGameContext()
+	const {
+		sync,
+		actions: { setTurn, updatePlayerState }
+	} = useGameContext()
 
 	const handlePass = () => {
 		updatePlayerState(player.id, {
@@ -19,6 +22,8 @@ export const PassButton = ({ player, opponent }: Props) => {
 		})
 
 		!opponent.hasPassed && setTurn(opponent.id)
+
+		sync()
 	}
 
 	return (

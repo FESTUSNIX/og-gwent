@@ -17,7 +17,11 @@ type Props = {
 }
 
 export const GameBoard = ({ user, roomId }: Props) => {
-	const { gameState, setTurn } = useGameContext()
+	const {
+		gameState,
+		sync,
+		actions: { setTurn }
+	} = useGameContext()
 	const supabase = createClientComponentClient()
 
 	const host = gameState.players.find(p => p?.id === user.id)
@@ -39,6 +43,7 @@ export const GameBoard = ({ user, roomId }: Props) => {
 						: nonPassedPlayers[0]?.id)
 
 				setTurn(startingPlayer)
+				sync()
 			}
 		}
 

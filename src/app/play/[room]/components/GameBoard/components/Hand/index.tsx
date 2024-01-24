@@ -13,7 +13,10 @@ type Props = {
 }
 
 export const Hand = ({ player }: Props) => {
-	const { gameState, addToPreview, clearPreview } = useGameContext()
+	const {
+		gameState,
+		actions: { addToPreview, clearPreview }
+	} = useGameContext()
 
 	const cardRef = useRef<HTMLDivElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)

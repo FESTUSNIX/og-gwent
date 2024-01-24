@@ -29,7 +29,11 @@ export const ClientDeckSelector = ({
 	inDeckCardTypeParam,
 	user
 }: Props) => {
-	const { gameState, updatePlayerState } = useGameContext()
+	const {
+		gameState,
+		sync,
+		actions: { updatePlayerState }
+	} = useGameContext()
 
 	const [selectedDeck, setSelectedDeck] = useState<CardType[]>([])
 	const debouncedSelectedDeck = useDebounce(selectedDeck, 1000)
@@ -117,6 +121,7 @@ export const ClientDeckSelector = ({
 									faction: currentFaction,
 									deck: selectedDeck
 								})
+								sync()
 							}}
 							disabled={selectedDeck.length < minDeckLength}>
 							{!accepted ? 'Start game' : 'Cancel'}

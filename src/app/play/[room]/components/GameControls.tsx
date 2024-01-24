@@ -16,7 +16,12 @@ type Props = {
 }
 
 export const GameControls = ({ roomId }: Props) => {
-	const { gameState, setGameState } = useGameContext()
+	const {
+		gameState,
+		synced,
+		sync,
+		actions: { setGameState }
+	} = useGameContext()
 
 	const supabase = createClientComponentClient<Database>()
 	const router = useRouter()
@@ -26,6 +31,7 @@ export const GameControls = ({ roomId }: Props) => {
 
 	const resetGameState = async () => {
 		setGameState(initialGameState)
+		sync()
 
 		const { error: roomPlayersError, data: playerIds } = await supabase
 			.from('room_players')
@@ -67,7 +73,8 @@ export const GameControls = ({ roomId }: Props) => {
 									{
 										turn: gameState.turn,
 										rounds: gameState.rounds,
-										players: gameState.players.map(({ hand, deck, discardPile, rows, ...rest }) => rest)
+										players: gameState.players.map(({ hand, deck, discardPile, rows, ...rest }) => rest),
+										synced
 									},
 									null,
 									2
