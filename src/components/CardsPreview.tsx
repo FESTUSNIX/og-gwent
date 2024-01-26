@@ -13,22 +13,27 @@ import { createContext, forwardRef, useCallback, useContext, useEffect, useState
 import { flushSync } from 'react-dom'
 
 type CardsPreviewProps = {
-	cards: CardType[]
+	cards?: CardType[]
 	tweenFactor?: number
 	slidesToShow?: number
 	onCardSelect?: (card: CardType) => void
+	onClose?: () => void
 }
+
+type OpenPreviewProps = {
+	index?: number
+} & CardsPreviewProps
 
 type CardsPreviewContextProps = {
 	isOpen: boolean
-	openPreview: (index?: number) => void
+	openPreview: (props?: OpenPreviewProps) => void
 } & CardsPreviewProps
 
 const numberWithinRange = (number: number, min: number, max: number): number => Math.min(Math.max(number, min), max)
 
 const CardsPreviewContext = createContext<CardsPreviewContextProps | null>(null)
 
-const useCardsPreview = () => {
+export const useCardsPreview = () => {
 	const context = useContext(CardsPreviewContext)
 
 	if (!context) throw new Error('useCardsPreview must be used within a <CardsPreview/>')
@@ -37,8 +42,28 @@ const useCardsPreview = () => {
 }
 
 export const CardsPreview = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & CardsPreviewProps>(
-	({ cards, slidesToShow = 5, tweenFactor = 0.75, className, children, onCardSelect, ...props }, ref) => {
-		const edgeToCenterAmount = Math.floor(slidesToShow / 2)
+	(
+		{
+			cards: defaultCards,
+			slidesToShow: defaultSlidesToShow = 5,
+			tweenFactor: defaultTweenFactor = 0.75,
+			className,
+			children,
+			onCardSelect: defaultOnCardSelect,
+			onClose: defaultOnClose,
+			...props
+		},
+		ref
+	) => {
+		const [items, setItems] = useState<CardType[] | undefined>(defaultCards)
+		const [settings, setSettings] = useState<Omit<CardsPreviewProps, 'cards'>>({
+			slidesToShow: defaultSlidesToShow,
+			tweenFactor: defaultTweenFactor,
+			onCardSelect: defaultOnCardSelect,
+			onClose: defaultOnClose
+		})
+
+		const { slidesToShow, tweenFactor, onCardSelect, onClose } = settings
 
 		const [isOpen, setIsOpen] = useState(false)
 		const [defaultCard, setDefaultCard] = useState(0)
@@ -48,10 +73,27 @@ export const CardsPreview = forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
 
 		const [tweenValues, setTweenValues] = useState<number[]>([])
 
-		const openPreview = useCallback((index?: number) => {
-			setDefaultCard(index ?? 0)
-			setIsOpen(true)
-		}, [])
+		const edgeToCenterAmount = Math.floor((slidesToShow ?? 0) / 2)
+
+		const openPreview = useCallback(
+			(props?: OpenPreviewProps) => {
+				const { index, cards, onCardSelect, onClose, slidesToShow, tweenFactor } = props ?? {}
+
+				cards && setItems(cards)
+
+				setSettings({
+					slidesToShow: slidesToShow ?? defaultSlidesToShow,
+					tweenFactor: tweenFactor ?? defaultTweenFactor,
+					onCardSelect: onCardSelect ?? defaultOnCardSelect,
+					onClose: onClose ?? defaultOnClose
+				})
+
+				setDefaultCard(index ?? 0)
+
+				setIsOpen(true)
+			},
+			[defaultSlidesToShow, defaultTweenFactor, defaultOnCardSelect, defaultOnClose]
+		)
 
 		const handleCardSelect = useCallback(
 			(card: CardType) => {
@@ -85,7 +127,7 @@ export const CardsPreview = forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
 					})
 				}
 
-				const tweenValue = 1 - Math.abs(diffToTarget * ((list.length * tweenFactor) / slidesToShow))
+				const tweenValue = 1 - Math.abs(diffToTarget * ((list.length * (tweenFactor ?? 0)) / (slidesToShow ?? 0)))
 				return numberWithinRange(tweenValue, 0, 1)
 			})
 			setTweenValues(styles)
@@ -141,8 +183,8 @@ export const CardsPreview = forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
 				if (event.key === 'Enter') {
 					event.preventDefault()
 
-					if (cards[current - edgeToCenterAmount]) {
-						handleCardSelect(cards[current - edgeToCenterAmount])
+					if (items && items[current - edgeToCenterAmount]) {
+						handleCardSelect(items[current - edgeToCenterAmount])
 					}
 				}
 			}
@@ -156,10 +198,21 @@ export const CardsPreview = forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [isOpen, api, current])
 
+		useEffect(() => {
+			if (!isOpen && onClose) onClose()
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [isOpen])
+
+		useEffect(() => {
+			defaultCards !== items && setItems(defaultCards)
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [defaultCards])
+
 		const nullEntries: null[] = new Array(edgeToCenterAmount).fill(null)
 
 		return (
-			<CardsPreviewContext.Provider value={{ cards, slidesToShow, tweenFactor, isOpen, openPreview }}>
+			<CardsPreviewContext.Provider
+				value={{ cards: items, slidesToShow, tweenFactor, isOpen, openPreview, onClose, onCardSelect }}>
 				<Dialog open={isOpen} onOpenChange={setIsOpen}>
 					{children}
 
@@ -170,54 +223,60 @@ export const CardsPreview = forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
 								className={cn(
 									'fixed left-[50%] top-[50%] z-50 flex w-[80vw] max-w-full translate-x-[-50%] translate-y-[-50%] items-center justify-center border-none'
 								)}>
-								<Carousel
-									setApi={a => setApi(a)}
-									opts={{
-										align: 'center',
-										loop: false,
-										duration: 10,
-										startIndex: defaultCard
-									}}
-									plugins={[
-										WheelGesturesPlugin({
-											forceWheelAxis: 'y',
-											wheelDraggingClass: 'wheel-drag'
-										})
-									]}
-									className='w-full'>
-									<CarouselContent>
-										{[...nullEntries, ...cards, ...nullEntries].map((card, i) => (
-											<CarouselItem
-												key={i}
-												className={''}
-												style={{
-													flexBasis: `${100 / slidesToShow}%`
-												}}>
-												<div
-													className={cn(
-														'relative h-full origin-top',
-														current === i && card && 'rounded-xl bg-primary p-1',
-														current === i && onCardSelect && 'cursor-pointer'
-													)}
-													onClick={() => {
-														if (card && i !== current) {
-															scrollTo(i - edgeToCenterAmount)
-														}
-														if (card && i === current) {
-															handleCardSelect(card)
-														}
-													}}
+								{items && items?.length >= 1 ? (
+									<Carousel
+										setApi={a => setApi(a)}
+										opts={{
+											align: 'center',
+											loop: false,
+											duration: 10,
+											startIndex: defaultCard
+										}}
+										plugins={[
+											WheelGesturesPlugin({
+												forceWheelAxis: 'y',
+												wheelDraggingClass: 'wheel-drag'
+											})
+										]}
+										className='w-full'>
+										<CarouselContent>
+											{[...nullEntries, ...items, ...nullEntries].map((card, i) => (
+												<CarouselItem
+													key={i}
+													className={''}
 													style={{
-														...(tweenValues.length && {
-															transform: `scale(${tweenValues[i - edgeToCenterAmount]})`
-														})
+														flexBasis: `${100 / (slidesToShow ?? 0)}%`
 													}}>
-													{card && <Card card={card} mode='preview' />}
-												</div>
-											</CarouselItem>
-										))}
-									</CarouselContent>
-								</Carousel>
+													<div
+														className={cn(
+															'relative h-full origin-top',
+															current === i && card && 'rounded-xl bg-primary p-1',
+															current === i && onCardSelect && 'cursor-pointer'
+														)}
+														onClick={() => {
+															if (card && i !== current) {
+																scrollTo(i - edgeToCenterAmount)
+															}
+															if (card && i === current) {
+																handleCardSelect(card)
+															}
+														}}
+														style={{
+															...(tweenValues.length && {
+																transform: `scale(${tweenValues[i - edgeToCenterAmount]})`
+															})
+														}}>
+														{card && <Card card={card} mode='preview' />}
+													</div>
+												</CarouselItem>
+											))}
+										</CarouselContent>
+									</Carousel>
+								) : (
+									<div className='flex h-full w-full items-center justify-center'>
+										<span className='text-2xl text-primary'>No cards to preview</span>
+									</div>
+								)}
 							</div>
 
 							<DialogClose asChild>
@@ -237,22 +296,37 @@ CardsPreview.displayName = 'CardsPreview'
 
 export const CardsPreviewTrigger = forwardRef<
 	HTMLDivElement,
-	React.HTMLAttributes<HTMLDivElement> & { index?: number; asChild?: boolean }
->(({ className, index = 0, asChild = false, ...props }, ref) => {
-	const { openPreview } = useCardsPreview()
+	React.HTMLAttributes<HTMLDivElement> & OpenPreviewProps & { asChild?: boolean }
+>(
+	(
+		{
+			className,
+			index = 0,
+			cards,
+			onCardSelect,
+			onClose,
+			slidesToShow = 5,
+			tweenFactor = 0.75,
+			asChild = false,
+			...props
+		},
+		ref
+	) => {
+		const { openPreview } = useCardsPreview()
 
-	const Comp = asChild ? Slot : 'div'
+		const Comp = asChild ? Slot : 'div'
 
-	return (
-		<Comp
-			ref={ref}
-			className={cn(className)}
-			{...props}
-			onContextMenu={e => {
-				e.preventDefault()
-				openPreview(index)
-			}}
-		/>
-	)
-})
+		return (
+			<Comp
+				ref={ref}
+				className={cn(className)}
+				{...props}
+				onContextMenu={e => {
+					e.preventDefault()
+					openPreview()
+				}}
+			/>
+		)
+	}
+)
 CardsPreviewTrigger.displayName = 'CardsPreviewTrigger'
