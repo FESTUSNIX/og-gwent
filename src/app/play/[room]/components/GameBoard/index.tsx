@@ -1,6 +1,7 @@
 'use client'
 
 import { Hand } from '@/app/play/[room]/components/GameBoard/components/Hand'
+import { CardsPreview } from '@/components/CardsPreview'
 import { Tables } from '@/types/supabase'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect } from 'react'
@@ -31,23 +32,23 @@ export const GameBoard = ({ user, roomId }: Props) => {
 
 	useEffect(() => {
 		const updateTurn = async () => {
-			if (gameStarted && !gameState.turn) {
-				const { data } = await supabase.from('rooms').select('turn').eq('id', roomId).single()
+			const { data } = await supabase.from('rooms').select('turn').eq('id', roomId).single()
 
-				const nonPassedPlayers = gameState.players.filter(p => p?.hasPassed === false)
+			const nonPassedPlayers = gameState.players.filter(p => p?.hasPassed === false)
 
-				const startingPlayer =
-					data?.turn ??
-					(nonPassedPlayers.length === 2
-						? nonPassedPlayers[Math.floor(Math.random() < 0.5 ? 0 : 1)]?.id
-						: nonPassedPlayers[0]?.id)
+			const startingPlayer =
+				data?.turn ??
+				(nonPassedPlayers.length === 2
+					? nonPassedPlayers[Math.floor(Math.random() < 0.5 ? 0 : 1)]?.id
+					: nonPassedPlayers[0]?.id)
 
-				setTurn(startingPlayer)
-				sync()
-			}
+			setTurn(startingPlayer)
+			sync()
 		}
 
-		updateTurn()
+		if (gameStarted && !gameState.turn && user.id === gameState.roomOwner) {
+			updateTurn()
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [gameStarted])
 
@@ -64,8 +65,10 @@ export const GameBoard = ({ user, roomId }: Props) => {
 			<div className='flex h-full min-w-0 border-l bg-stone-600 pb-12 pl-24'>
 				<div className='flex h-full min-w-0 grow flex-col'>
 					<div className='grid h-full grid-rows-7 gap-y-2 bg-stone-600 pt-2'>
-						<Side host={host} opponent={opponent} side='opponent' />
-						<Side host={host} opponent={opponent} side='host' />
+						<CardsPreview>
+							<Side host={host} opponent={opponent} side='opponent' />
+							<Side host={host} opponent={opponent} side='host' />
+						</CardsPreview>
 
 						<Hand player={host} />
 					</div>

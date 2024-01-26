@@ -34,5 +34,6 @@ export type GameState = {
 		}[]
 	}[]
 	turn: GamePlayer['id'] | null
+	roomOwner: GamePlayer['id'] | null
 	// TODO: weatherCard
 }

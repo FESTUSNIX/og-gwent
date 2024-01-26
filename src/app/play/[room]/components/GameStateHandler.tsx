@@ -7,11 +7,12 @@ import { Database } from '@/types/supabase'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
 import { initialRow } from '../context/GameContext'
 import { useNoticeContext } from '../context/NoticeContext'
 import useGameContext from '../hooks/useGameContext'
+import usePrevious from '../hooks/usePrevious'
 import { GameOverNotice } from './GameOverNotice'
 
 type Props = {
@@ -31,11 +32,15 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 	const supabase = createClientComponentClient<Database>()
 	const router = useRouter()
 
-	const currentPlayer = gameState.players.find(player => player?.id === userId)
-	const opponentPlayer = gameState.players.find(player => player?.id !== userId)
+	const currentPlayer = useMemo(() => gameState.players.find(player => player?.id === userId), [gameState, userId])
+	const previousCurrentPlayer = usePrevious(currentPlayer)
+
+	const opponentPlayer = useMemo(() => gameState.players.find(player => player?.id !== userId), [gameState, userId])
 	const gameStarted = currentPlayer?.gameStatus === 'play' && opponentPlayer?.gameStatus === 'play'
 
 	const updateUsersOnServer = async (players: GamePlayer[]) => {
+		if (currentPlayer?.id !== gameState.roomOwner) return
+
 		players.map(async player => {
 			const { error } = await supabase
 				.from('players')
@@ -50,12 +55,15 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 	}
 
 	const updateGameStateOnServer = async (newGameState: GameState) => {
+		if (currentPlayer?.id !== gameState.roomOwner) return
+
 		const { error } = await supabase
 			.from('rooms')
 			.upsert({
 				id: roomId,
 				rounds: newGameState.rounds,
-				turn: newGameState.turn
+				turn: newGameState.turn,
+				roomOwner: newGameState.roomOwner
 			})
 			.eq('id', roomId)
 
@@ -71,15 +79,21 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 			const { data: players } = await supabase.from('room_players').select('playerId(*)').eq('roomId', roomId)
 			if (!players) return
 
-			const { data: roomData } = await supabase.from('rooms').select('turn, rounds').eq('id', roomId).limit(1)
+			const { data: roomData } = await supabase
+				.from('rooms')
+				.select('turn, rounds, roomOwner')
+				.eq('id', roomId)
+				.limit(1)
+				.single()
 			if (!roomData) return
 
 			const newPlayers = players.flatMap(player => player.playerId)
 
 			const newGameState: GameState = {
 				players: newPlayers as GameState['players'],
-				turn: roomData[0].turn,
-				rounds: (roomData[0].rounds ?? []) as GameState['rounds']
+				turn: roomData.turn,
+				rounds: (roomData.rounds ?? []) as GameState['rounds'],
+				roomOwner: roomData.roomOwner
 			}
 
 			setGameState(newGameState)
@@ -101,11 +115,18 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		sync(newSynced)
 
 		if (currentPlayer && newOpponent) {
-			await hasPassedNotice(currentPlayer.hasPassed, newOpponent.hasPassed, newGameState.turn, 'disable-host')
+			if (newOpponent.hasPassed !== opponentPlayer?.hasPassed) {
+				await hasPassedNotice(currentPlayer.hasPassed, newOpponent.hasPassed, newGameState.turn, 'disable-host')
+			}
 
 			if (currentPlayer.hasPassed && newOpponent.hasPassed) {
 				await handleRoundEnd(currentPlayer, newOpponent)
-			} else if (newGameState.turn && !isResolving && newGameState.players.filter(p => p.hasPassed).length === 0) {
+			} else if (
+				newGameState.turn &&
+				newGameState.turn !== gameState.turn &&
+				!isResolving &&
+				newGameState.players.filter(p => p.hasPassed).length === 0
+			) {
 				await turnNotice(newGameState.turn)
 			}
 		}
@@ -159,20 +180,10 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 	}
 
 	const resetGameState = async () => {
-		const { error: roomPlayersError, data: playerIds } = await supabase
-			.from('room_players')
-			.delete()
-			.eq('roomId', roomId)
-			.select('playerId')
-		if (roomPlayersError) return console.error(roomPlayersError)
-
 		const { error: playersError } = await supabase
 			.from('players')
 			.delete()
-			.in(
-				'id',
-				playerIds?.map(p => p.playerId)
-			)
+			.in('id', [currentPlayer?.id, opponentPlayer?.id])
 		if (playersError) return console.error(playersError)
 
 		const { error: roomError } = await supabase.from('rooms').delete().eq('id', roomId)
@@ -241,16 +252,18 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 				},
 				preview: null,
 				lives: winner === p.id ? p.lives : p.lives - 1
-			}))
+			})),
+			roomOwner: gameState.roomOwner
 		}
 
 		setGameState(newGameState)
-		sync()
 
 		if (host && opponent && gameOver) {
 			await onGameOver({ ...host, lives: hostLives }, { ...opponent, lives: opponentLives }, newGameState.rounds)
 			return
 		}
+
+		sync()
 
 		await notice({
 			title: 'Round Start'
@@ -284,7 +297,9 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 				let gameStateAfterRoundEnd = undefined
 
 				if (currentPlayer && opponentPlayer) {
-					await hasPassedNotice(currentPlayer.hasPassed, opponentPlayer.hasPassed, gameState.turn, 'disable-opponent')
+					if (currentPlayer.hasPassed !== previousCurrentPlayer?.hasPassed) {
+						await hasPassedNotice(currentPlayer.hasPassed, opponentPlayer.hasPassed, gameState.turn, 'disable-opponent')
+					}
 
 					if (currentPlayer.hasPassed && opponentPlayer.hasPassed) {
 						gameStateAfterRoundEnd = await handleRoundEnd(currentPlayer, opponentPlayer)

@@ -11,7 +11,8 @@ import { GameStateHandler } from '../components/GameStateHandler'
 export const initialGameState: GameState = {
 	players: [],
 	rounds: [],
-	turn: null
+	turn: null,
+	roomOwner: null
 }
 
 export const initialRow: GameRow = {

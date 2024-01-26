@@ -43,7 +43,7 @@ export interface Database {
           hand: Json[] | null
           hasPassed: boolean | null
           id: string
-          lives: number
+          lives: number | null
           name: string | null
           preview: Json | null
           rows: Json | null
@@ -56,7 +56,7 @@ export interface Database {
           hand?: Json[] | null
           hasPassed?: boolean | null
           id: string
-          lives?: number
+          lives?: number | null
           name?: string | null
           preview?: Json | null
           rows?: Json | null
@@ -69,7 +69,7 @@ export interface Database {
           hand?: Json[] | null
           hasPassed?: boolean | null
           id?: string
-          lives?: number
+          lives?: number | null
           name?: string | null
           preview?: Json | null
           rows?: Json | null
@@ -150,22 +150,32 @@ export interface Database {
         Row: {
           created_at: string
           id: string
+          roomOwner: string | null
           rounds: Json[] | null
           turn: string | null
         }
         Insert: {
           created_at?: string
           id: string
+          roomOwner?: string | null
           rounds?: Json[] | null
           turn?: string | null
         }
         Update: {
           created_at?: string
           id?: string
+          roomOwner?: string | null
           rounds?: Json[] | null
           turn?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "rooms_roomOwner_fkey"
+            columns: ["roomOwner"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "rooms_turn_fkey"
             columns: ["turn"]

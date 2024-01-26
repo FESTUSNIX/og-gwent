@@ -74,7 +74,8 @@ export const GameControls = ({ roomId }: Props) => {
 										turn: gameState.turn,
 										rounds: gameState.rounds,
 										players: gameState.players.map(({ hand, deck, discardPile, rows, ...rest }) => rest),
-										synced
+										synced,
+										roomOwner: gameState.roomOwner
 									},
 									null,
 									2

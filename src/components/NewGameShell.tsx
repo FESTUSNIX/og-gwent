@@ -29,7 +29,8 @@ export const NewGameShell = forwardRef<HTMLButtonElement, Props>(({ children, se
 			const id = createId()
 
 			const { error: createRoomError } = await supabase.from('rooms').insert({
-				id: id
+				id: id,
+				roomOwner: session.user.id,
 			})
 			if (createRoomError) throw Error(createRoomError.message)
 
