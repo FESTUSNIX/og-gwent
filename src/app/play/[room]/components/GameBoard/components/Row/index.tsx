@@ -1,7 +1,7 @@
 import useGameContext from '@/app/play/[room]/hooks/useGameContext'
 import { Card } from '@/components/Card'
-import { calculateCardScore, calculateRowScore } from '@/lib/calculateScores'
-import { cn } from '@/lib/utils'
+import { calculateCardStrength, calculateRowScore } from '@/lib/calculateScores'
+import { cn, getRandomEntries } from '@/lib/utils'
 import { CardType } from '@/types/Card'
 import { GamePlayer } from '@/types/Game'
 import { BoardRowTypes } from '@/types/RowType'
@@ -11,13 +11,14 @@ import { Cards } from './components/Cards'
 
 type Props = {
 	rowType: BoardRowTypes
-	player: GamePlayer
+	host: GamePlayer
+	opponent: GamePlayer
 	side: 'host' | 'opponent'
 	className?: string
 	style?: CSSProperties
 }
 
-export const Row = ({ rowType, player, side, className, style }: Props) => {
+export const Row = ({ rowType, side, host, opponent, className, style }: Props) => {
 	const {
 		gameState,
 		sync,
@@ -32,75 +33,73 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 			addToContainer
 		}
 	} = useGameContext()
-	const cardToAdd = player.preview
 
+	const player = side === 'host' ? host : opponent
+
+	const cardToAdd = host.preview
 	const row = player.rows[rowType]
-	const opponent = gameState.players.find(p => p.id !== player.id)!
 
-	const canPlay = side === 'host' && !player.hasPassed
+	const canPlay = side === 'host' && !host.hasPassed
+	const isCorrectRow =
+		(cardToAdd?.row === 'agile' && ['melee', 'range'].includes(rowType)) || cardToAdd?.row === rowType
 
-	const canAddUnit =
-		(cardToAdd?.type === 'unit' || cardToAdd?.type === 'hero') &&
-		((cardToAdd?.row === 'agile' && ['melee', 'range'].includes(rowType)) || cardToAdd?.row === rowType) &&
-		canPlay
-
-	const isDecoy = cardToAdd?.ability === 'decoy'
-	const canAddDecoy = isDecoy && row.cards.find(c => c.type === 'unit') && canPlay
+	const canPlayUnit = (cardToAdd?.type === 'unit' || cardToAdd?.type === 'hero') && isCorrectRow && canPlay
+	const canPlayDecoy = cardToAdd?.ability === 'decoy' && row.cards.find(c => c.type === 'unit') && canPlay
 	const canScorch = cardToAdd?.ability === 'scorch' && canPlay
+	const canPlaySpy = cardToAdd?.ability === 'spy' && side === 'opponent' && isCorrectRow && !host.hasPassed
 
 	const cleanAfterPlay = (card?: CardType) => {
-		if (card) removeFromContainer(player.id, [card], 'hand')
+		if (card) removeFromContainer(host.id, [card], 'hand')
 
-		clearPreview(player.id)
+		clearPreview(host.id)
 
 		if (!opponent.hasPassed) {
-			setTurn(gameState.turn === player.id ? opponent.id : gameState.turn)
+			setTurn(gameState.turn === host.id ? opponent.id : gameState.turn)
 		}
 
 		sync()
 	}
 
 	const handleCardPlace = () => {
-		if (isDecoy) return
-		if (canAddUnit) return handleCardAdd()
+		if (cardToAdd?.ability === 'decoy') return
+		if (canPlaySpy) return handleSpy()
+		if (canPlayUnit) return handleUnitAdd()
 		if (canScorch) return handleScorch()
 	}
 
-	const handleCardAdd = () => {
-		if (!canAddUnit) return
+	const handleUnitAdd = () => {
+		if (!canPlayUnit) return
 		if (cardToAdd.ability === 'scorch') return handleScorch()
 
-		addToRow(player.id, cardToAdd, rowType)
+		addToRow(host.id, cardToAdd, rowType)
 		cleanAfterPlay(cardToAdd)
 	}
 
-	const canAddEffect =
+	const canPlayEffect =
 		cardToAdd?.row === 'effect' &&
 		['horn', 'mardroeme', null].includes(cardToAdd.ability ?? null) &&
 		!row.effect &&
 		canPlay
 
 	const handleEffectAdd = () => {
-		if (!canAddEffect) return
+		if (!canPlayEffect) return
 
-		setRowEffect(player.id, cardToAdd, rowType)
+		setRowEffect(host.id, cardToAdd, rowType)
 		cleanAfterPlay(cardToAdd)
 	}
 
 	const handleDecoy = (card: CardType) => {
 		if (cardToAdd?.ability !== 'decoy' || card.type !== 'unit') return
 
-		const rowToUpdate = player.rows[rowType]
-
-		updatePlayerState(player.id, {
+		updatePlayerState(host.id, {
 			rows: {
-				...player.rows,
+				...host.rows,
 				[rowType]: {
-					...rowToUpdate,
-					cards: [...rowToUpdate.cards.filter(c => c.id !== card.id), cardToAdd]
+					...row,
+					cards: [...row.cards.filter(c => c.id !== card.id), cardToAdd]
 				}
 			},
-			hand: [...player.hand.filter(c => c.id !== cardToAdd.id), card]
+			hand: [...host.hand.filter(c => c.id !== cardToAdd.id), card]
 		})
 		cleanAfterPlay()
 	}
@@ -113,7 +112,7 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 		// TODO: Refractor
 		const allRows = gameState.players.flatMap(p => {
 			return Object.entries(p.rows)
-				.filter(([key, value]) => (!card.row ? true : key === card.row && p.id !== player.id))
+				.filter(([key, value]) => (!card.row ? true : key === card.row && p.id !== host.id))
 				.map(([key, value]) => ({ ...value, owner: p.id, rowType: key as BoardRowTypes }))
 		})
 
@@ -122,7 +121,7 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 				r.cards.map(c => ({
 					id: c.id,
 					type: c.type,
-					strength: calculateCardScore(c, r),
+					strength: calculateCardStrength(c, r),
 					row: r.rowType,
 					owner: r.owner
 				}))
@@ -130,11 +129,11 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 			.filter(c => c.type === 'unit')
 
 		const rowsTotalScore = allRows
-			.flatMap(r => r.cards.map(c => ({ strength: calculateCardScore(c, r) })))
+			.flatMap(r => r.cards.map(c => ({ strength: calculateCardStrength(c, r) })))
 			.reduce((prev, curr) => prev + (curr.strength ?? 0), 0)
 
 		if (card.row && rowsTotalScore < 10) {
-			addToRow(player.id, card, card.row)
+			addToRow(host.id, card, card.row)
 			cleanAfterPlay(card)
 			return
 		}
@@ -156,9 +155,22 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 				return gameCard
 			})
 
-		card.row ? addToRow(player.id, card, card.row) : addToContainer(player.id, [card], 'discardPile')
+		card.row ? addToRow(host.id, card, card.row) : addToContainer(host.id, [card], 'discardPile')
 
 		cleanAfterPlay(card)
+	}
+
+	const handleSpy = () => {
+		if (cardToAdd?.ability !== 'spy') return
+
+		addToRow(opponent.id, cardToAdd, rowType)
+
+		const cards = getRandomEntries(host.deck, 2)
+
+		addToContainer(host.id, cards, 'hand')
+		removeFromContainer(host.id, cards, 'deck')
+
+		cleanAfterPlay(cardToAdd)
 	}
 
 	return (
@@ -176,7 +188,7 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 			<button
 				className={cn(
 					'flex aspect-square h-full w-auto cursor-auto items-center justify-center bg-stone-800 duration-100',
-					canAddEffect && 'cursor-pointer ring-4 ring-inset ring-yellow-600/50 hover:ring-yellow-600'
+					canPlayEffect && 'cursor-pointer ring-4 ring-inset ring-yellow-600/50 hover:ring-yellow-600'
 				)}
 				onClick={() => {
 					handleEffectAdd()
@@ -187,7 +199,8 @@ export const Row = ({ rowType, player, side, className, style }: Props) => {
 			<button
 				className={cn(
 					'relative h-full w-full grow cursor-auto bg-stone-700 duration-100',
-					(canAddUnit || canAddDecoy) && 'cursor-pointer ring-4 ring-inset ring-yellow-600/50 hover:ring-yellow-600'
+					((canPlayUnit && cardToAdd.ability !== 'spy') || canPlayDecoy || canPlaySpy) &&
+						'cursor-pointer ring-4 ring-inset ring-yellow-600/50 hover:ring-yellow-600'
 				)}
 				onClick={() => {
 					handleCardPlace()

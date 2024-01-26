@@ -64,8 +64,8 @@ export const GameBoard = ({ user, roomId }: Props) => {
 			<div className='flex h-full min-w-0 border-l bg-stone-600 pb-12 pl-24'>
 				<div className='flex h-full min-w-0 grow flex-col'>
 					<div className='grid h-full grid-rows-7 gap-y-2 bg-stone-600 pt-2'>
-						<Side player={opponent} side='opponent' />
-						<Side player={host} side='host' />
+						<Side host={host} opponent={opponent} side='opponent' />
+						<Side host={host} opponent={opponent} side='host' />
 
 						<Hand player={host} />
 					</div>

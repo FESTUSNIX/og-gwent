@@ -32,3 +32,8 @@ export function deepEqual(object1: any, object2: any) {
 export function isObject(object: any) {
 	return object != null && typeof object === 'object'
 }
+
+export function getRandomEntries<T>(arr: T[], count: number): T[] {
+	const shuffled = arr.sort(() => 0.5 - Math.random())
+	return shuffled.slice(0, count)
+}

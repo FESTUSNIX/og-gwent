@@ -3,18 +3,20 @@ import { Row } from './Row'
 import { BoardRowTypes } from '@/types/RowType'
 
 type Props = {
-	player: GamePlayer
+	host: GamePlayer
+	opponent: GamePlayer
 	side: 'host' | 'opponent'
 }
 
-export const Side = ({ player, side }: Props) => {
+export const Side = ({ host, opponent, side }: Props) => {
 	return (
 		<>
 			{['melee', 'range', 'siege'].map((rowType, i) => (
 				<Row
 					key={rowType}
 					rowType={rowType as BoardRowTypes}
-					player={player}
+					host={host}
+					opponent={opponent}
 					side={side}
 					style={{ order: side === 'opponent' ? -i : i }}
 				/>

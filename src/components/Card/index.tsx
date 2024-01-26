@@ -1,11 +1,11 @@
+import { calculateCardStrength } from '@/lib/calculateScores'
 import { cn } from '@/lib/utils'
 import { Card as CardType } from '@/types/Card'
-import Image from 'next/image'
-import { CSSProperties, HTMLAttributes } from 'react'
-import cardsJson from '../../../db/cards.json'
 import { FactionType } from '@/types/Faction'
 import { GameRow } from '@/types/Game'
-import { calculateCardScore } from '@/lib/calculateScores'
+import Image from 'next/image'
+import { HTMLAttributes } from 'react'
+import cardsJson from '../../../db/cards.json'
 
 type Props = (
 	| {
@@ -30,7 +30,7 @@ export const Card = ({ card: { id }, mode = 'preview', forceBanner, row, classNa
 	const card = cards.find(c => c.id === id)!
 
 	const useBanner = forceBanner ?? (card.factions[0] !== 'neutral' && mode === 'preview')
-	const cardScore = calculateCardScore(card, row)
+	const cardScore = calculateCardStrength(card, row)
 	return (
 		<div
 			{...props}

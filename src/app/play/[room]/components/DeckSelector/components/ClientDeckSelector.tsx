@@ -13,6 +13,7 @@ import useGameContext from '../../../hooks/useGameContext'
 import { CardTypeSwitch } from './CardTypeSwitch'
 import { DeckDetails } from './DeckDetails'
 import { LeaderCardSelector } from './LeaderCardSelector'
+import { GamePlayer } from '@/types/Game'
 
 type Props = {
 	cards: CardType[]
@@ -32,7 +33,7 @@ export const ClientDeckSelector = ({
 	const {
 		gameState,
 		sync,
-		actions: { updatePlayerState }
+		actions: { updatePlayerState, setGameState }
 	} = useGameContext()
 
 	const [selectedDeck, setSelectedDeck] = useState<CardType[]>([])
@@ -115,12 +116,25 @@ export const ClientDeckSelector = ({
 							onClick={() => {
 								toast('Accepted game!')
 
-								updatePlayerState(user.id, {
+								const newPlayerState: GamePlayer = {
 									...initialPlayer,
 									gameStatus: !accepted ? 'accepted' : 'select-deck',
 									faction: currentFaction,
-									deck: selectedDeck
-								})
+									deck: selectedDeck,
+									id: user.id,
+									name: user.username ?? 'Player'
+								}
+
+								// TODO: Check if thats correct
+								if (gameState.players.find(p => p.id === user.id)) {
+									updatePlayerState(user.id, newPlayerState)
+								} else if (gameState.players.length < 2) {
+									setGameState({
+										...gameState,
+										players: [...gameState.players.filter(p => p.id !== user.id), newPlayerState]
+									})
+								}
+
 								sync()
 							}}
 							disabled={selectedDeck.length < minDeckLength}>
