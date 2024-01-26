@@ -1,4 +1,5 @@
 import { Card } from '@/components/Card'
+import { calculateCardStrength } from '@/lib/calculateScores'
 import { cn } from '@/lib/utils'
 import { CardType } from '@/types/Card'
 import { GameRow } from '@/types/Game'
@@ -12,7 +13,23 @@ type Props = {
 	handleDecoy: (card: CardType) => void
 }
 
-export const Cards = ({ cards, row, previewCard, handleDecoy }: Props) => {
+export const Cards = ({ cards: _cards, row, previewCard, handleDecoy }: Props) => {
+	const cards = _cards.sort((a, b) => {
+		const aStrength = calculateCardStrength(a, row)
+		const bStrength = calculateCardStrength(b, row)
+
+		if (aStrength === bStrength) {
+			if (a.name < b.name) return -1
+			if (a.name > b.name) return 1
+			return 0
+		}
+
+		if (!aStrength) return -1
+		if (!bStrength) return 1
+
+		return aStrength - bStrength
+	})
+
 	const cardRef = useRef<HTMLButtonElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
 	const sliderRef = useRef<HTMLDivElement>(null)

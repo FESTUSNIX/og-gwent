@@ -18,6 +18,19 @@ export const Hand = ({ player }: Props) => {
 		actions: { addToPreview, clearPreview }
 	} = useGameContext()
 
+	const cards = player.hand.sort((a, b) => {
+		if (a.strength === b.strength) {
+			if (a.name < b.name) return -1
+			if (a.name > b.name) return 1
+			return 0
+		}
+
+		if (!a.strength) return -1
+		if (!b.strength) return 1
+
+		return a.strength - b.strength
+	})
+
 	const cardRef = useRef<HTMLDivElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
 	const sliderRef = useRef<HTMLDivElement>(null)
@@ -25,7 +38,6 @@ export const Hand = ({ player }: Props) => {
 	const minGap = -42
 	const maxGap = 2
 
-	const numberOfCards = player.hand.length
 	const isMyTurn = gameState.turn === player.id
 
 	const [gap, setGap] = useState(0)
@@ -37,8 +49,8 @@ export const Hand = ({ player }: Props) => {
 
 		if (!cardWidth || !containerWidth) return
 
-		const initialGap = Math.max(Math.min(containerWidth / numberOfCards - cardWidth, maxGap), minGap)
-		const newGap = Math.max(Math.min((containerWidth - 16 + initialGap) / numberOfCards - cardWidth, maxGap), minGap)
+		const initialGap = Math.max(Math.min(containerWidth / cards.length - cardWidth, maxGap), minGap)
+		const newGap = Math.max(Math.min((containerWidth - 16 + initialGap) / cards.length - cardWidth, maxGap), minGap)
 
 		setGap(newGap)
 	}
@@ -72,7 +84,7 @@ export const Hand = ({ player }: Props) => {
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [numberOfCards])
+	}, [cards.length])
 
 	const [selectedCard, setSelectedCard] = useState<CardType | null>(null)
 
@@ -88,7 +100,7 @@ export const Hand = ({ player }: Props) => {
 	return (
 		<div ref={containerRef} className='order-last h-full w-full overflow-x-clip border bg-stone-700 py-1'>
 			<CardsPreview
-				cards={player.hand}
+				cards={cards}
 				onCardSelect={card => {
 					setSelectedCard(card)
 				}}>
@@ -98,7 +110,7 @@ export const Hand = ({ player }: Props) => {
 					ref={sliderRef}
 					style={{ paddingRight: -gap }}
 					className='flex h-full w-full max-w-full auto-cols-fr items-center justify-center'>
-					{player.hand.map((card, i) => (
+					{cards.map((card, i) => (
 						<CardsPreviewTrigger
 							key={i}
 							index={i}
