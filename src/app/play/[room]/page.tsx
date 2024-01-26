@@ -6,7 +6,7 @@ import cardsJson from '../../../../db/cards.json'
 import { DeckSelector } from './components/DeckSelector'
 import { GameBoard } from './components/GameBoard'
 import { GameControls } from './components/GameControls'
-import { GameContextProvider } from './context/GameContext'
+import { GameContextProvider, initialPlayer } from './context/GameContext'
 import { NoticeProvider } from './context/NoticeContext'
 
 type Props = {
@@ -49,6 +49,7 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 		const { data } = await supabase
 			.from('players')
 			.upsert({
+				...initialPlayer,
 				id: user.id,
 				name: user.username
 			})
