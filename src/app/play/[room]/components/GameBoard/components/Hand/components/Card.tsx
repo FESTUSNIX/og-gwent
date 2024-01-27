@@ -18,7 +18,7 @@ type Props = {
 export const Card = ({ card, selectedCard, setSelectedCard, disabled }: Props) => {
 	const cardRef = useRef(null)
 
-	const isPreviewing = selectedCard?.id === card.id
+	const isPreviewing = selectedCard?.instance === card.instance
 
 	const handleCardClick = () => {
 		setSelectedCard(card)

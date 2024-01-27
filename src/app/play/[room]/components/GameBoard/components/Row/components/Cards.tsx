@@ -1,5 +1,4 @@
 import { Card } from '@/components/Card'
-import { calculateCardStrength } from '@/lib/calculateScores'
 import { cn } from '@/lib/utils'
 import { CardType } from '@/types/Card'
 import { GameRow } from '@/types/Game'
@@ -15,19 +14,16 @@ type Props = {
 
 export const Cards = ({ cards: _cards, row, previewCard, handleDecoy }: Props) => {
 	const cards = _cards.sort((a, b) => {
-		const aStrength = calculateCardStrength(a, row)
-		const bStrength = calculateCardStrength(b, row)
-
-		if (aStrength === bStrength) {
+		if (a.strength === b.strength) {
 			if (a.name < b.name) return -1
 			if (a.name > b.name) return 1
 			return 0
 		}
 
-		if (!aStrength) return -1
-		if (!bStrength) return 1
+		if (!a.strength) return -1
+		if (!b.strength) return 1
 
-		return aStrength - bStrength
+		return a.strength - b.strength
 	})
 
 	const cardRef = useRef<HTMLButtonElement>(null)
@@ -105,7 +101,7 @@ export const Cards = ({ cards: _cards, row, previewCard, handleDecoy }: Props) =
 						onClick={() => {
 							handleDecoy(card)
 						}}>
-						<Card key={card.id} card={card} mode='game' row={row} />
+						<Card key={card.instance} card={card} mode='game' row={row} />
 					</button>
 				))}
 			</motion.div>

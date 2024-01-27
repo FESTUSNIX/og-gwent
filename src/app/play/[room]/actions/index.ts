@@ -70,7 +70,7 @@ const removeFromContainer = (state: GameState, action: REMOVE_FROM_CONTAINER) =>
 
 	const newPlayerState: GamePlayer = {
 		...player,
-		[action.source]: player[action.source].filter(c => !action.cards.includes(c))
+		[action.source]: player[action.source].filter(c => !action.cards.find(ac => ac.instance === c.instance))
 	}
 
 	const newPlayersState = state.players.map(p => (p.id === action.playerId ? newPlayerState : p))
@@ -133,7 +133,7 @@ const removeFromRow = (state: GameState, action: REMOVE_FROM_ROW) => {
 			[action.rowType]: {
 				...rowToModify,
 				cards: rowToModify.cards.filter(c =>
-					action.cards.map(actionCard => actionCard?.id === c.id).includes(true) ? false : true
+					action.cards.map(actionCard => actionCard?.instance === c.instance).includes(true) ? false : true
 				)
 			}
 		}

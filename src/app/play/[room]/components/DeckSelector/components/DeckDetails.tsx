@@ -4,7 +4,9 @@ type Props = {
 	deck: Card[]
 }
 
-export const DeckDetails = ({ deck }: Props) => {
+export const DeckDetails = ({ deck: _deck }: Props) => {
+	const deck = _deck.flatMap(card => Array.from({ length: card.amount ?? 1 }, () => ({ ...card, amount: 1 })))
+
 	return (
 		<div className='flex flex-col items-center gap-4'>
 			<div className='text-center'>
@@ -17,9 +19,7 @@ export const DeckDetails = ({ deck }: Props) => {
 			</div>
 			<div className='text-center'>
 				<p className='text-sm text-muted-foreground'>Special Cards</p>
-				<p>
-					{deck.filter(card => card.type === 'special').length}/10
-				</p>
+				<p>{deck.filter(card => card.type === 'special').length}/10</p>
 			</div>
 			<div className='text-center'>
 				<p className='text-sm text-muted-foreground'>Total Unit Card Strength</p>

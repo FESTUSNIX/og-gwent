@@ -13,24 +13,36 @@ type Props = (
 			card: CardType
 			row?: GameRow
 			forceBanner?: FactionType
+			displayAmount?: boolean
 	  }
 	| {
 			mode: 'game'
 			card: CardType
 			row?: GameRow
 			forceBanner?: undefined
+			displayAmount?: undefined
 	  }
 ) &
 	HTMLAttributes<HTMLDivElement>
 
 const ASSET_PATH = '/game/card/'
 
-export const Card = ({ card: { id }, mode = 'preview', forceBanner, row, className, style, ...props }: Props) => {
+export const Card = ({
+	card: { id, amount },
+	mode = 'preview',
+	forceBanner,
+	row,
+	displayAmount,
+	className,
+	style,
+	...props
+}: Props) => {
 	const cards = cardsJson.cards as CardType[]
 	const card = cards.find(c => c.id === id)!
 
-	const useBanner = forceBanner ?? (card.factions[0] !== 'neutral' && mode === 'preview')
+	const useBanner = forceBanner ?? (card?.factions[0] !== 'neutral' && mode === 'preview')
 	const cardScore = calculateCardStrength(card, row)
+
 	return (
 		<div
 			{...props}
@@ -140,7 +152,7 @@ export const Card = ({ card: { id }, mode = 'preview', forceBanner, row, classNa
 			)}
 
 			{mode === 'preview' && (
-				<div className='relative h-1/4 w-full shrink-0 basis-1/4 text-center'>
+				<div className='relative flex h-1/4 w-full shrink-0 basis-1/4 flex-col text-center'>
 					<h3
 						className={cn(
 							'relative z-10 h-3/5 pr-[5%] pt-[5%] text-sm font-bold leading-tight text-[#333]',
@@ -153,6 +165,26 @@ export const Card = ({ card: { id }, mode = 'preview', forceBanner, row, classNa
 							</foreignObject>
 						</svg>
 					</h3>
+					{displayAmount && (
+						<div className='relative z-10 flex h-full items-center px-[5%] pt-[5%]'>
+							<Image
+								src={'/game/icons/card_amount.png'}
+								alt='Cards amount'
+								width={50}
+								height={50}
+								className='mr-[2%] h-2/3 w-auto'
+							/>
+
+							<div className='text-start font-normal leading-none tracking-tight text-[#726549]'>
+								<span className='sr-only'>{amount ?? 1}</span>
+								<svg viewBox='0 0 120 15' aria-hidden className='h-full w-full'>
+									<foreignObject x='0' y='0' width='100%' height='100%'>
+										<p>x{amount ?? 1}</p>
+									</foreignObject>
+								</svg>
+							</div>
+						</div>
+					)}
 					{card.description && (
 						<div className='relative z-10 px-[5%] pt-[1.5%] text-sm leading-none tracking-tight text-black'>
 							<span className='sr-only'>{card.description}</span>

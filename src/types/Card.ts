@@ -6,12 +6,15 @@ type Card = {
 	id: number
 	slug: string
 	name: string
+	type: 'unit' | 'special' | 'hero' | 'weather'
+	factions: FactionType[]
 	strength?: number
 	row?: RowType
 	ability?: Ability
-	type: 'unit' | 'special' | 'hero' | 'weather'
-	factions: FactionType[]
 	description?: string
+	group?: string
+	amount?: number
+	instance: string
 }
 
 export { type Card, type Card as CardType }

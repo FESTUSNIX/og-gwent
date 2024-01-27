@@ -115,10 +115,10 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 				...host.rows,
 				[rowType]: {
 					...row,
-					cards: [...row.cards.filter(c => c.id !== card.id), cardToAdd]
+					cards: [...row.cards.filter(c => c.instance !== card.instance), cardToAdd]
 				}
 			},
-			hand: [...host.hand.filter(c => c.id !== cardToAdd.id), card]
+			hand: [...host.hand.filter(c => c.instance !== cardToAdd.instance), card]
 		})
 		cleanAfterPlay()
 	}
@@ -136,7 +136,7 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 		const cardsWithDetails = allRows
 			.flatMap(r =>
 				r.cards.map(c => ({
-					id: c.id,
+					instance: c.instance,
 					type: c.type,
 					strength: calculateCardStrength(c, r),
 					row: r.rowType,
@@ -154,6 +154,11 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 			cleanAfterPlay(card)
 			return
 		}
+		if (!card.row && cardsWithDetails.length === 0) {
+			addToContainer(host.id, [card], 'discardPile')
+			cleanAfterPlay(card)
+			return
+		}
 
 		const highestStrength = cardsWithDetails.reduce((prev, curr) =>
 			(curr.strength ?? 0) > (prev.strength ?? 0) ? curr : prev
@@ -162,7 +167,7 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 		cardsWithDetails
 			.filter(c => c.strength === highestStrength)
 			.map(card => {
-				const gameCard = allRows.flatMap(r => r.cards).find(c => c.id === card.id)
+				const gameCard = allRows.flatMap(r => r.cards).find(c => c.instance === card.instance)
 
 				if (!gameCard) return
 
@@ -193,7 +198,7 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 	const handleMedic = (card: CardType, rowType: BoardRowTypes) => {
 		if (card?.ability !== 'medic') return
 
-		const cards = host.discardPile.filter(c => c.type === 'unit' && c.id !== card.id)
+		const cards = host.discardPile.filter(c => c.type === 'unit' && c.instance !== card.instance)
 
 		let cardToRevive: CardType | undefined
 

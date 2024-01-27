@@ -53,7 +53,8 @@
 			"type": "unit",
 			"ability": "tight_bond",
 			"factions": ["northern-realms"],
-			"id": 7
+			"id": 7,
+			"amount": 3
 		},
 		{
 			"name": "Blue Stripes Commando",
@@ -63,7 +64,8 @@
 			"type": "unit",
 			"ability": "tight_bond",
 			"factions": ["northern-realms"],
-			"id": 8
+			"id": 8,
+			"amount": 3
 		},
 		{
 			"name": "Sheldon Skaggs",
@@ -131,7 +133,8 @@
 			"type": "unit",
 			"ability": "tight_bond",
 			"factions": ["northern-realms"],
-			"id": 15
+			"id": 15,
+			"amount": 3
 		},
 		{
 			"name": "Prince Stennis",
@@ -223,7 +226,8 @@
 			"type": "unit",
 			"ability": "tight_bond",
 			"factions": ["northern-realms"],
-			"id": 25
+			"id": 25,
+			"amount": 2
 		},
 		{
 			"name": "Philippa Eilhart",
@@ -269,7 +273,9 @@
 			"type": "unit",
 			"ability": "tight_bond",
 			"factions": ["nilfgaard"],
-			"id": 30
+			"id": 30,
+			"amount": 4,
+			"group": "impera_brigade_guard"
 		},
 		{
 			"name": "Puttkammer",
@@ -334,6 +340,7 @@
 			"type": "unit",
 			"ability": "tight_bond",
 			"factions": ["nilfgaard"],
+			"group": "young_emissary",
 			"id": 37
 		},
 		{
@@ -437,6 +444,7 @@
 			"type": "unit",
 			"ability": "tight_bond",
 			"factions": ["nilfgaard"],
+			"group": "young_emissary",
 			"id": 49
 		},
 		{
@@ -446,7 +454,8 @@
 			"row": "effect",
 			"ability": "horn",
 			"factions": ["neutral"],
-			"id": 50
+			"id": 50,
+			"amount": 3
 		},
 		{
 			"name": "Mysterious Elf",
@@ -558,7 +567,8 @@
 			"type": "special",
 			"ability": "decoy",
 			"factions": ["neutral"],
-			"id": 62
+			"id": 62,
+			"amount": 3
 		},
 		{
 			"name": "Scorch",
@@ -566,7 +576,19 @@
 			"type": "special",
 			"ability": "scorch",
 			"factions": ["neutral"],
-			"id": 63
+			"id": 63,
+			"amount": 3
+		},
+		{
+			"name": "Nausicaa Cavalry Rider",
+			"slug": "nausicaa_cavalry_rider",
+			"strength": 2,
+			"row": "melee",
+			"type": "unit",
+			"ability": "tight_bond",
+			"factions": ["nilfgaard"],
+			"id": 64,
+			"amount": 3
 		}
 	]
 }

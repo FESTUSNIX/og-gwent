@@ -26,11 +26,7 @@ export const JoinGameForm = (props: Props) => {
 	})
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		console.log(values)
 		// TODO: Check if room exists
-
-
-
 		// If it does, redirect to room page
 
 		router.push(`/play/${values.code}`)
