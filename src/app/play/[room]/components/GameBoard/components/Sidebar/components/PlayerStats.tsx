@@ -4,6 +4,7 @@ import { calculateGameScore } from '@/lib/calculateScores'
 import { supabase } from '@/lib/supabase/supabase'
 import { cn } from '@/lib/utils'
 import { GamePlayer } from '@/types/Game'
+import { WeatherEffect } from '@/types/WeatherEffect'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
@@ -11,15 +12,16 @@ type Props = {
 	player: GamePlayer
 	opponent: GamePlayer
 	turn: GamePlayer['id'] | null
+	weatherEffects: WeatherEffect[] | undefined
 	side: 'host' | 'opponent'
 }
 
-export const PlayerStats = ({ player, opponent, side, turn }: Props) => {
+export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Props) => {
 	const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
 	const supabaseClient = supabase()
 
-	const score = calculateGameScore(player.rows)
-	const opponentScore = calculateGameScore(opponent.rows)
+	const score = calculateGameScore(player.rows, weatherEffects)
+	const opponentScore = calculateGameScore(opponent.rows, weatherEffects)
 	const isWinning = score > opponentScore
 
 	const hasPassed = player.hasPassed

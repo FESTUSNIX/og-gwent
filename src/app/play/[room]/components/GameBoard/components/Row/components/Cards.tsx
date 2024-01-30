@@ -2,17 +2,19 @@ import { Card } from '@/components/Card'
 import { cn } from '@/lib/utils'
 import { CardType } from '@/types/Card'
 import { GameRow } from '@/types/Game'
+import { WeatherEffect } from '@/types/WeatherEffect'
 import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 
 type Props = {
 	cards: CardType[]
 	row: GameRow
+	weatherEffect: WeatherEffect | undefined
 	previewCard: CardType | null
 	handleDecoy: (card: CardType) => void
 }
 
-export const Cards = ({ cards: _cards, row, previewCard, handleDecoy }: Props) => {
+export const Cards = ({ cards: _cards, row, weatherEffect, previewCard, handleDecoy }: Props) => {
 	const cards = _cards.sort((a, b) => {
 		if (a.strength === b.strength) {
 			if (a.name < b.name) return -1
@@ -101,7 +103,7 @@ export const Cards = ({ cards: _cards, row, previewCard, handleDecoy }: Props) =
 						onClick={() => {
 							handleDecoy(card)
 						}}>
-						<Card key={card.instance} card={card} mode='game' row={row} />
+						<Card key={card.instance} card={card} mode='game' row={row} weatherEffect={weatherEffect} />
 					</button>
 				))}
 			</motion.div>

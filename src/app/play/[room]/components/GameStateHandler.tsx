@@ -3,6 +3,7 @@
 import { calculateGameScore } from '@/lib/calculateScores'
 import { CardType } from '@/types/Card'
 import { GamePlayer, GameState } from '@/types/Game'
+import { WeatherEffect } from '@/types/WeatherEffect'
 import { Database } from '@/types/supabase'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Loader2 } from 'lucide-react'
@@ -63,7 +64,8 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 				id: roomId,
 				rounds: newGameState.rounds,
 				turn: newGameState.turn,
-				roomOwner: newGameState.roomOwner
+				roomOwner: newGameState.roomOwner,
+				weatherEffects: newGameState.weatherEffects
 			})
 			.eq('id', roomId)
 
@@ -81,7 +83,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 
 			const { data: roomData } = await supabase
 				.from('rooms')
-				.select('turn, rounds, roomOwner')
+				.select('turn, rounds, roomOwner, weatherEffects')
 				.eq('id', roomId)
 				.limit(1)
 				.single()
@@ -93,7 +95,8 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 				players: newPlayers as GameState['players'],
 				turn: roomData.turn,
 				rounds: (roomData.rounds ?? []) as GameState['rounds'],
-				roomOwner: roomData.roomOwner
+				roomOwner: roomData.roomOwner,
+				weatherEffects: roomData.weatherEffects as GameState['weatherEffects']
 			}
 
 			setGameState(newGameState)
@@ -212,8 +215,12 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 	const handleRoundEnd = async (host: GamePlayer, opponent: GamePlayer) => {
 		if (!host?.hasPassed || !opponent?.hasPassed) return
 
-		const hostScore = calculateGameScore(host.rows)
-		const opponentScore = calculateGameScore(opponent.rows)
+		const weatherEffects: WeatherEffect[] | undefined = gameState.weatherEffects?.map(
+			effect => effect.ability as WeatherEffect
+		)
+
+		const hostScore = calculateGameScore(host.rows, weatherEffects)
+		const opponentScore = calculateGameScore(opponent.rows, weatherEffects)
 
 		const winner = hostScore === opponentScore ? 'draw' : hostScore > opponentScore ? host.id : opponent.id
 
@@ -246,14 +253,15 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 					...Object.values(p.rows).reduce((acc, row) => [...acc, ...row.cards], [] as CardType[])
 				],
 				rows: {
-					melee: initialRow,
-					range: initialRow,
-					siege: initialRow
+					melee: { ...initialRow, name: 'melee' },
+					range: { ...initialRow, name: 'range' },
+					siege: { ...initialRow, name: 'siege' }
 				},
 				preview: null,
 				lives: winner === p.id ? p.lives : p.lives - 1
 			})),
-			roomOwner: gameState.roomOwner
+			roomOwner: gameState.roomOwner,
+			weatherEffects: []
 		}
 
 		setGameState(newGameState)

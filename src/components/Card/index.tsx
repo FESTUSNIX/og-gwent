@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils'
 import { Card as CardType } from '@/types/Card'
 import { FactionType } from '@/types/Faction'
 import { GameRow } from '@/types/Game'
+import { WeatherEffect } from '@/types/WeatherEffect'
 import Image from 'next/image'
 import { HTMLAttributes } from 'react'
 import cardsJson from '../../../db/cards.json'
@@ -12,6 +13,7 @@ type Props = (
 			mode: 'preview'
 			card: CardType
 			row?: GameRow
+			weatherEffect?: WeatherEffect
 			forceBanner?: FactionType
 			displayAmount?: boolean
 	  }
@@ -19,6 +21,7 @@ type Props = (
 			mode: 'game'
 			card: CardType
 			row?: GameRow
+			weatherEffect?: WeatherEffect
 			forceBanner?: undefined
 			displayAmount?: undefined
 	  }
@@ -32,6 +35,7 @@ export const Card = ({
 	mode = 'preview',
 	forceBanner,
 	row,
+	weatherEffect,
 	displayAmount,
 	className,
 	style,
@@ -41,7 +45,7 @@ export const Card = ({
 	const card = cards.find(c => c.id === id)!
 
 	const useBanner = forceBanner ?? (card?.factions[0] !== 'neutral' && mode === 'preview')
-	const cardScore = calculateCardStrength(card, row)
+	const cardScore = calculateCardStrength(card, row, weatherEffect)
 
 	return (
 		<div
@@ -95,7 +99,13 @@ export const Card = ({
 				<Image
 					src={
 						ASSET_PATH +
-						`power/${card.type === 'hero' ? 'hero' : card.type === 'special' ? card.ability : 'normal'}.png`
+						`power/${
+							card.type === 'hero'
+								? 'hero'
+								: card.type === 'special' || card.type === 'weather'
+								? card.ability
+								: 'normal'
+						}.png`
 					}
 					width={200}
 					height={200}
@@ -104,7 +114,7 @@ export const Card = ({
 				/>
 			</div>
 
-			{card.type !== 'special' && (
+			{card.type !== 'special' && card.type !== 'weather' && (
 				<div
 					className={cn(
 						'absolute z-20 flex',

@@ -153,6 +153,7 @@ export interface Database {
           roomOwner: string | null
           rounds: Json[] | null
           turn: string | null
+          weatherEffects: Json[] | null
         }
         Insert: {
           created_at?: string
@@ -160,6 +161,7 @@ export interface Database {
           roomOwner?: string | null
           rounds?: Json[] | null
           turn?: string | null
+          weatherEffects?: Json[] | null
         }
         Update: {
           created_at?: string
@@ -167,13 +169,14 @@ export interface Database {
           roomOwner?: string | null
           rounds?: Json[] | null
           turn?: string | null
+          weatherEffects?: Json[] | null
         }
         Relationships: [
           {
             foreignKeyName: "rooms_roomOwner_fkey"
             columns: ["roomOwner"]
             isOneToOne: false
-            referencedRelation: "players"
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {

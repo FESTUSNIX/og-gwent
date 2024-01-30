@@ -12,12 +12,14 @@ export const initialGameState: GameState = {
 	players: [],
 	rounds: [],
 	turn: null,
-	roomOwner: null
+	roomOwner: null,
+	weatherEffects: []
 }
 
 export const initialRow: GameRow = {
 	cards: [],
-	effect: null
+	effect: null,
+	name: null
 }
 
 export const initialPlayer: Omit<GamePlayer, 'id' | 'name' | 'faction'> = {
@@ -29,9 +31,9 @@ export const initialPlayer: Omit<GamePlayer, 'id' | 'name' | 'faction'> = {
 	hand: [],
 	discardPile: [],
 	rows: {
-		melee: initialRow,
-		range: initialRow,
-		siege: initialRow
+		melee: { ...initialRow, name: 'melee' },
+		range: { ...initialRow, name: 'range' },
+		siege: { ...initialRow, name: 'siege' }
 	}
 }
 
@@ -71,6 +73,8 @@ const gameReducer = (state: GameState, action: Action | CUSTOM) => {
 			return actions.setRowEffect(state, action)
 		case 'REMOVE_FROM_ROW':
 			return actions.removeFromRow(state, action)
+		case 'PLAY_WEATHER_EFFECT':
+			return actions.playWeatherEffect(state, action)
 		default:
 			return initialGameState
 	}
@@ -99,6 +103,7 @@ type GameContextProps = {
 		saveRoundScores: (players: { id: GamePlayer['id']; score: number }[]) => void
 		setRowEffect: (playerId: Player['id'], effect: Card, rowType: BoardRowTypes) => void
 		removeFromRow: (playerId: Player['id'], cards: (Card | undefined)[], rowType: BoardRowTypes) => void
+		playWeatherEffect: (effect: Card) => void
 	}
 }
 
@@ -119,7 +124,8 @@ const initialState: GameContextProps = {
 		setGameState: () => {},
 		saveRoundScores: () => {},
 		setRowEffect: () => {},
-		removeFromRow: () => {}
+		removeFromRow: () => {},
+		playWeatherEffect: () => {}
 	}
 }
 
@@ -179,6 +185,8 @@ export const GameContextProvider = ({
 	const removeFromRow = (playerId: Player['id'], cards: (Card | undefined)[], rowType: BoardRowTypes) =>
 		dispatchAction({ type: 'REMOVE_FROM_ROW', playerId, rowType, cards })
 
+	const playWeatherEffect = (effect: Card) => dispatchAction({ type: 'PLAY_WEATHER_EFFECT', effect })
+
 	return (
 		<GameContext.Provider
 			value={{
@@ -198,7 +206,8 @@ export const GameContextProvider = ({
 					setGameState,
 					saveRoundScores,
 					setRowEffect,
-					removeFromRow
+					removeFromRow,
+					playWeatherEffect
 				}
 			}}>
 			<GameStateHandler roomId={roomId} userId={userId} />

@@ -2,6 +2,7 @@
 
 import { Hand } from '@/app/play/[room]/components/GameBoard/components/Hand'
 import { CardsPreview } from '@/components/CardsPreview'
+import { WeatherEffect } from '@/types/WeatherEffect'
 import { Tables } from '@/types/supabase'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect } from 'react'
@@ -60,7 +61,12 @@ export const GameBoard = ({ user, roomId }: Props) => {
 			{host.gameStatus === 'accepted' && <Reroll currentPlayer={host} />}
 			{host.gameStatus === 'play' && opponent.gameStatus === 'accepted' && <WaitForStartBanner />}
 
-			<Sidebar host={host} opponent={opponent} turn={gameState.turn} />
+			<Sidebar
+				host={host}
+				opponent={opponent}
+				turn={gameState.turn}
+				weatherEffects={gameState.weatherEffects?.map(effect => (effect.ability as WeatherEffect))}
+			/>
 
 			<div className='flex h-full min-w-0 border-l bg-stone-600 pb-12 pl-24'>
 				<div className='flex h-full min-w-0 grow flex-col'>

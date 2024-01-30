@@ -10,4 +10,9 @@ export const ABILITIES = [
 	'berserker',
 	'muster',
 	'avenger',
+	'frost',
+	'fog',
+	'rain',
+	'storm',
+	'clear_weather',
 ] as const

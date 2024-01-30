@@ -589,6 +589,42 @@
 			"factions": ["nilfgaard"],
 			"id": 64,
 			"amount": 3
+		},
+		{
+			"name": "Biting Frost",
+			"slug": "biting_frost",
+			"type": "weather",
+			"factions": ["neutral"],
+			"ability": "frost",
+			"id": 65,
+			"amount": 2
+		},
+		{
+			"name": "Impenetrable Fog",
+			"slug": "impenetrable_fog",
+			"type": "weather",
+			"factions": ["neutral"],
+			"ability": "fog",
+			"id": 66,
+			"amount": 2
+		},
+		{
+			"name": "Torrential Rain",
+			"slug": "torrential_rain",
+			"type": "weather",
+			"factions": ["neutral"],
+			"ability": "rain",
+			"id": 67,
+			"amount": 2
+		},
+		{
+			"name": "Clear Weather",
+			"slug": "clear_weather",
+			"type": "weather",
+			"factions": ["neutral"],
+			"ability": "clear_weather",
+			"id": 68,
+			"amount": 2
 		}
 	]
 }

@@ -6,7 +6,9 @@ import { cn, getRandomEntries } from '@/lib/utils'
 import { CardType } from '@/types/Card'
 import { GamePlayer } from '@/types/Game'
 import { BoardRowTypes } from '@/types/RowType'
+import { ROW_TO_WEATHER_EFFECT, WeatherEffect } from '@/types/WeatherEffect'
 import { ArrowBigUpDash } from 'lucide-react'
+import Image from 'next/image'
 import { CSSProperties } from 'react'
 import { Cards } from './components/Cards'
 
@@ -37,6 +39,9 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 	const { openPreview } = useCardsPreview()
 
 	const player = side === 'host' ? host : opponent
+
+	const weatherEffect = gameState.weatherEffects?.find(e => e.ability === ROW_TO_WEATHER_EFFECT[rowType])
+		?.ability as WeatherEffect
 
 	const cardToAdd = host.preview
 	const row = player.rows[rowType]
@@ -138,7 +143,7 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 				r.cards.map(c => ({
 					instance: c.instance,
 					type: c.type,
-					strength: calculateCardStrength(c, r),
+					strength: calculateCardStrength(c, r, weatherEffect),
 					row: r.rowType,
 					owner: r.owner
 				}))
@@ -146,7 +151,7 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 			.filter(c => c.type === 'unit')
 
 		const rowsTotalScore = allRows
-			.flatMap(r => r.cards.map(c => ({ strength: calculateCardStrength(c, r) })))
+			.flatMap(r => r.cards.map(c => ({ strength: calculateCardStrength(c, r, weatherEffect) })))
 			.reduce((prev, curr) => prev + (curr.strength ?? 0), 0)
 
 		if (card.row && (rowsTotalScore < 10 || cardsWithDetails.length === 0)) {
@@ -237,7 +242,7 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 						'z-10 -mr-1.5 flex aspect-square h-12 w-12 translate-x-0.5 items-center justify-center rounded-full border-[3px] border-neutral-500 text-black',
 						side === 'host' ? 'bg-orange-300' : 'bg-blue-300'
 					)}>
-					<span className='text-2xl'>{calculateRowScore(row)}</span>
+					<span className='text-2xl'>{calculateRowScore(row, weatherEffect)}</span>
 				</div>
 				<div className='h-full w-3 rounded-l-md bg-neutral-500' />
 			</div>
@@ -257,12 +262,31 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 					'relative h-full w-full grow cursor-auto bg-stone-700 duration-100',
 					((canPlayUnit() && cardToAdd?.ability !== 'spy') || canPlayDecoy || canPlaySpy()) &&
 						'cursor-pointer ring-4 ring-inset ring-yellow-600/50 hover:ring-yellow-600'
+					// weatherEffect && 'bg-yellow-600'
 				)}
 				onClick={() => {
 					cardToAdd && handleCardPlay(cardToAdd)
 				}}>
-				<Cards cards={row.cards} row={row} previewCard={cardToAdd} handleDecoy={handleDecoy} />
+				<Cards
+					cards={row.cards}
+					row={row}
+					weatherEffect={weatherEffect}
+					previewCard={cardToAdd}
+					handleDecoy={handleDecoy}
+				/>
 			</button>
+
+			{weatherEffect && (
+				<div className='pointer-events-none absolute top-0 z-10 h-[calc(100%+3px)] w-full'>
+					<Image
+						src={`/game/weather/${weatherEffect}.png`}
+						alt={`${weatherEffect} weather effect`}
+						width={1000}
+						height={300}
+						className='h-full w-full select-none'
+					/>
+				</div>
+			)}
 		</div>
 	)
 }
