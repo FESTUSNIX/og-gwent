@@ -145,7 +145,8 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 
 		if (hostHasPassed === true && disable !== 'disable-host') {
 			await notice({
-				title: 'Round passed'
+				title: 'Round passed',
+				image: '/game/icons/notice/round_pass.png'
 			})
 			turn && (await turnNotice(turn))
 			return
@@ -157,7 +158,8 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 			disable !== 'disable-opponent'
 		) {
 			await notice({
-				title: 'Your opponent has passed'
+				title: 'Your opponent has passed',
+				image: '/game/icons/notice/round_pass.png'
 			})
 			turn && (await turnNotice(turn))
 			return
@@ -169,14 +171,16 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 
 		if (turn === currentPlayer.id) {
 			await notice({
-				title: 'Your turn'
+				title: 'Your turn',
+				image: '/game/icons/notice/turn_host.png'
 			})
 			return
 		}
 
 		if (turn === opponentPlayer.id) {
 			await notice({
-				title: "Opponent's turn"
+				title: "Opponent's turn",
+				image: '/game/icons/notice/turn_opponent.png'
 			})
 			return
 		}
@@ -231,7 +235,8 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 
 		await notice({
 			title:
-				winner === 'draw' ? 'Round draw' : winner === host.id ? 'You won the round!' : 'Your opponent won the round'
+				winner === 'draw' ? 'Round draw' : winner === host.id ? 'You won the round!' : 'Your opponent won the round',
+			image: `/game/icons/notice/round_${winner === 'draw' ? 'draw' : winner === host.id ? 'win' : 'defeat'}.png`
 		})
 
 		const newGameState: GameState = {
@@ -274,7 +279,8 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		sync()
 
 		await notice({
-			title: 'Round Start'
+			title: 'Round Start',
+			image: '/game/icons/notice/round_start.png'
 		})
 
 		newGameState.turn && (await turnNotice(newGameState.turn))
