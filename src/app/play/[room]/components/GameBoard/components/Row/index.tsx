@@ -70,6 +70,9 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 	const canPlayMedic = (card: CardType | null = cardToAdd, _rowType: BoardRowTypes = rowType) => {
 		return card?.ability === 'medic' && canPlayUnit(card, _rowType)
 	}
+	const canPlayMuster = (card: CardType | null = cardToAdd, _rowType: BoardRowTypes = rowType) => {
+		return (card?.ability ?? '').split('-')[0] === 'muster' && canPlayUnit(card, _rowType)
+	}
 
 	const canPlayDecoy = cardToAdd?.ability === 'decoy' && row.cards.find(c => c.type === 'unit') && canPlay
 	const canPlayEffect =
@@ -77,6 +80,8 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 		['horn', 'mardroeme', null].includes(cardToAdd.ability ?? null) &&
 		!row.effect &&
 		canPlay
+
+	const canAddToRow = (canPlayUnit() && cardToAdd?.ability !== 'spy') || canPlayDecoy || canPlaySpy()
 
 	const cleanAfterPlay = (card?: CardType) => {
 		if (card) removeFromContainer(host.id, [card], 'hand')
@@ -94,6 +99,7 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 		if (card?.ability === 'decoy') return
 		if (canPlaySpy(card, _rowType, _side)) return handleSpy(card, _rowType)
 		if (canPlayMedic(card, _rowType)) return handleMedic(card, _rowType)
+		if (canPlayMuster(card, _rowType)) return handleMuster(card, _rowType)
 		if (canScorch(card)) return handleScorch(card, _rowType)
 		if (canPlayUnit(card, _rowType)) return handleUnitAdd(card, _rowType)
 	}
@@ -234,6 +240,30 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 		})
 	}
 
+	const handleMuster = (card: CardType, rowType: BoardRowTypes) => {
+		if ((card?.ability ?? '').split('-')[0] !== 'muster') return
+
+		const isMuster = (c: CardType) =>
+			c.ability !== 'muster-summoner' && c.instance !== card.instance && c.group === card.group
+
+		const handMusterCards = host.hand.filter(c => isMuster(c))
+		const deckMusterCards = host.deck.filter(c => isMuster(c))
+
+		addToRow(host.id, card, rowType)
+		removeFromContainer(host.id, [card], 'hand')
+
+		handMusterCards.map(c => {
+			addToRow(host.id, c, c.row as BoardRowTypes)
+			removeFromContainer(host.id, [c], 'hand')
+		})
+		deckMusterCards.map(c => {
+			addToRow(host.id, c, c.row as BoardRowTypes)
+			removeFromContainer(host.id, [c], 'deck')
+		})
+
+		cleanAfterPlay()
+	}
+
 	return (
 		<div className={cn('relative flex grow items-center', className)} style={style}>
 			<div className='absolute left-0 flex h-full -translate-x-full items-center'>
@@ -259,10 +289,9 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 			</button>
 			<button
 				className={cn(
-					'relative h-full w-full grow cursor-auto bg-stone-700 duration-100',
-					((canPlayUnit() && cardToAdd?.ability !== 'spy') || canPlayDecoy || canPlaySpy()) &&
-						'cursor-pointer ring-4 ring-inset ring-yellow-600/50 hover:ring-yellow-600'
-					// weatherEffect && 'bg-yellow-600'
+					'group relative h-full w-full grow cursor-auto bg-stone-700 duration-100',
+					canAddToRow && 'cursor-pointer',
+					'ring-4 ring-inset ring-transparent hover:ring-yellow-600/75'
 				)}
 				onClick={() => {
 					cardToAdd && handleCardPlay(cardToAdd)
@@ -274,6 +303,8 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 					previewCard={cardToAdd}
 					handleDecoy={handleDecoy}
 				/>
+
+				<div className={cn('pointer-events-none absolute inset-0 z-0', canAddToRow && 'bg-yellow-600/15')} />
 			</button>
 
 			{weatherEffect && (

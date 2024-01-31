@@ -663,7 +663,10 @@
       "slug": "cirilla_fiona_elen_riannon",
       "type": "hero",
       "row": "melee",
+      "ability": "muster-summoner",
+      "group": "roach",
       "strength": 15,
+      "description": "Know when fairy tales cease to be tales? When people start believing in them.",
       "factions": [
         "neutral"
       ],
@@ -674,6 +677,9 @@
       "slug": "geralt_of_rivia",
       "type": "hero",
       "row": "melee",
+      "ability": "muster-summoner",
+      "group": "roach",
+      "description": "If that's what it takes to save the world, it'd better to let that world die.",
       "strength": 15,
       "factions": [
         "neutral"
@@ -1847,6 +1853,50 @@
       "description": "",
       "amount": 1,
       "id": 147
+    },
+    {
+      "slug": "roach",
+      "name": "Roach",
+      "type": "unit",
+      "factions": [
+        "neutral"
+      ],
+      "strength": 3,
+      "row": "melee",
+      "description": "Come on, Roach! Faster!",
+      "group": "roach",
+      "amount": 1,
+      "id": 148
+    },
+    {
+      "slug": "gaunter",
+      "name": "Gaunter O'Dimm",
+      "type": "unit",
+      "factions": [
+        "neutral"
+      ],
+      "strength": 2,
+      "row": "siege",
+      "ability": "muster-summoner",
+      "description": "He always grants exactly what you wish for. That's the problem.",
+      "group": "gaunter",
+      "amount": 1,
+      "id": 149
+    },
+    {
+      "slug": "gaunter_darkness",
+      "name": "Gaunter O'Dimm: Darkness",
+      "type": "unit",
+      "factions": [
+        "neutral"
+      ],
+      "strength": 4,
+      "row": "range",
+      "ability": "muster",
+      "description": "Fear not the shadows, but the light.",
+      "group": "gaunter",
+      "amount": 3,
+      "id": 150
     }
   ]
 }
