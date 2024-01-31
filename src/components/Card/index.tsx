@@ -31,7 +31,7 @@ type Props = (
 const ASSET_PATH = '/game/card/'
 
 export const Card = ({
-	card: { id, amount },
+	card: { id, amount, instance },
 	mode = 'preview',
 	forceBanner,
 	row,
@@ -41,8 +41,8 @@ export const Card = ({
 	style,
 	...props
 }: Props) => {
-	const cards = cardsJson.cards as CardType[]
-	const card = cards.find(c => c.id === id)!
+	const cards = cardsJson.cards as Omit<CardType, 'instance'>[]
+	const card: CardType = { ...cards.find(c => c.id === id)!, instance }
 
 	const useBanner = forceBanner ?? (card?.factions[0] !== 'neutral' && mode === 'preview')
 	const cardScore = calculateCardStrength(card, row, weatherEffect)
@@ -138,7 +138,7 @@ export const Card = ({
 								mode === 'preview' ? 'mt-[25%] w-[85%]' : 'mr-[5%] w-[30%]'
 							)}>
 							<Image
-								src={ASSET_PATH + `ability/${card.ability}.png`}
+								src={ASSET_PATH + `ability/${card.ability.split('-')[0]}.png`}
 								alt=''
 								width={80}
 								height={80}

@@ -25,8 +25,8 @@ export const Hand = ({ player }: Props) => {
 			return 0
 		}
 
-		if (!a.strength) return -1
-		if (!b.strength) return 1
+		if (a.strength === undefined) return -1
+		if (b.strength === undefined) return 1
 
 		return a.strength - b.strength
 	})

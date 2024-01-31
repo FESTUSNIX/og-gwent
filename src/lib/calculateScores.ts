@@ -6,8 +6,8 @@ export const hasHorn = (row: GameRow) => {
 	return row.effect?.ability === 'horn' || row.cards.find(c => c.ability === 'horn')
 }
 
-export const hasMoraleBoost = (row: GameRow) => {
-	return row.cards.find(c => c.ability === 'morale_boost')
+export const getMoraleBoostCards = (row: GameRow, card: CardType) => {
+	return row.cards.filter(c => c.ability === 'morale_boost' && card.instance !== c.instance)
 }
 
 export const hasTightBond = (row: GameRow, card: CardType) => {
@@ -24,7 +24,7 @@ export const calculateCardStrength = (card: CardType, row?: GameRow, weatherEffe
 
 	if (strength === undefined) return undefined
 	if (card.type === 'hero' || !row) return strength
-	
+
 	const isWeather = weatherEffect && row.name && ROW_TO_WEATHER_EFFECT[row.name] === weatherEffect
 
 	// Handle weather effect
@@ -42,7 +42,8 @@ export const calculateCardStrength = (card: CardType, row?: GameRow, weatherEffe
 	if (hasHorn(row) && card.ability !== 'horn') strength *= 2
 
 	// Handle morale boost
-	if (hasMoraleBoost(row) && card.ability !== 'morale_boost') strength += 1
+	const moraleBoostCards = getMoraleBoostCards(row, card)
+	if (moraleBoostCards.length > 0) strength += moraleBoostCards.length
 
 	return strength
 }
