@@ -2,39 +2,51 @@
 
 import { MultiSelectField } from '@/components/Forms/MultiSelectField'
 import { SelectField } from '@/components/Forms/SelectField'
-import { SwitchField } from '@/components/Forms/SwitchField'
 import { TextField } from '@/components/Forms/TextField'
 import { TextareaField } from '@/components/Forms/TextareaField'
 import { Form } from '@/components/ui/form'
+import { ABILITIES } from '@/constants/ABILITIES'
 import { FACTIONS } from '@/constants/FACTIONS'
+import { ROW_TYPES } from '@/constants/ROW_TYPES'
+import { capitalize } from '@/lib/utils'
 import { CardPayload, CardValidator } from '@/lib/validators/Card'
-import { RowType } from '@/types/RowType'
+import { FactionType } from '@/types/Faction'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
+import { useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { SlugField } from './SlugField'
 
 type Props = {
 	setIsOpen: (open: boolean) => void
 }
 
 export const CardForm = ({ setIsOpen }: Props) => {
+	const searchParams = useSearchParams()
+	const factionParam = searchParams.get('faction') as FactionType | null
+
 	const form = useForm<CardPayload>({
 		resolver: zodResolver(CardValidator),
 		defaultValues: {
 			name: '',
-			strength: 0,
-			type: undefined,
-			factions: undefined,
-			isHero: false,
+			slug: '',
+			type: 'unit',
+			factions: factionParam ? [factionParam] : [],
+			strength: undefined,
+			row: undefined,
+			ability: undefined,
 			description: '',
-			slug: ''
+			group: undefined,
+			amount: 1
 		}
 	})
 
 	const { mutate: createCard, isPending } = useMutation({
 		mutationFn: async (values: CardPayload) => {
+			console.log('CREATING', values)
+
 			const { data } = await axios.post(`/api/cards`, values)
 
 			return data
@@ -57,16 +69,16 @@ export const CardForm = ({ setIsOpen }: Props) => {
 		}
 	})
 
+	// If type is weather - disable strength, row, group
+
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(e => createCard(e))} id='card-form' className='space-y-8'>
-				<TextField accessorKey='name' label='Name' placeholder='Poor fucking infantry' />
+			<form onSubmit={form.handleSubmit(e => createCard(e))} id='card-form' className='space-y-8 px-1'>
+				<TextField accessorKey='name' label='Name' placeholder='Geralt of Rivia' />
 
-				<TextField accessorKey='slug' label='Slug' placeholder='poor-fucking-infantry' />
+				<SlugField form={form} />
 
-				<TextField accessorKey='strength' type='number' label='Strength' />
-
-				<SelectField accessorKey='type' options={RowTypeOptions} label='Type' />
+				<SelectField accessorKey='type' options={CardTypeOptions} label='Type' />
 
 				<MultiSelectField
 					accessorKey='factions'
@@ -74,7 +86,25 @@ export const CardForm = ({ setIsOpen }: Props) => {
 					label='Factions'
 				/>
 
-				<SwitchField accessorKey='isHero' label='Hero card' />
+				<TextField accessorKey='strength' type='number' label='Strength' />
+
+				<SelectField accessorKey='row' options={RowTypeOptions} label='Row' />
+
+				<SelectField accessorKey='ability' options={AbilityOptions} label='Ability' />
+
+				<TextField
+					accessorKey='group'
+					label='Group'
+					placeholder='eg. cerys, crones'
+					description='Used for tight bond and muster cards'
+				/>
+
+				<TextField
+					accessorKey='amount'
+					type='number'
+					label='Amount'
+					description='Max amount of cards you can add to your deck'
+				/>
 
 				<TextareaField
 					accessorKey='description'
@@ -86,17 +116,33 @@ export const CardForm = ({ setIsOpen }: Props) => {
 	)
 }
 
-const RowTypeOptions: { label: string; value: RowType }[] = [
+type Option = {
+	label: string
+	value: string
+}
+
+const CardTypeOptions: Option[] = [
 	{
-		label: 'Melee',
-		value: 'melee'
+		label: 'Unit',
+		value: 'unit'
 	},
 	{
-		label: 'Range',
-		value: 'range'
+		label: 'Hero',
+		value: 'hero'
 	},
 	{
-		label: 'Siege',
-		value: 'siege'
+		label: 'Special',
+		value: 'special'
+	},
+	{
+		label: 'Weather',
+		value: 'weather'
 	}
 ]
+
+const RowTypeOptions: Option[] = [
+	{ label: 'None', value: 'none' },
+	...ROW_TYPES.map(row => ({ label: capitalize(row), value: row }))
+]
+
+const AbilityOptions = ABILITIES.toSorted().map(ability => ({ label: capitalize(ability), value: ability }))

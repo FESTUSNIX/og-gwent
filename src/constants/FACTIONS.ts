@@ -16,6 +16,22 @@ export const FACTIONS = [
 		}
 	},
 	{
+		slug: 'scoiatael',
+		name: 'Scoiatael',
+		images: {
+			deckBack: '/game/icons/deck_back_scoiatael.jpg',
+			deckShield: '/game/icons/deck_shield_scoiatael.png'
+		}
+	},
+	{
+		slug: 'monsters',
+		name: 'Monsters',
+		images: {
+			deckBack: '/game/icons/deck_back_monsters.jpg',
+			deckShield: '/game/icons/deck_shield_monsters.png'
+		}
+	},
+	{
 		slug: 'neutral',
 		name: 'Neutral',
 		images: null

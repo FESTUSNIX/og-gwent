@@ -1,630 +1,1852 @@
 {
-	"cards": [
-		{
-			"id": 0,
-			"name": "Yarpen Zigrin",
-			"slug": "yarpen_zigrin",
-			"strength": 2,
-			"row": "melee",
-			"type": "unit",
-			"factions": ["northern-realms"]
-		},
-		{
-			"id": 3,
-			"name": "Keira Metz",
-			"slug": "keira_metz",
-			"strength": 6,
-			"row": "range",
-			"type": "unit",
-			"factions": ["northern-realms"]
-		},
-		{
-			"name": "Redanian Foot Soldier",
-			"slug": "redanian_foot_soldier_2",
-			"strength": 1,
-			"row": "melee",
-			"type": "unit",
-			"factions": ["northern-realms"],
-			"id": 4
-		},
-		{
-			"id": 5,
-			"name": "Cahir Mawr Dyffryn aep Ceallach",
-			"slug": "cahir",
-			"strength": 6,
-			"row": "melee",
-			"type": "unit",
-			"factions": ["nilfgaard"]
-		},
-		{
-			"name": "Redanian Foot Soldier",
-			"slug": "redanian_foot_soldier",
-			"strength": 1,
-			"row": "melee",
-			"type": "unit",
-			"factions": ["northern-realms"],
-			"id": 6
-		},
-		{
-			"name": "Poor Fucking Infantry",
-			"slug": "poor_fucking_infantry",
-			"strength": 1,
-			"row": "melee",
-			"type": "unit",
-			"ability": "tight_bond",
-			"factions": ["northern-realms"],
-			"id": 7,
-			"amount": 3
-		},
-		{
-			"name": "Blue Stripes Commando",
-			"slug": "blue_stripes_commando",
-			"strength": 4,
-			"row": "melee",
-			"type": "unit",
-			"ability": "tight_bond",
-			"factions": ["northern-realms"],
-			"id": 8,
-			"amount": 3
-		},
-		{
-			"name": "Sheldon Skaggs",
-			"slug": "sheldon_skaggs",
-			"strength": 4,
-			"row": "range",
-			"type": "unit",
-			"factions": ["northern-realms"],
-			"id": 9
-		},
-		{
-			"name": "Thaler",
-			"slug": "thaler",
-			"strength": 1,
-			"row": "siege",
-			"type": "unit",
-			"ability": "spy",
-			"factions": ["northern-realms"],
-			"id": 10
-		},
-		{
-			"name": "Kaedweni Siege Expert",
-			"slug": "kaedweni_siege_expert",
-			"strength": 1,
-			"row": "siege",
-			"type": "unit",
-			"ability": "morale_boost",
-			"factions": ["northern-realms"],
-			"id": 11
-		},
-		{
-			"name": "Sabrina Glevissig",
-			"slug": "sabrina_glevissig",
-			"strength": 4,
-			"row": "range",
-			"type": "unit",
-			"factions": ["northern-realms"],
-			"id": 12
-		},
-		{
-			"name": "Sigismund Dijkstra",
-			"slug": "sigismund_dijkstra",
-			"strength": 4,
-			"row": "melee",
-			"type": "unit",
-			"ability": "spy",
-			"factions": ["northern-realms"],
-			"id": 13
-		},
-		{
-			"name": "Dun Banner Medic",
-			"slug": "dun_banner_medic",
-			"strength": 5,
-			"row": "siege",
-			"type": "unit",
-			"ability": "medic",
-			"factions": ["northern-realms"],
-			"id": 14
-		},
-		{
-			"name": "Crinfrid Reavers Dragon Hunter",
-			"slug": "crinfrid_reavers_dragon_hunter",
-			"strength": 5,
-			"row": "range",
-			"type": "unit",
-			"ability": "tight_bond",
-			"factions": ["northern-realms"],
-			"id": 15,
-			"amount": 3
-		},
-		{
-			"name": "Prince Stennis",
-			"slug": "prince_stennis",
-			"strength": 5,
-			"row": "melee",
-			"type": "unit",
-			"ability": "spy",
-			"factions": ["northern-realms"],
-			"id": 16
-		},
-		{
-			"name": "Sheala de Tancarville",
-			"slug": "sheala_de_tancarville",
-			"strength": 5,
-			"row": "range",
-			"type": "unit",
-			"factions": ["northern-realms"],
-			"id": 17
-		},
-		{
-			"name": "Trebuchet",
-			"slug": "trebuchet_2",
-			"strength": 5,
-			"row": "siege",
-			"type": "unit",
-			"factions": ["northern-realms"],
-			"id": 18
-		},
-		{
-			"name": "Siegfried of Denesle",
-			"slug": "siegfried_of_denesle",
-			"strength": 5,
-			"row": "melee",
-			"type": "unit",
-			"factions": ["northern-realms"],
-			"id": 19
-		},
-		{
-			"name": "Ves",
-			"slug": "ves",
-			"strength": 5,
-			"row": "melee",
-			"type": "unit",
-			"factions": ["northern-realms"],
-			"id": 20
-		},
-		{
-			"name": "Siege Tower",
-			"slug": "siege_tower",
-			"strength": 6,
-			"row": "siege",
-			"type": "unit",
-			"factions": ["northern-realms"],
-			"id": 21
-		},
-		{
-			"name": "Ballista",
-			"slug": "ballista",
-			"strength": 6,
-			"row": "siege",
-			"type": "unit",
-			"factions": ["northern-realms"],
-			"id": 22
-		},
-		{
-			"name": "Trebuchet",
-			"slug": "trebuchet",
-			"strength": 6,
-			"row": "siege",
-			"type": "unit",
-			"factions": ["northern-realms"],
-			"id": 23
-		},
-		{
-			"name": "Dethmold",
-			"slug": "dethmold",
-			"strength": 6,
-			"row": "range",
-			"type": "unit",
-			"factions": ["northern-realms"],
-			"id": 24
-		},
-		{
-			"name": "Catapult",
-			"slug": "catapult",
-			"strength": 8,
-			"row": "siege",
-			"type": "unit",
-			"ability": "tight_bond",
-			"factions": ["northern-realms"],
-			"id": 25,
-			"amount": 2
-		},
-		{
-			"name": "Philippa Eilhart",
-			"slug": "philippa_eilhart",
-			"strength": 10,
-			"row": "range",
-			"type": "hero",
-			"factions": ["northern-realms"],
-			"id": 26
-		},
-		{
-			"name": "Esterad Thyssen",
-			"slug": "esterad_thyssen",
-			"strength": 10,
-			"row": "melee",
-			"type": "hero",
-			"factions": ["northern-realms"],
-			"id": 27
-		},
-		{
-			"name": "John Natalis",
-			"slug": "john_natalis",
-			"strength": 10,
-			"row": "melee",
-			"type": "hero",
-			"factions": ["northern-realms"],
-			"id": 28
-		},
-		{
-			"name": "Vernon Roche",
-			"slug": "vernon_roche",
-			"strength": 10,
-			"row": "melee",
-			"type": "hero",
-			"factions": ["northern-realms"],
-			"id": 29
-		},
-		{
-			"name": "Impera Brigade Guard",
-			"slug": "impera_brigade_guard",
-			"strength": 3,
-			"row": "melee",
-			"type": "unit",
-			"ability": "tight_bond",
-			"factions": ["nilfgaard"],
-			"id": 30,
-			"amount": 4,
-			"group": "impera_brigade_guard"
-		},
-		{
-			"name": "Puttkammer",
-			"slug": "puttkammer",
-			"strength": 3,
-			"row": "range",
-			"type": "unit",
-			"factions": ["nilfgaard"],
-			"id": 31
-		},
-		{
-			"name": "Rotten Mangonel",
-			"slug": "rotten_mangonel",
-			"strength": 3,
-			"row": "siege",
-			"type": "unit",
-			"factions": ["nilfgaard"],
-			"id": 32
-		},
-		{
-			"name": "Stefan Skellen",
-			"slug": "stefan_skellen",
-			"strength": 9,
-			"row": "melee",
-			"type": "unit",
-			"ability": "spy",
-			"factions": ["nilfgaard"],
-			"id": 33
-		},
-		{
-			"name": "Heavy Zerrikanian Fire Scorpion",
-			"slug": "heavy_zerrikanian_fire_scorpion",
-			"strength": 10,
-			"row": "siege",
-			"type": "unit",
-			"factions": ["nilfgaard"],
-			"id": 34
-		},
-		{
-			"name": "Black Infantry Archer",
-			"slug": "black_infantry_archer",
-			"strength": 10,
-			"row": "range",
-			"type": "unit",
-			"factions": ["nilfgaard"],
-			"id": 35
-		},
-		{
-			"name": "Tibor Eggebracht",
-			"slug": "tibor_eggebracht",
-			"strength": 10,
-			"row": "range",
-			"type": "hero",
-			"factions": ["nilfgaard"],
-			"id": 36
-		},
-		{
-			"name": "Young Emissary",
-			"slug": "young_emissary",
-			"strength": 5,
-			"row": "melee",
-			"type": "unit",
-			"ability": "tight_bond",
-			"factions": ["nilfgaard"],
-			"group": "young_emissary",
-			"id": 37
-		},
-		{
-			"name": "Zerrikanian Fire Scorpion",
-			"slug": "zerrikanian_fire_scorpion",
-			"strength": 5,
-			"row": "siege",
-			"type": "unit",
-			"factions": ["nilfgaard"],
-			"id": 38
-		},
-		{
-			"name": "Renuald aep Matsen",
-			"slug": "renuald_aep_matsen",
-			"strength": 5,
-			"row": "range",
-			"type": "unit",
-			"factions": ["nilfgaard"],
-			"id": 39
-		},
-		{
-			"name": "Siege Engineer",
-			"slug": "siege_engineer",
-			"strength": 6,
-			"row": "siege",
-			"type": "unit",
-			"factions": ["nilfgaard"],
-			"id": 40
-		},
-		{
-			"name": "Fringilla Vigo",
-			"slug": "fringilla_vigo",
-			"strength": 6,
-			"row": "range",
-			"type": "unit",
-			"factions": ["nilfgaard"],
-			"id": 42
-		},
-		{
-			"name": "Assire var Anahid",
-			"slug": "assire_var_anahid",
-			"strength": 6,
-			"row": "range",
-			"type": "unit",
-			"factions": ["nilfgaard"],
-			"id": 43
-		},
-		{
-			"name": "Shilard Fitz-Oesterlen",
-			"slug": "shilard_fitz_oesterlen",
-			"strength": 7,
-			"row": "melee",
-			"type": "unit",
-			"ability": "spy",
-			"factions": ["nilfgaard"],
-			"id": 44
-		},
-		{
-			"name": "Menno Coehorn",
-			"slug": "menno_coehorn",
-			"strength": 10,
-			"row": "melee",
-			"type": "hero",
-			"ability": "medic",
-			"factions": ["nilfgaard"],
-			"id": 45
-		},
-		{
-			"name": "Vattier de Rideaux",
-			"slug": "vattier_de_rideaux",
-			"strength": 4,
-			"row": "melee",
-			"type": "unit",
-			"ability": "spy",
-			"factions": ["nilfgaard"],
-			"id": 46
-		},
-		{
-			"name": "Morvran Voorhis",
-			"slug": "morvran_voorhis",
-			"strength": 10,
-			"row": "siege",
-			"type": "hero",
-			"factions": ["nilfgaard"],
-			"id": 47
-		},
-		{
-			"name": "Black Infantry Archer",
-			"slug": "black_infantry_archer_2",
-			"strength": 10,
-			"row": "range",
-			"type": "unit",
-			"factions": ["nilfgaard"],
-			"id": 48
-		},
-		{
-			"name": "Young Emissary",
-			"slug": "young_emissary_2",
-			"strength": 5,
-			"row": "melee",
-			"type": "unit",
-			"ability": "tight_bond",
-			"factions": ["nilfgaard"],
-			"group": "young_emissary",
-			"id": 49
-		},
-		{
-			"name": "Commander's Horn",
-			"slug": "commanders_horn",
-			"type": "special",
-			"row": "effect",
-			"ability": "horn",
-			"factions": ["neutral"],
-			"id": 50,
-			"amount": 3
-		},
-		{
-			"name": "Mysterious Elf",
-			"slug": "mysterious_elf",
-			"type": "hero",
-			"row": "melee",
-			"ability": "spy",
-			"strength": 0,
-			"factions": ["neutral"],
-			"id": 51
-		},
-		{
-			"name": "Dandelion",
-			"slug": "dandelion",
-			"type": "unit",
-			"row": "melee",
-			"ability": "horn",
-			"strength": 2,
-			"factions": ["neutral"],
-			"id": 52
-		},
-		{
-			"name": "Emiel Regis Rohellec Terzieff",
-			"slug": "regis",
-			"type": "unit",
-			"row": "melee",
-			"strength": 5,
-			"factions": ["neutral"],
-			"id": 53
-		},
-		{
-			"name": "Zoltan Chivay",
-			"slug": "zoltan_chivay",
-			"type": "unit",
-			"row": "melee",
-			"strength": 5,
-			"factions": ["neutral"],
-			"id": 54
-		},
-		{
-			"name": "Olgierd von Everec",
-			"slug": "olgierd_von_everec",
-			"type": "unit",
-			"row": "agile",
-			"ability": "morale_boost",
-			"strength": 6,
-			"factions": ["neutral"],
-			"id": 55
-		},
-		{
-			"name": "Vesemir",
-			"slug": "vesemir",
-			"type": "unit",
-			"row": "melee",
-			"strength": 6,
-			"factions": ["neutral"],
-			"id": 56
-		},
-		{
-			"name": "Villentretenmerth",
-			"slug": "villentretenmerth",
-			"type": "unit",
-			"row": "melee",
-			"ability": "scorch",
-			"strength": 7,
-			"factions": ["neutral"],
-			"id": 57
-		},
-		{
-			"name": "Triss Merigold",
-			"slug": "triss_merigold",
-			"type": "hero",
-			"row": "melee",
-			"strength": 7,
-			"factions": ["neutral"],
-			"id": 58
-		},
-		{
-			"name": "Yennefer of Vengerberg",
-			"slug": "yennefer_of_vengerberg",
-			"type": "hero",
-			"row": "range",
-			"strength": 8,
-			"ability": "medic",
-			"factions": ["neutral"],
-			"id": 59
-		},
-		{
-			"name": "Cirilla Fiona Elen Riannon",
-			"slug": "cirilla_fiona_elen_riannon",
-			"type": "hero",
-			"row": "melee",
-			"strength": 15,
-			"factions": ["neutral"],
-			"id": 60
-		},
-		{
-			"name": "Geralt of Rivia",
-			"slug": "geralt_of_rivia",
-			"type": "hero",
-			"row": "melee",
-			"strength": 15,
-			"factions": ["neutral"],
-			"id": 61
-		},
-		{
-			"name": "Decoy",
-			"slug": "decoy",
-			"type": "special",
-			"ability": "decoy",
-			"factions": ["neutral"],
-			"id": 62,
-			"amount": 3
-		},
-		{
-			"name": "Scorch",
-			"slug": "scorch",
-			"type": "special",
-			"ability": "scorch",
-			"factions": ["neutral"],
-			"id": 63,
-			"amount": 3
-		},
-		{
-			"name": "Nausicaa Cavalry Rider",
-			"slug": "nausicaa_cavalry_rider",
-			"strength": 2,
-			"row": "melee",
-			"type": "unit",
-			"ability": "tight_bond",
-			"factions": ["nilfgaard"],
-			"id": 64,
-			"amount": 3
-		},
-		{
-			"name": "Biting Frost",
-			"slug": "biting_frost",
-			"type": "weather",
-			"factions": ["neutral"],
-			"ability": "frost",
-			"id": 65,
-			"amount": 2
-		},
-		{
-			"name": "Impenetrable Fog",
-			"slug": "impenetrable_fog",
-			"type": "weather",
-			"factions": ["neutral"],
-			"ability": "fog",
-			"id": 66,
-			"amount": 2
-		},
-		{
-			"name": "Torrential Rain",
-			"slug": "torrential_rain",
-			"type": "weather",
-			"factions": ["neutral"],
-			"ability": "rain",
-			"id": 67,
-			"amount": 2
-		},
-		{
-			"name": "Clear Weather",
-			"slug": "clear_weather",
-			"type": "weather",
-			"factions": ["neutral"],
-			"ability": "clear_weather",
-			"id": 68,
-			"amount": 2
-		}
-	]
+  "cards": [
+    {
+      "id": 0,
+      "name": "Yarpen Zigrin",
+      "slug": "yarpen_zigrin",
+      "strength": 2,
+      "row": "melee",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Keira Metz",
+      "slug": "keira_metz",
+      "strength": 6,
+      "row": "range",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ]
+    },
+    {
+      "name": "Redanian Foot Soldier",
+      "slug": "redanian_foot_soldier_2",
+      "strength": 1,
+      "row": "melee",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 4
+    },
+    {
+      "id": 5,
+      "name": "Cahir Mawr Dyffryn aep Ceallach",
+      "slug": "cahir",
+      "strength": 6,
+      "row": "melee",
+      "type": "unit",
+      "factions": [
+        "nilfgaard"
+      ]
+    },
+    {
+      "name": "Redanian Foot Soldier",
+      "slug": "redanian_foot_soldier",
+      "strength": 1,
+      "row": "melee",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 6
+    },
+    {
+      "name": "Poor Fucking Infantry",
+      "slug": "poor_fucking_infantry",
+      "strength": 1,
+      "row": "melee",
+      "type": "unit",
+      "ability": "tight_bond",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 7,
+      "amount": 3
+    },
+    {
+      "name": "Blue Stripes Commando",
+      "slug": "blue_stripes_commando",
+      "strength": 4,
+      "row": "melee",
+      "type": "unit",
+      "ability": "tight_bond",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 8,
+      "amount": 3
+    },
+    {
+      "name": "Sheldon Skaggs",
+      "slug": "sheldon_skaggs",
+      "strength": 4,
+      "row": "range",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 9
+    },
+    {
+      "name": "Thaler",
+      "slug": "thaler",
+      "strength": 1,
+      "row": "siege",
+      "type": "unit",
+      "ability": "spy",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 10
+    },
+    {
+      "name": "Kaedweni Siege Expert",
+      "slug": "kaedweni_siege_expert",
+      "strength": 1,
+      "row": "siege",
+      "type": "unit",
+      "ability": "morale_boost",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 11,
+      "amount": 3
+    },
+    {
+      "name": "Sabrina Glevissig",
+      "slug": "sabrina_glevissig",
+      "strength": 4,
+      "row": "range",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 12
+    },
+    {
+      "name": "Sigismund Dijkstra",
+      "slug": "sigismund_dijkstra",
+      "strength": 4,
+      "row": "melee",
+      "type": "unit",
+      "ability": "spy",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 13
+    },
+    {
+      "name": "Dun Banner Medic",
+      "slug": "dun_banner_medic",
+      "strength": 5,
+      "row": "siege",
+      "type": "unit",
+      "ability": "medic",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 14
+    },
+    {
+      "name": "Crinfrid Reavers Dragon Hunter",
+      "slug": "crinfrid_reavers_dragon_hunter",
+      "strength": 5,
+      "row": "range",
+      "type": "unit",
+      "ability": "tight_bond",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 15,
+      "amount": 3
+    },
+    {
+      "name": "Prince Stennis",
+      "slug": "prince_stennis",
+      "strength": 5,
+      "row": "melee",
+      "type": "unit",
+      "ability": "spy",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 16
+    },
+    {
+      "name": "Sheala de Tancarville",
+      "slug": "sheala_de_tancarville",
+      "strength": 5,
+      "row": "range",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 17
+    },
+    {
+      "name": "Trebuchet",
+      "slug": "trebuchet_2",
+      "strength": 5,
+      "row": "siege",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 18
+    },
+    {
+      "name": "Siegfried of Denesle",
+      "slug": "siegfried_of_denesle",
+      "strength": 5,
+      "row": "melee",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 19
+    },
+    {
+      "name": "Ves",
+      "slug": "ves",
+      "strength": 5,
+      "row": "melee",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 20
+    },
+    {
+      "name": "Siege Tower",
+      "slug": "siege_tower",
+      "strength": 6,
+      "row": "siege",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 21
+    },
+    {
+      "name": "Ballista",
+      "slug": "ballista",
+      "strength": 6,
+      "row": "siege",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 22
+    },
+    {
+      "name": "Trebuchet",
+      "slug": "trebuchet",
+      "strength": 6,
+      "row": "siege",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 23
+    },
+    {
+      "name": "Dethmold",
+      "slug": "dethmold",
+      "strength": 6,
+      "row": "range",
+      "type": "unit",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 24
+    },
+    {
+      "name": "Catapult",
+      "slug": "catapult",
+      "strength": 8,
+      "row": "siege",
+      "type": "unit",
+      "ability": "tight_bond",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 25,
+      "amount": 2
+    },
+    {
+      "name": "Philippa Eilhart",
+      "slug": "philippa_eilhart",
+      "strength": 10,
+      "row": "range",
+      "type": "hero",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 26
+    },
+    {
+      "name": "Esterad Thyssen",
+      "slug": "esterad_thyssen",
+      "strength": 10,
+      "row": "melee",
+      "type": "hero",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 27
+    },
+    {
+      "name": "John Natalis",
+      "slug": "john_natalis",
+      "strength": 10,
+      "row": "melee",
+      "type": "hero",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 28
+    },
+    {
+      "name": "Vernon Roche",
+      "slug": "vernon_roche",
+      "strength": 10,
+      "row": "melee",
+      "type": "hero",
+      "factions": [
+        "northern-realms"
+      ],
+      "id": 29
+    },
+    {
+      "name": "Impera Brigade Guard",
+      "slug": "impera_brigade_guard",
+      "strength": 3,
+      "row": "melee",
+      "type": "unit",
+      "ability": "tight_bond",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 30,
+      "amount": 4,
+      "group": "impera_brigade_guard"
+    },
+    {
+      "name": "Puttkammer",
+      "slug": "puttkammer",
+      "strength": 3,
+      "row": "range",
+      "type": "unit",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 31
+    },
+    {
+      "name": "Rotten Mangonel",
+      "slug": "rotten_mangonel",
+      "strength": 3,
+      "row": "siege",
+      "type": "unit",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 32
+    },
+    {
+      "name": "Stefan Skellen",
+      "slug": "stefan_skellen",
+      "strength": 9,
+      "row": "melee",
+      "type": "unit",
+      "ability": "spy",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 33
+    },
+    {
+      "name": "Heavy Zerrikanian Fire Scorpion",
+      "slug": "heavy_zerrikanian_fire_scorpion",
+      "strength": 10,
+      "row": "siege",
+      "type": "unit",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 34
+    },
+    {
+      "name": "Black Infantry Archer",
+      "slug": "black_infantry_archer",
+      "strength": 10,
+      "row": "range",
+      "type": "unit",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 35
+    },
+    {
+      "name": "Tibor Eggebracht",
+      "slug": "tibor_eggebracht",
+      "strength": 10,
+      "row": "range",
+      "type": "hero",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 36
+    },
+    {
+      "name": "Young Emissary",
+      "slug": "young_emissary",
+      "strength": 5,
+      "row": "melee",
+      "type": "unit",
+      "ability": "tight_bond",
+      "factions": [
+        "nilfgaard"
+      ],
+      "group": "young_emissary",
+      "id": 37
+    },
+    {
+      "name": "Zerrikanian Fire Scorpion",
+      "slug": "zerrikanian_fire_scorpion",
+      "strength": 5,
+      "row": "siege",
+      "type": "unit",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 38
+    },
+    {
+      "name": "Renuald aep Matsen",
+      "slug": "renuald_aep_matsen",
+      "strength": 5,
+      "row": "range",
+      "type": "unit",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 39
+    },
+    {
+      "name": "Siege Engineer",
+      "slug": "siege_engineer",
+      "strength": 6,
+      "row": "siege",
+      "type": "unit",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 40
+    },
+    {
+      "name": "Fringilla Vigo",
+      "slug": "fringilla_vigo",
+      "strength": 6,
+      "row": "range",
+      "type": "unit",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 42
+    },
+    {
+      "name": "Assire var Anahid",
+      "slug": "assire_var_anahid",
+      "strength": 6,
+      "row": "range",
+      "type": "unit",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 43
+    },
+    {
+      "name": "Shilard Fitz-Oesterlen",
+      "slug": "shilard_fitz_oesterlen",
+      "strength": 7,
+      "row": "melee",
+      "type": "unit",
+      "ability": "spy",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 44
+    },
+    {
+      "name": "Menno Coehorn",
+      "slug": "menno_coehorn",
+      "strength": 10,
+      "row": "melee",
+      "type": "hero",
+      "ability": "medic",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 45
+    },
+    {
+      "name": "Vattier de Rideaux",
+      "slug": "vattier_de_rideaux",
+      "strength": 4,
+      "row": "melee",
+      "type": "unit",
+      "ability": "spy",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 46
+    },
+    {
+      "name": "Morvran Voorhis",
+      "slug": "morvran_voorhis",
+      "strength": 10,
+      "row": "siege",
+      "type": "hero",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 47
+    },
+    {
+      "name": "Black Infantry Archer",
+      "slug": "black_infantry_archer_2",
+      "strength": 10,
+      "row": "range",
+      "type": "unit",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 48
+    },
+    {
+      "name": "Young Emissary",
+      "slug": "young_emissary_2",
+      "strength": 5,
+      "row": "melee",
+      "type": "unit",
+      "ability": "tight_bond",
+      "factions": [
+        "nilfgaard"
+      ],
+      "group": "young_emissary",
+      "id": 49
+    },
+    {
+      "name": "Commander's Horn",
+      "slug": "commanders_horn",
+      "type": "special",
+      "row": "effect",
+      "ability": "horn",
+      "factions": [
+        "neutral"
+      ],
+      "id": 50,
+      "amount": 3
+    },
+    {
+      "name": "Mysterious Elf",
+      "slug": "mysterious_elf",
+      "type": "hero",
+      "row": "melee",
+      "ability": "spy",
+      "strength": 0,
+      "factions": [
+        "neutral"
+      ],
+      "id": 51
+    },
+    {
+      "name": "Dandelion",
+      "slug": "dandelion",
+      "type": "unit",
+      "row": "melee",
+      "ability": "horn",
+      "strength": 2,
+      "factions": [
+        "neutral"
+      ],
+      "id": 52
+    },
+    {
+      "name": "Emiel Regis Rohellec Terzieff",
+      "slug": "regis",
+      "type": "unit",
+      "row": "melee",
+      "strength": 5,
+      "factions": [
+        "neutral"
+      ],
+      "id": 53
+    },
+    {
+      "name": "Zoltan Chivay",
+      "slug": "zoltan_chivay",
+      "type": "unit",
+      "row": "melee",
+      "strength": 5,
+      "factions": [
+        "neutral"
+      ],
+      "id": 54
+    },
+    {
+      "name": "Olgierd von Everec",
+      "slug": "olgierd_von_everec",
+      "type": "unit",
+      "row": "agile",
+      "ability": "morale_boost",
+      "strength": 6,
+      "factions": [
+        "neutral"
+      ],
+      "id": 55
+    },
+    {
+      "name": "Vesemir",
+      "slug": "vesemir",
+      "type": "unit",
+      "row": "melee",
+      "strength": 6,
+      "factions": [
+        "neutral"
+      ],
+      "id": 56
+    },
+    {
+      "name": "Villentretenmerth",
+      "slug": "villentretenmerth",
+      "type": "unit",
+      "row": "melee",
+      "ability": "scorch",
+      "strength": 7,
+      "factions": [
+        "neutral"
+      ],
+      "id": 57
+    },
+    {
+      "name": "Triss Merigold",
+      "slug": "triss_merigold",
+      "type": "hero",
+      "row": "melee",
+      "strength": 7,
+      "factions": [
+        "neutral"
+      ],
+      "id": 58
+    },
+    {
+      "name": "Yennefer of Vengerberg",
+      "slug": "yennefer_of_vengerberg",
+      "type": "hero",
+      "row": "range",
+      "strength": 8,
+      "ability": "medic",
+      "factions": [
+        "neutral"
+      ],
+      "id": 59
+    },
+    {
+      "name": "Cirilla Fiona Elen Riannon",
+      "slug": "cirilla_fiona_elen_riannon",
+      "type": "hero",
+      "row": "melee",
+      "strength": 15,
+      "factions": [
+        "neutral"
+      ],
+      "id": 60
+    },
+    {
+      "name": "Geralt of Rivia",
+      "slug": "geralt_of_rivia",
+      "type": "hero",
+      "row": "melee",
+      "strength": 15,
+      "factions": [
+        "neutral"
+      ],
+      "id": 61
+    },
+    {
+      "name": "Decoy",
+      "slug": "decoy",
+      "type": "special",
+      "ability": "decoy",
+      "factions": [
+        "neutral"
+      ],
+      "id": 62,
+      "amount": 3
+    },
+    {
+      "name": "Scorch",
+      "slug": "scorch",
+      "type": "special",
+      "ability": "scorch",
+      "factions": [
+        "neutral"
+      ],
+      "id": 63,
+      "amount": 3
+    },
+    {
+      "name": "Nausicaa Cavalry Rider",
+      "slug": "nausicaa_cavalry_rider",
+      "strength": 2,
+      "row": "melee",
+      "type": "unit",
+      "ability": "tight_bond",
+      "factions": [
+        "nilfgaard"
+      ],
+      "id": 64,
+      "amount": 3
+    },
+    {
+      "name": "Biting Frost",
+      "slug": "biting_frost",
+      "type": "weather",
+      "factions": [
+        "neutral"
+      ],
+      "ability": "frost",
+      "id": 65,
+      "amount": 2
+    },
+    {
+      "name": "Impenetrable Fog",
+      "slug": "impenetrable_fog",
+      "type": "weather",
+      "factions": [
+        "neutral"
+      ],
+      "ability": "fog",
+      "id": 66,
+      "amount": 2
+    },
+    {
+      "name": "Torrential Rain",
+      "slug": "torrential_rain",
+      "type": "weather",
+      "factions": [
+        "neutral"
+      ],
+      "ability": "rain",
+      "id": 67,
+      "amount": 2
+    },
+    {
+      "name": "Clear Weather",
+      "slug": "clear_weather",
+      "type": "weather",
+      "factions": [
+        "neutral"
+      ],
+      "ability": "clear_weather",
+      "id": 68,
+      "amount": 2
+    },
+    {
+      "slug": "barclay_els",
+      "name": "Barclay Els",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 6,
+      "row": "agile",
+      "description": "",
+      "amount": 1,
+      "id": 69
+    },
+    {
+      "slug": "ciaran_aep_easnillien",
+      "name": "Ciaran aep Easnillien",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 3,
+      "row": "agile",
+      "description": "",
+      "amount": 1,
+      "id": 70
+    },
+    {
+      "slug": "dennis_cranmer",
+      "name": "Dennis Cranmer",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 6,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 71
+    },
+    {
+      "slug": "dol_blathanna_archer",
+      "name": "Dol Blathanna Archer",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 3,
+      "row": "range",
+      "description": "",
+      "amount": 3,
+      "id": 72
+    },
+    {
+      "slug": "dol_blathanna_scout",
+      "name": "Dol Blathanna Scout",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 6,
+      "row": "agile",
+      "description": "",
+      "amount": 1,
+      "id": 73
+    },
+    {
+      "slug": "dol_blathanna_scout_2",
+      "name": "Dol Blathanna Scout",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 6,
+      "row": "agile",
+      "description": "",
+      "amount": 1,
+      "id": 74
+    },
+    {
+      "slug": "dol_blathanna_scout_3",
+      "name": "Dol Blathanna Scout",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 6,
+      "row": "agile",
+      "description": "",
+      "amount": 1,
+      "id": 75
+    },
+    {
+      "slug": "dwarven_skirmisher",
+      "name": "Dwarven Skirmisher",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 3,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "dwarven_skirmisher",
+      "amount": 1,
+      "id": 76
+    },
+    {
+      "slug": "dwarven_skirmisher_2",
+      "name": "Dwarven Skirmisher",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 3,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "dwarven_skirmisher",
+      "amount": 1,
+      "id": 77
+    },
+    {
+      "slug": "dwarven_skirmisher_3",
+      "name": "Dwarven Skirmisher",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 3,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "dwarven_skirmisher",
+      "amount": 1,
+      "id": 78
+    },
+    {
+      "slug": "eithne",
+      "name": "Eithné",
+      "type": "hero",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 10,
+      "row": "range",
+      "description": "",
+      "amount": 1,
+      "id": 79
+    },
+    {
+      "slug": "elven_skirmisher",
+      "name": "Elven Skirmisher",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 2,
+      "row": "range",
+      "ability": "muster",
+      "description": "",
+      "group": "elven_skirmisher",
+      "amount": 1,
+      "id": 80
+    },
+    {
+      "slug": "elven_skirmisher_2",
+      "name": "Elven Skirmisher",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 2,
+      "row": "range",
+      "ability": "muster",
+      "description": "",
+      "group": "elven_skirmisher",
+      "amount": 1,
+      "id": 81
+    },
+    {
+      "slug": "elven_skirmisher_3",
+      "name": "Elven Skirmisher",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 2,
+      "row": "range",
+      "ability": "muster",
+      "description": "",
+      "group": "elven_skirmisher",
+      "amount": 1,
+      "id": 82
+    },
+    {
+      "slug": "filavandrel_aen_fidhail",
+      "name": "Filavandrel aen Fidhail",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 6,
+      "row": "agile",
+      "description": "",
+      "amount": 1,
+      "id": 83
+    },
+    {
+      "slug": "havekar_healer",
+      "name": "Havekar Healer",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 0,
+      "row": "range",
+      "ability": "medic",
+      "description": "",
+      "amount": 1,
+      "id": 84
+    },
+    {
+      "slug": "havekar_healer_2",
+      "name": "Havekar Healer",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 0,
+      "row": "range",
+      "ability": "medic",
+      "description": "",
+      "amount": 1,
+      "id": 85
+    },
+    {
+      "slug": "havekar_healer_3",
+      "name": "Havekar Healer",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 0,
+      "row": "range",
+      "ability": "medic",
+      "description": "",
+      "amount": 1,
+      "id": 86
+    },
+    {
+      "slug": "havekar_smuggler",
+      "name": "Havekar Smuggler",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "havekar_smuggler",
+      "amount": 1,
+      "id": 87
+    },
+    {
+      "slug": "havekar_smuggler_2",
+      "name": "Havekar Smuggler",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "havekar_smuggler",
+      "amount": 1,
+      "id": 88
+    },
+    {
+      "slug": "havekar_smuggler_3",
+      "name": "Havekar Smuggler",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "havekar_smuggler",
+      "amount": 1,
+      "id": 89
+    },
+    {
+      "slug": "ida_emean_aep_sivney",
+      "name": "Ida Emean aep Sivney",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 6,
+      "row": "range",
+      "description": "",
+      "amount": 1,
+      "id": 90
+    },
+    {
+      "slug": "iorveth",
+      "name": "Iorveth",
+      "type": "hero",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 10,
+      "row": "range",
+      "description": "",
+      "amount": 1,
+      "id": 91
+    },
+    {
+      "slug": "isengrim",
+      "name": "Isengrim Faoiltiarna",
+      "type": "hero",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 10,
+      "row": "melee",
+      "ability": "morale_boost",
+      "description": "",
+      "amount": 1,
+      "id": 92
+    },
+    {
+      "slug": "mahakaman_defender",
+      "name": "Mahakaman Defender",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 93
+    },
+    {
+      "slug": "mahakaman_defender_2",
+      "name": "Mahakaman Defender",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 94
+    },
+    {
+      "slug": "mahakaman_defender_3",
+      "name": "Mahakaman Defender",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 95
+    },
+    {
+      "slug": "mahakaman_defender_4",
+      "name": "Mahakaman Defender",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 96
+    },
+    {
+      "slug": "mahakaman_defender_5",
+      "name": "Mahakaman Defender",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 97
+    },
+    {
+      "slug": "milva",
+      "name": "Milva",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 10,
+      "row": "range",
+      "ability": "morale_boost",
+      "description": "",
+      "amount": 1,
+      "id": 98
+    },
+    {
+      "slug": "riordain",
+      "name": "Riordain",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 1,
+      "row": "range",
+      "description": "",
+      "amount": 1,
+      "id": 99
+    },
+    {
+      "slug": "saskia",
+      "name": "Saesenthessis",
+      "type": "hero",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 10,
+      "row": "range",
+      "description": "",
+      "amount": 1,
+      "id": 100
+    },
+    {
+      "slug": "schirru",
+      "name": "Schirrú",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 8,
+      "row": "siege",
+      "ability": "scorch",
+      "description": "",
+      "amount": 1,
+      "id": 101
+    },
+    {
+      "slug": "toruviel",
+      "name": "Toruviel",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 2,
+      "row": "range",
+      "description": "",
+      "amount": 1,
+      "id": 102
+    },
+    {
+      "slug": "vrihedd_brigade_recruit",
+      "name": "Vrihedd Brigade Recruit",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 4,
+      "row": "range",
+      "description": "",
+      "amount": 1,
+      "id": 103
+    },
+    {
+      "slug": "vrihedd_brigade_veteran",
+      "name": "Vrihedd Brigade Veteran",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 5,
+      "row": "agile",
+      "description": "",
+      "amount": 2,
+      "id": 104
+    },
+    {
+      "slug": "vrihedd_brigade_veteran_2",
+      "name": "Vrihedd Brigade Veteran",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 5,
+      "row": "agile",
+      "description": "",
+      "amount": 1,
+      "id": 105
+    },
+    {
+      "slug": "yaevinn",
+      "name": "Yaevinn",
+      "type": "unit",
+      "factions": [
+        "scoiatael"
+      ],
+      "strength": 6,
+      "row": "agile",
+      "description": "",
+      "amount": 1,
+      "id": 106
+    },
+    {
+      "slug": "arachas",
+      "name": "Arachas",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 4,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "arachas",
+      "amount": 1,
+      "id": 107
+    },
+    {
+      "slug": "arachas_2",
+      "name": "Arachas",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 4,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "arachas",
+      "amount": 1,
+      "id": 108
+    },
+    {
+      "slug": "arachas_3",
+      "name": "Arachas",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 4,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "arachas",
+      "amount": 1,
+      "id": 109
+    },
+    {
+      "slug": "arachas_behemoth",
+      "name": "Arachas Behemoth",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 6,
+      "row": "siege",
+      "ability": "muster-summoner",
+      "description": "",
+      "group": "arachas",
+      "amount": 1,
+      "id": 110
+    },
+    {
+      "slug": "poroniec",
+      "name": "Poroniec",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 4,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 111
+    },
+    {
+      "slug": "celaeno_harpy",
+      "name": "Celaeno Harpy",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 2,
+      "row": "agile",
+      "description": "",
+      "amount": 1,
+      "id": 112
+    },
+    {
+      "slug": "cockatrice",
+      "name": "Cockatrice",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 2,
+      "row": "range",
+      "description": "",
+      "amount": 1,
+      "id": 113
+    },
+    {
+      "slug": "crone_brewess",
+      "name": "Crone: Brewess",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 6,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "crones",
+      "amount": 1,
+      "id": 114
+    },
+    {
+      "slug": "crone_weavess",
+      "name": "Crone: Weavess",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 6,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "crones",
+      "amount": 1,
+      "id": 115
+    },
+    {
+      "slug": "crone_whispess",
+      "name": "Crone: Whispess",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 6,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "crones",
+      "amount": 1,
+      "id": 116
+    },
+    {
+      "slug": "draug",
+      "name": "Draug",
+      "type": "hero",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 10,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 117
+    },
+    {
+      "slug": "earth_elemental",
+      "name": "Earth Elemental",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 6,
+      "row": "siege",
+      "description": "",
+      "amount": 1,
+      "id": 118
+    },
+    {
+      "slug": "endrega",
+      "name": "Endrega",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 2,
+      "row": "range",
+      "description": "",
+      "amount": 1,
+      "id": 119
+    },
+    {
+      "slug": "fiend",
+      "name": "Fiend",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 6,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 120
+    },
+    {
+      "slug": "fire_elemental",
+      "name": "Fire Elemental",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 6,
+      "row": "siege",
+      "description": "",
+      "amount": 1,
+      "id": 121
+    },
+    {
+      "slug": "foglet",
+      "name": "Foglet",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 2,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 122
+    },
+    {
+      "slug": "forktail",
+      "name": "Forktail",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 123
+    },
+    {
+      "slug": "frightener",
+      "name": "Frightener",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 124
+    },
+    {
+      "slug": "gargoyle",
+      "name": "Gargoyle",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 2,
+      "row": "range",
+      "description": "",
+      "amount": 1,
+      "id": 125
+    },
+    {
+      "slug": "ghoul",
+      "name": "Ghoul",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 1,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "ghoul",
+      "amount": 1,
+      "id": 126
+    },
+    {
+      "slug": "ghoul_2",
+      "name": "Ghoul",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 1,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "ghoul",
+      "amount": 1,
+      "id": 127
+    },
+    {
+      "slug": "ghoul_3",
+      "name": "Ghoul",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 1,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "ghoul",
+      "amount": 1,
+      "id": 128
+    },
+    {
+      "slug": "grave_hag",
+      "name": "Grave Hag",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 5,
+      "row": "range",
+      "description": "",
+      "amount": 1,
+      "id": 129
+    },
+    {
+      "slug": "griffin",
+      "name": "Griffin",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 130
+    },
+    {
+      "slug": "harpy",
+      "name": "Harpy",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 2,
+      "row": "agile",
+      "description": "",
+      "amount": 1,
+      "id": 131
+    },
+    {
+      "slug": "ice_giant",
+      "name": "Ice Giant",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 5,
+      "row": "siege",
+      "description": "",
+      "amount": 1,
+      "id": 132
+    },
+    {
+      "slug": "imlerith",
+      "name": "Imlerith",
+      "type": "hero",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 10,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 133
+    },
+    {
+      "slug": "kayran",
+      "name": "Kayran",
+      "type": "hero",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 8,
+      "row": "agile",
+      "ability": "morale_boost",
+      "description": "",
+      "amount": 1,
+      "id": 134
+    },
+    {
+      "slug": "leshen",
+      "name": "Leshen",
+      "type": "hero",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 10,
+      "row": "range",
+      "description": "",
+      "amount": 1,
+      "id": 135
+    },
+    {
+      "slug": "nekker",
+      "name": "Nekker",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 2,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "nekker",
+      "amount": 1,
+      "id": 136
+    },
+    {
+      "slug": "nekker_2",
+      "name": "Nekker",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 2,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "nekker",
+      "amount": 1,
+      "id": 137
+    },
+    {
+      "slug": "nekker_3",
+      "name": "Nekker",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 2,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "nekker",
+      "amount": 1,
+      "id": 138
+    },
+    {
+      "slug": "plague_maiden",
+      "name": "Plague Maiden",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 139
+    },
+    {
+      "slug": "toad",
+      "name": "Toad",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 7,
+      "row": "range",
+      "ability": "scorch",
+      "description": "",
+      "amount": 1,
+      "id": 140
+    },
+    {
+      "slug": "bruxa",
+      "name": "Vampire: Bruxa",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 4,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "vampires",
+      "amount": 2,
+      "id": 141
+    },
+    {
+      "slug": "ekimmara",
+      "name": "Vampire: Ekimmara",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 4,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "vampires",
+      "amount": 1,
+      "id": 142
+    },
+    {
+      "slug": "fleder",
+      "name": "Vampire: Fleder",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 4,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "vampires",
+      "amount": 1,
+      "id": 143
+    },
+    {
+      "slug": "garkain",
+      "name": "Vampire: Garkain",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 4,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "vampires",
+      "amount": 1,
+      "id": 144
+    },
+    {
+      "slug": "katakan",
+      "name": "Vampire: Katakan",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "ability": "muster",
+      "description": "",
+      "group": "vampires",
+      "amount": 1,
+      "id": 145
+    },
+    {
+      "slug": "werewolf",
+      "name": "Werewolf",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 5,
+      "row": "melee",
+      "description": "",
+      "amount": 1,
+      "id": 146
+    },
+    {
+      "slug": "wyvern",
+      "name": "Wyvern",
+      "type": "unit",
+      "factions": [
+        "monsters"
+      ],
+      "strength": 2,
+      "row": "range",
+      "description": "",
+      "amount": 1,
+      "id": 147
+    }
+  ]
 }

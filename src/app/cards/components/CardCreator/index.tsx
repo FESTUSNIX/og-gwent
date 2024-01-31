@@ -1,17 +1,17 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
 	Sheet,
 	SheetClose,
 	SheetContent,
-	SheetDescription,
 	SheetFooter,
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger
 } from '@/components/ui/sheet'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { CardForm } from './components/CardForm'
 
 type Props = {}
@@ -25,16 +25,18 @@ export const CardCreator = (props: Props) => {
 				<SheetTrigger asChild>
 					<Button size={'sm'}>Add new card</Button>
 				</SheetTrigger>
-				<SheetContent>
-					<SheetHeader>
+				<SheetContent className='pr-2'>
+					<SheetHeader className='pr-4'>
 						<SheetTitle>Add a new card</SheetTitle>
 					</SheetHeader>
 
 					<div className='py-8'>
-						<CardForm setIsOpen={setIsOpen} />
+						<ScrollArea className='h-[calc(100vh-4rem-3rem-2.5rem-1.75rem)] pr-4'>
+							<CardForm setIsOpen={setIsOpen} />
+						</ScrollArea>
 					</div>
 
-					<SheetFooter>
+					<SheetFooter className='pr-4'>
 						<SheetClose asChild>
 							<Button variant={'secondary'}>Cancel</Button>
 						</SheetClose>

@@ -9,6 +9,7 @@ export const ABILITIES = [
 	'morale_boost',
 	'berserker',
 	'muster',
+	'muster-summoner',
 	'avenger',
 	'frost',
 	'fog',

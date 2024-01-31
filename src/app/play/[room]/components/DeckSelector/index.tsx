@@ -1,6 +1,6 @@
 'use client'
 
-import { FactionSwitch } from '@/app/cards/components/FactionSwitch'
+import { FactionSwitch } from './components/FactionSwitch'
 import { FACTIONS } from '@/constants/FACTIONS'
 import { ROW_TYPES } from '@/constants/ROW_TYPES'
 import { getFirstParamValue } from '@/lib/utils'
