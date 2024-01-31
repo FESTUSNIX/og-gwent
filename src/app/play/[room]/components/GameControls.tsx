@@ -67,7 +67,6 @@ export const GameControls = ({ roomId }: Props) => {
 							'absolute top-full flex translate-y-4 flex-col gap-2 rounded-lg border bg-secondary/95 px-2 py-2'
 						)}>
 						<ScrollArea className='h-[80vh] px-2'>
-							{/* Filter out player hand, deck and discardPile on gameState */}
 							<pre className='text-xs'>
 								{JSON.stringify(
 									{

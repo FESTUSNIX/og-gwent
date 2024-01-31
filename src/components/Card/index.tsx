@@ -200,7 +200,7 @@ export const Card = ({
 							<span className='sr-only'>{card.description}</span>
 							<svg viewBox='0 0 220 45' aria-hidden className='h-full w-full'>
 								<foreignObject x='0' y='0' width='100%' height='100%'>
-									<p>{card.description}</p>
+									<p className='text-pretty'>{card.description}</p>
 								</foreignObject>
 							</svg>
 						</div>

@@ -333,7 +333,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 
 	useEffect(() => {
 		const setPass = () => {
-			if (currentPlayer?.hand.length === 0 && gameStarted) {
+			if (currentPlayer?.hand.length === 0 && gameStarted && !currentPlayer.hasPassed) {
 				updatePlayerState(currentPlayer.id, {
 					hasPassed: true
 				})
@@ -344,7 +344,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		setPass()
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [currentPlayer?.hand])
+	}, [currentPlayer?.hand.length])
 
 	if (gameState) return null
 
