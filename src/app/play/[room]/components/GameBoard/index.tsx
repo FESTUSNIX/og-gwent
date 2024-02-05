@@ -2,6 +2,7 @@
 
 import { Hand } from '@/app/play/[room]/components/GameBoard/components/Hand'
 import { CardsPreview } from '@/components/CardsPreview'
+import { BackgroundMusic } from '@/components/BackgroundMusic'
 import { WeatherEffect } from '@/types/WeatherEffect'
 import { Tables } from '@/types/supabase'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
@@ -65,10 +66,10 @@ export const GameBoard = ({ user, roomId }: Props) => {
 				host={host}
 				opponent={opponent}
 				turn={gameState.turn}
-				weatherEffects={gameState.weatherEffects?.map(effect => (effect.ability as WeatherEffect))}
+				weatherEffects={gameState.weatherEffects?.map(effect => effect.ability as WeatherEffect)}
 			/>
 
-			<div className='flex h-full min-w-0 border-l bg-stone-600 pb-12 pl-24'>
+			<div className='relative flex h-full min-w-0 border-l bg-stone-600 pb-12 pl-24'>
 				<div className='flex h-full min-w-0 grow flex-col'>
 					<div className='grid h-full grid-rows-7 gap-y-2 bg-stone-600 pt-2'>
 						<CardsPreview>
@@ -87,6 +88,8 @@ export const GameBoard = ({ user, roomId }: Props) => {
 
 					<CardPiles player={host} side='host' />
 				</div>
+
+				<BackgroundMusic />
 			</div>
 		</div>
 	)
