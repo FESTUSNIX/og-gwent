@@ -302,27 +302,6 @@ const saveRoundScores = (state: GameState, action: SAVE_ROUND_SCORES) => {
 	}
 }
 
-type PLAY_WEATHER_EFFECT = {
-	type: 'PLAY_WEATHER_EFFECT'
-	effect: Card
-}
-
-const playWeatherEffect = (state: GameState, action: PLAY_WEATHER_EFFECT) => {
-	const card = action.effect
-
-	if (card.type !== 'weather') return state
-	if (card.ability === 'clear_weather') {
-		return {
-			...state,
-			weatherEffects: []
-		}
-	}
-
-	return {
-		...state,
-		weatherEffects: [...(state.weatherEffects?.filter(w => w.id !== card.id) ?? []), card] ?? null
-	}
-}
 
 type Action =
 	| ACCEPT_GAME
@@ -337,7 +316,6 @@ type Action =
 	| SAVE_ROUND_SCORES
 	| SET_ROW_EFFECT
 	| REMOVE_FROM_ROW
-	| PLAY_WEATHER_EFFECT
 
 const actions = {
 	acceptGame,
@@ -351,9 +329,7 @@ const actions = {
 	updatePlayerState,
 	saveRoundScores,
 	setRowEffect,
-	removeFromRow,
-	playWeatherEffect
+	removeFromRow
 }
 
 export { actions, type Action }
-

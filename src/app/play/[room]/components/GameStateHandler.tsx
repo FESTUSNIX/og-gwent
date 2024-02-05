@@ -255,7 +255,8 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 				hasPassed: false,
 				discardPile: [
 					...p.discardPile,
-					...Object.values(p.rows).reduce((acc, row) => [...acc, ...row.cards], [] as CardType[])
+					...Object.values(p.rows).reduce((acc, row) => [...acc, ...row.cards], [] as CardType[]),
+					...(gameState.weatherEffects?.filter(effect => effect.owner === p.id) ?? [])
 				],
 				rows: {
 					melee: { ...initialRow, name: 'melee' },

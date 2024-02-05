@@ -1,5 +1,6 @@
 import { Card } from './Card'
 import { FactionType } from './Faction'
+import { Player } from './Player'
 import { BoardRowTypes } from './RowType'
 
 export type GameRow = {
@@ -37,5 +38,5 @@ export type GameState = {
 	}[]
 	turn: GamePlayer['id'] | null
 	roomOwner: GamePlayer['id'] | null
-	weatherEffects: Card[] | null
+	weatherEffects: (Card & { owner: Player['id'] })[] | null
 }

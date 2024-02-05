@@ -13,7 +13,7 @@ export const WeatherCardSlots = ({ host, opponent }: Props) => {
 	const {
 		gameState,
 		sync,
-		actions: { removeFromContainer, clearPreview, setTurn, playWeatherEffect }
+		actions: { removeFromContainer, clearPreview, setTurn, addToContainer, setGameState }
 	} = useGameContext()
 	const { weatherEffects } = gameState
 
@@ -35,7 +35,34 @@ export const WeatherCardSlots = ({ host, opponent }: Props) => {
 	const handlePlayWeather = () => {
 		if (!canPlayWeather) return
 
-		playWeatherEffect(cardToAdd)
+		const card = { ...cardToAdd, owner: host.id }
+		const currentEffects = gameState.weatherEffects ?? []
+
+		if (card.type !== 'weather') return
+		if (card.ability === 'clear_weather') {
+			setGameState({
+				...gameState,
+				weatherEffects: []
+			})
+			;[...currentEffects, card].map(effect => {
+				addToContainer(effect.owner, [effect], 'discardPile')
+			})
+
+			cleanAfterPlay(cardToAdd)
+			return
+		}
+
+		setGameState({
+			...gameState,
+			weatherEffects: [...(currentEffects?.filter(w => w.id !== card.id) ?? []), card]
+		})
+
+		// Keep in mind that multiple cards can be replaced when playing a skellige storm - TODO: Skellige
+		const effectsToReplace = currentEffects.filter(effect => effect.ability === card.ability)
+
+		effectsToReplace.map(effect => {
+			addToContainer(effect.owner, [effect], 'discardPile')
+		})
 
 		cleanAfterPlay(cardToAdd)
 	}
