@@ -127,7 +127,7 @@ export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Pr
 					<div className='absolute right-0 top-0 -translate-y-2 translate-x-1/2 text-2xl font-bold'>Passed</div>
 				)}
 
-				<div className='absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2'>
+				<div className='absolute right-0 top-1/2 z-10 -translate-y-1/2 translate-x-1/2'>
 					<div
 						className={cn(
 							'relative z-10 flex aspect-square w-[3.25rem] items-center justify-center rounded-full text-black'
