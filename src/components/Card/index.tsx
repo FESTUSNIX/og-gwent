@@ -156,7 +156,7 @@ export const Card = ({
 						alt=''
 						width={80}
 						height={80}
-						className={cn('pointer-events-none mt-[75%] h-[80%] w-auto -translate-x-[5%] select-none')}
+						className={cn('pointer-events-none mt-[90%] h-[77%] w-auto -translate-x-[5%] select-none')}
 					/>
 				</div>
 			)}
@@ -196,9 +196,9 @@ export const Card = ({
 						</div>
 					)}
 					{card.description && (
-						<div className='relative z-10 px-[5%] pt-[1.5%] text-sm leading-none tracking-tight text-black'>
+						<div className='relative z-10 px-[5%] pt-[3.5%] text-sm leading-none tracking-tight text-black'>
 							<span className='sr-only'>{card.description}</span>
-							<svg viewBox='0 0 220 45' aria-hidden className='h-full w-full'>
+							<svg viewBox='0 0 230 45' aria-hidden className='h-full w-full'>
 								<foreignObject x='0' y='0' width='100%' height='100%'>
 									<p className='text-pretty'>{card.description}</p>
 								</foreignObject>
