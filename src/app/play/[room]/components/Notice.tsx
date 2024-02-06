@@ -25,17 +25,25 @@ const Notice = () => {
 	useEffect(() => {
 		let timer: NodeJS.Timeout
 
-		if (show && duration !== 'infinite') {
-			timer = setTimeout(() => {
-				closeNotice()
+		const handleClose = async () => {
+			if (show && duration !== 'infinite') {
+				timer = setTimeout(async () => {
+					closeNotice()
 
-				onClose && onClose()
-			}, duration)
+					onClose && (await onClose())
+				}, duration)
 
-			return
+				return
+			}
+
+			if (!show && onClose) await onClose()
+
+			return () => {
+				clearTimeout(timer)
+			}
 		}
 
-		if (!show && onClose) onClose()
+		handleClose()
 
 		return () => {
 			clearTimeout(timer)

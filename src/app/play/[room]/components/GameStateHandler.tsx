@@ -40,7 +40,9 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 	const gameStarted = currentPlayer?.gameStatus === 'play' && opponentPlayer?.gameStatus === 'play'
 
 	const updateUsersOnServer = async (players: GamePlayer[]) => {
-		if (currentPlayer?.id !== gameState.roomOwner) return
+		const gameOver = players.some(player => player.lives === 0)
+
+		if (currentPlayer?.id !== gameState.roomOwner || gameOver) return
 
 		players.map(async player => {
 			const { error } = await supabase
@@ -274,7 +276,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 
 		if (host && opponent && gameOver) {
 			await onGameOver({ ...host, lives: hostLives }, { ...opponent, lives: opponentLives }, newGameState.rounds)
-			return
+			return newGameState
 		}
 
 		sync()
@@ -323,7 +325,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 					}
 				}
 
-				await updateGameStateOnServer(gameState)
+				await updateGameStateOnServer(gameStateAfterRoundEnd ?? gameState)
 				if (currentPlayer && opponentPlayer) {
 					await updateUsersOnServer(
 						gameStateAfterRoundEnd ? gameStateAfterRoundEnd?.players : [currentPlayer, opponentPlayer]

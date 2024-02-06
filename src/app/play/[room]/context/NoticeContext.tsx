@@ -7,7 +7,7 @@ type NoticeContent = {
 	title?: string
 	description?: string
 	image?: string
-	onClose?: () => void
+	onClose?: () => Promise<void> | void
 	duration?: number | 'infinite'
 	className?: string
 }

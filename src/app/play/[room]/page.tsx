@@ -6,7 +6,7 @@ import cardsJson from '../../../../db/cards.json'
 import { DeckSelector } from './components/DeckSelector'
 import { GameBoard } from './components/GameBoard'
 import { GameControls } from './components/GameControls'
-import { GameContextProvider, initialPlayer } from './context/GameContext'
+import { GameContextProvider } from './context/GameContext'
 import { NoticeProvider } from './context/NoticeContext'
 
 type Props = {
@@ -46,13 +46,37 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 			return redirect('/')
 		}
 
+		const initialPlayerData = {
+			faction: null,
+			preview: null,
+			gameStatus: 'select-deck',
+			hasPassed: false,
+			lives: 2,
+			deck: [],
+			hand: [],
+			discardPile: [],
+			rows: {
+				melee: { cards: [], effect: null, name: 'melee' },
+				range: { cards: [], effect: null, name: 'range' },
+				siege: { cards: [], effect: null, name: 'siege' }
+			}
+		}
+
 		const { data } = await supabase
 			.from('players')
-			.upsert({
-				...initialPlayer,
-				id: user.id,
-				name: user.username
-			})
+			.upsert(
+				[
+					{
+						id: user.id,
+						name: user.username,
+						...initialPlayerData
+					}
+				],
+				{
+					onConflict: 'id'
+				}
+			)
+			.eq('id', user.id)
 			.select('id')
 
 		if (!data) return
