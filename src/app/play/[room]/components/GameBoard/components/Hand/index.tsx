@@ -98,7 +98,7 @@ export const Hand = ({ player }: Props) => {
 	}, [selectedCard])
 
 	return (
-		<div ref={containerRef} className='order-last h-full w-full overflow-x-clip border bg-stone-700 py-1'>
+		<div ref={containerRef} className='relative z-20 order-last h-full w-full overflow-x-clip border bg-stone-700 py-1'>
 			<CardsPreview
 				cards={cards}
 				onCardSelect={card => {
@@ -109,7 +109,7 @@ export const Hand = ({ player }: Props) => {
 					dragConstraints={{ right: widthConstraints, left: -widthConstraints }}
 					ref={sliderRef}
 					style={{ paddingRight: -gap }}
-					className='flex h-full w-full max-w-full auto-cols-fr items-center justify-center'>
+					className='relative z-10 flex h-full w-full max-w-full auto-cols-fr items-center justify-center'>
 					{cards.map((card, i) => (
 						<CardsPreviewTrigger
 							key={i}
@@ -122,6 +122,11 @@ export const Hand = ({ player }: Props) => {
 					))}
 				</motion.div>
 			</CardsPreview>
+
+			<div
+				style={{ backgroundImage: `url("/game/board/hand.png")` }}
+				className='absolute inset-0 top-0 z-0 h-[calc(105%)] w-full bg-top bg-no-repeat [background-size:100%_100%]'
+			/>
 		</div>
 	)
 }

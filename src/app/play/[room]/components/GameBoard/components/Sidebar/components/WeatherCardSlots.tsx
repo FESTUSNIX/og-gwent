@@ -68,10 +68,12 @@ export const WeatherCardSlots = ({ host, opponent }: Props) => {
 	}
 
 	return (
-		<div className='w-full border-[10px] bg-stone-700 '>
+		<div
+			className='relative w-full bg-stone-700 bg-no-repeat px-3 py-4 [background-size:100%_100%]'
+			style={{ backgroundImage: `url('/game/board/weather_slots.png')` }}>
 			<button
 				className={cn(
-					'flex aspect-[2/1] h-full w-full cursor-auto items-center justify-center gap-1 p-2',
+					'flex aspect-[2/1] h-full w-full cursor-auto items-center justify-center gap-1 p-1',
 					canPlayWeather && 'cursor-pointer ring-4 ring-inset ring-yellow-600/50 hover:ring-yellow-600'
 				)}
 				onClick={() => {

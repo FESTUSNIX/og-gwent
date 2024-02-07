@@ -222,7 +222,7 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 		}
 
 		openPreview({
-			cards: cards,
+			cards: cards.toReversed(),
 			onCardSelect: card => {
 				cardToRevive = card
 			},
@@ -265,37 +265,44 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 	}
 
 	return (
-		<div className={cn('relative flex grow items-center', className)} style={style}>
-			<div className='absolute left-0 flex h-full -translate-x-full items-center'>
+		<div className={cn('relative z-10 flex grow items-center', className)} style={style}>
+			<div className='absolute left-0 z-10 flex h-full -translate-x-full items-center'>
 				<div
 					className={cn(
-						'z-10 -mr-1.5 flex aspect-square h-12 w-12 translate-x-0.5 items-center justify-center rounded-full border-[3px] border-neutral-500 text-black',
-						side === 'host' ? 'bg-orange-300' : 'bg-blue-300'
+						'z-10 -mr-1.5 flex aspect-square h-12 w-12 translate-x-0.5 items-center justify-center text-black'
 					)}>
-					<span className='text-2xl'>{calculateRowScore(row, weatherEffect)}</span>
+					<span className='z-10 text-2xl [text-shadow:0_0_4px_#fff,0_0_2px_#fff,0_0_6px_#fff]'>
+						{calculateRowScore(row, weatherEffect)}
+					</span>
+					<div
+						className='absolute z-0 h-full w-full bg-cover bg-no-repeat'
+						style={{ backgroundImage: `url('/game/board/row_score_${side}.png')` }}
+					/>
 				</div>
-				<div className='h-full w-3 rounded-l-md bg-neutral-500' />
+				<div className="aspect-[14/121] h-full w-auto bg-[url('/game/board/row_score_deco.png')] bg-cover bg-no-repeat" />
 			</div>
 			<button
 				className={cn(
-					'flex aspect-square h-full w-auto cursor-auto items-center justify-center bg-stone-800 duration-100',
+					'relative mr-2 flex aspect-square h-full w-auto cursor-auto items-center justify-center bg-cover bg-center duration-100',
 					canPlayEffect && 'cursor-pointer ring-4 ring-inset ring-yellow-600/50 hover:ring-yellow-600'
 				)}
+				style={{ backgroundImage: `url("/game/board/row_effect/${side}_${rowType}.png")` }}
 				onClick={() => {
 					handleEffectAdd()
 				}}>
-				<ArrowBigUpDash className='absolute h-20 w-20 text-white/5' />
 				{row.effect && <Card card={row.effect} mode='game' row={row} />}
 			</button>
 			<button
 				className={cn(
-					'group relative h-full w-full grow cursor-auto bg-stone-700 duration-100',
-					canAddToRow && 'cursor-pointer',
-					'ring-4 ring-inset ring-transparent hover:ring-yellow-600/75'
+					'group relative h-full w-full grow cursor-auto bg-cover bg-center bg-no-repeat ring-4 ring-inset ring-transparent duration-100',
+					(canAddToRow || !cardToAdd) &&
+						'after:absolute after:inset-0 after:bg-yellow-600/15 after:opacity-0 after:duration-100 hover:ring-yellow-600/75 hover:after:opacity-100',
+					canAddToRow && 'cursor-pointer after:opacity-100'
 				)}
 				onClick={() => {
 					cardToAdd && handleCardPlay(cardToAdd)
-				}}>
+				}}
+				style={{ backgroundImage: `url('/game/board/row/${side}_${rowType}.png` }}>
 				<Cards
 					cards={row.cards}
 					row={row}
@@ -303,8 +310,6 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 					previewCard={cardToAdd}
 					handleDecoy={handleDecoy}
 				/>
-
-				<div className={cn('pointer-events-none absolute inset-0 z-0', canAddToRow && 'bg-yellow-600/15')} />
 			</button>
 
 			{weatherEffect && (

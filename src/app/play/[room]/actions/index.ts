@@ -42,7 +42,9 @@ const addToContainer = (state: GameState, action: ADD_TO_CONTAINER) => {
 
 	let newCards: Card[] = action.shouldReplace
 		? action.cards
-		: [...player[action.destination], ...action.cards].filter((c, i, a) => a.indexOf(c) === i)
+		: [...player[action.destination], ...action.cards].filter(
+				(card, i, self) => i === self.findIndex(t => t.instance === card.instance)
+		  )
 
 	const newPlayerState: GamePlayer = {
 		...player,
@@ -301,7 +303,6 @@ const saveRoundScores = (state: GameState, action: SAVE_ROUND_SCORES) => {
 		]
 	}
 }
-
 
 type Action =
 	| ACCEPT_GAME

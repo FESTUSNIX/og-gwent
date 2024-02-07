@@ -2,6 +2,7 @@ import { JoinGameForm } from '@/components/JoinGameForm'
 import { Navbar } from '@/components/Navbar'
 import { NewGameShell } from '@/components/NewGameShell'
 import { H2 } from '@/components/ui/Typography/H2'
+import { Muted } from '@/components/ui/Typography/Muted'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Database } from '@/types/supabase'
@@ -69,6 +70,10 @@ export default async function Home() {
 					)}
 				</div>
 			</main>
+
+			<footer className='grid-container mt-auto w-full py-4 text-center'>
+				<Muted>This is a fan-made project for demo purposes. All rights belong to CD Projekt Red.</Muted>
+			</footer>
 		</>
 	)
 }

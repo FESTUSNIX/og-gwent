@@ -96,7 +96,7 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 	const cards = cardsJson.cards as Card[]
 
 	return (
-		<main className='relative z-10 flex grow flex-col bg-background'>
+		<main className='relative z-10 mx-auto my-auto flex h-full max-h-[980px] w-full max-w-[1740px] grow flex-col bg-background'>
 			<NoticeProvider>
 				<GameContextProvider roomId={room} userId={user.id}>
 					<Suspense>

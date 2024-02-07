@@ -84,7 +84,7 @@ export const Cards = ({ cards: _cards, row, weatherEffect, previewCard, handleDe
 	}, [numberOfCards])
 
 	return (
-		<div ref={containerRef} className='relative z-10 h-full w-full overflow-x-clip border'>
+		<div ref={containerRef} className='relative z-30 h-full w-full overflow-x-clip'>
 			<motion.div
 				drag={gap <= minGap && 'x'}
 				dragConstraints={{ right: widthConstraints, left: -widthConstraints }}
