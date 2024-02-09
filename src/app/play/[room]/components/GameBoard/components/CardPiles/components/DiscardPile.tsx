@@ -19,7 +19,7 @@ export const DiscardPile = ({ discardPile: _discardPile, side }: Props) => {
 								index={0}
 								className='absolute h-full w-full'
 								style={{
-									transform: `translate(-${i * 1.5}px, -${i * 1.5}px)`
+									transform: `translate(-${i * 1}px, -${i * 1}px)`
 								}}>
 								<Card card={_discardPile[i]} mode='game' />
 							</CardsPreviewTrigger>

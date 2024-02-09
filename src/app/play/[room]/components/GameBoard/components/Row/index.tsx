@@ -282,8 +282,8 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 			</div>
 			<button
 				className={cn(
-					'relative z-0 mr-px aspect-square h-full w-auto cursor-auto duration-100',
-					canPlayEffect && 'cursor-pointer ring-4 ring-inset ring-yellow-600/50 hover:ring-yellow-600'
+					'group relative z-0 mr-px aspect-square h-full w-auto cursor-auto duration-100',
+					canPlayEffect && 'cursor-pointer'
 				)}
 				onClick={() => {
 					handleEffectAdd()
@@ -292,6 +292,13 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 					{row.effect && <Card card={row.effect} mode='game' row={row} />}
 				</div>
 
+				<div
+					className={cn(
+						'pointer-events-none absolute inset-0 bg-yellow-600/15 opacity-0 ring-4 ring-inset ring-transparent duration-100',
+						(canPlayEffect || !cardToAdd) && 'group-hover:opacity-100 group-hover:ring-yellow-600/75',
+						canPlayEffect && 'cursor-pointer opacity-100'
+					)}
+				/>
 				<div
 					style={{ backgroundImage: `url("/game/board/row_effect/${side}_${rowType}.png")` }}
 					className='absolute inset-0 -z-10 h-full w-full bg-cover bg-center'

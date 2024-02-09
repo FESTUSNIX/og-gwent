@@ -40,10 +40,15 @@ export const Card = ({ card, selectedCard, setSelectedCard, disabled }: Props) =
 					onClick={handleCardClick}
 					disabled={disabled}
 					className={cn(
-						'relative h-full w-full max-w-full',
-						isPreviewing ? 'absolute aspect-[8/15] h-auto w-full py-6' : 'duration-100 group-hover:mb-10'
+						'relative h-full w-full max-w-full cursor-default',
+						isPreviewing ? 'absolute z-30 h-auto w-full py-6' : 'duration-100 group-hover:mb-10'
 					)}>
-					<CardUI card={card} mode={isPreviewing ? 'preview' : 'game'} />
+					<CardUI
+						card={card}
+						mode={isPreviewing ? 'preview' : 'game'}
+						className={cn(isPreviewing && 'cursor-pointer shadow-2xl')}
+						
+					/>
 				</button>
 			</ConditionalWrapper>
 		</>

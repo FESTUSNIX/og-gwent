@@ -88,7 +88,9 @@ export const GameBoard = ({ user, roomId }: Props) => {
 					<div className='z-10 flex h-full min-w-max flex-col items-center justify-between gap-y-4 pl-6 pr-4 pt-8'>
 						<CardPiles player={opponent} side='opponent' />
 
-						<div id='card-preview-container' className='relative flex w-full grow items-center justify-center'></div>
+						<div
+							id='card-preview-container'
+							className='absolute right-0 top-1/2 z-20 flex w-72 max-w-[80vw] grow -translate-y-1/2 items-center justify-center @6xl:relative @6xl:top-0 @6xl:w-full @6xl:translate-y-0'></div>
 
 						<CardPiles player={host} side='host' />
 					</div>
