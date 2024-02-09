@@ -157,7 +157,7 @@ export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Pr
 					)}
 				</div>
 
-				<div className='absolute inset-0 -z-10 h-full w-full bg-black/25' />
+				<div className='absolute inset-0 -z-10 h-full w-full bg-black/50' />
 				{turn === player.id && (
 					<div className='absolute inset-0 -z-20 flex items-center justify-center [clip-path:polygon(0%_0%,_0%_100%,_0%_100%,_0%_-100%,_100%_0%,_100%_200%,_0%_200%,_0%_100%,_100%_100%,_100%_0%)]'>
 						<div className='h-[calc(100%+0.25rem)] w-full bg-gradient-to-r from-orange-300 to-orange-300/20 blur-[2px]' />
@@ -166,7 +166,7 @@ export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Pr
 			</div>
 
 			<div
-				className='relative ml-12 flex aspect-[45/60] w-28 items-center justify-center bg-stone-900 bg-no-repeat shadow-[8px_8px_6px_#00000070] [background-size:100%_100%]'
+				className='relative ml-12 flex aspect-[45/60] w-28 items-center justify-center bg-no-repeat shadow-[8px_8px_6px_#00000070] [background-size:100%_100%]'
 				style={{ backgroundImage: `url('/game/board/leader_slot.png')` }}>
 				<div
 					style={{ backgroundImage: `url('/game/board/leader_ability.png')` }}

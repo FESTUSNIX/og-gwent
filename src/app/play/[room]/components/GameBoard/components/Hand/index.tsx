@@ -98,7 +98,7 @@ export const Hand = ({ player }: Props) => {
 	}, [selectedCard])
 
 	return (
-		<div ref={containerRef} className='relative z-20 order-last h-full w-full overflow-x-clip border bg-stone-700 py-1'>
+		<div ref={containerRef} className='relative z-20 order-last h-[calc(100%/7)] w-full overflow-x-clip py-1'>
 			<CardsPreview
 				cards={cards}
 				onCardSelect={card => {

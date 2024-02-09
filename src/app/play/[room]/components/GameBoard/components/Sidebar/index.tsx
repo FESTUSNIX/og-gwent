@@ -23,6 +23,8 @@ export const Sidebar = ({ host, opponent, turn, weatherEffects }: Props) => {
 			</div>
 
 			<PlayerStats player={host} opponent={opponent} side='host' turn={turn} weatherEffects={weatherEffects} />
+
+			<div className="absolute inset-0 -z-30 bg-[url('/game/board/sidebar.png')] bg-cover bg-right" />
 		</div>
 	)
 }

@@ -55,7 +55,7 @@ export const BackgroundMusic = (props: Props) => {
 	}
 
 	return (
-		<div className='absolute bottom-6 right-[5%] w-[15%] translate-y-1/2'>
+		<div className='absolute bottom-6 right-10 z-20 w-48 max-w-full translate-y-1/2'>
 			<div className='flex items-center gap-2'>
 				<div>
 					<span className='sr-only'>Music volume</span>

@@ -40,36 +40,38 @@ export const DeckSelector = ({ cards, searchParams, user }: Props) => {
 	const collectionCardTypeParam = getFirstParamValue(searchParams.collection_card_type, cardTypesOptions[0].value)!
 
 	return (
-		<div className='mx-auto grid max-w-screen-2xl px-12 py-8'>
-			<div className='mx-auto mb-4 flex items-center justify-center'>
-				<Suspense>
-					<FactionSwitch />
-				</Suspense>
-			</div>
-
-			<div className='mb-4 flex items-center justify-between'>
-				<div>
-					<h3 className='text-2xl'>Card Collection</h3>
-					<h4 className='text-lg uppercase'>
-						{cardTypesOptions.find(c => c.value === collectionCardTypeParam)?.label}
-					</h4>
+		<main className='relative z-10 mx-auto my-auto flex h-full max-h-[980px] w-full max-w-[1740px] grow flex-col bg-background'>
+			<div className='mx-auto grid max-w-screen-2xl px-12 py-8'>
+				<div className='mx-auto mb-4 flex items-center justify-center'>
+					<Suspense>
+						<FactionSwitch />
+					</Suspense>
 				</div>
 
-				<p className='text-muted-foreground'>Draw a card from your deck whenever you win a round.</p>
+				<div className='mb-4 flex items-center justify-between'>
+					<div>
+						<h3 className='text-2xl'>Card Collection</h3>
+						<h4 className='text-lg uppercase'>
+							{cardTypesOptions.find(c => c.value === collectionCardTypeParam)?.label}
+						</h4>
+					</div>
 
-				<div className='text-end'>
-					<h3 className='text-2xl'>Cards in Deck</h3>
-					<h4 className='text-lg uppercase'>{cardTypesOptions.find(c => c.value === inDeckCardTypeParam)?.label}</h4>
+					<p className='text-muted-foreground'>Draw a card from your deck whenever you win a round.</p>
+
+					<div className='text-end'>
+						<h3 className='text-2xl'>Cards in Deck</h3>
+						<h4 className='text-lg uppercase'>{cardTypesOptions.find(c => c.value === inDeckCardTypeParam)?.label}</h4>
+					</div>
 				</div>
-			</div>
 
-			<ClientDeckSelector
-				cards={cards}
-				user={user}
-				currentFaction={currentFaction}
-				collectionCardTypeParam={collectionCardTypeParam}
-				inDeckCardTypeParam={inDeckCardTypeParam}
-			/>
-		</div>
+				<ClientDeckSelector
+					cards={cards}
+					user={user}
+					currentFaction={currentFaction}
+					collectionCardTypeParam={collectionCardTypeParam}
+					inDeckCardTypeParam={inDeckCardTypeParam}
+				/>
+			</div>
+		</main>
 	)
 }

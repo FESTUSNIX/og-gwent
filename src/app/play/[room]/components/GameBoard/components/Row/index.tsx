@@ -7,7 +7,6 @@ import { CardType } from '@/types/Card'
 import { GamePlayer } from '@/types/Game'
 import { BoardRowTypes } from '@/types/RowType'
 import { ROW_TO_WEATHER_EFFECT, WeatherEffect } from '@/types/WeatherEffect'
-import { ArrowBigUpDash } from 'lucide-react'
 import Image from 'next/image'
 import { CSSProperties } from 'react'
 import { Cards } from './components/Cards'
@@ -265,8 +264,8 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 	}
 
 	return (
-		<div className={cn('relative z-10 flex grow items-center', className)} style={style}>
-			<div className='absolute left-0 z-10 flex h-full -translate-x-full items-center'>
+		<div className={cn('relative z-10 flex h-[calc(100%/7)] grow items-center', className)} style={style}>
+			<div className='absolute left-0 z-10 flex h-full translate-x-[calc(-100%+4px)] items-center'>
 				<div
 					className={cn(
 						'z-10 -mr-1.5 flex aspect-square h-12 w-12 translate-x-0.5 items-center justify-center text-black'
@@ -279,22 +278,28 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 						style={{ backgroundImage: `url('/game/board/row_score_${side}.png')` }}
 					/>
 				</div>
-				<div className="aspect-[14/121] h-full w-auto bg-[url('/game/board/row_score_deco.png')] bg-cover bg-no-repeat" />
+				<div className="aspect-[18/124] h-full w-auto bg-[url('/game/board/row_score_deco.png')] bg-cover bg-no-repeat" />
 			</div>
 			<button
 				className={cn(
-					'relative mr-2 flex aspect-square h-full w-auto cursor-auto items-center justify-center bg-cover bg-center duration-100',
+					'relative z-0 mr-px aspect-square h-full w-auto cursor-auto duration-100',
 					canPlayEffect && 'cursor-pointer ring-4 ring-inset ring-yellow-600/50 hover:ring-yellow-600'
 				)}
-				style={{ backgroundImage: `url("/game/board/row_effect/${side}_${rowType}.png")` }}
 				onClick={() => {
 					handleEffectAdd()
 				}}>
-				{row.effect && <Card card={row.effect} mode='game' row={row} />}
+				<div className='flex aspect-square h-full w-auto items-center justify-center'>
+					{row.effect && <Card card={row.effect} mode='game' row={row} />}
+				</div>
+
+				<div
+					style={{ backgroundImage: `url("/game/board/row_effect/${side}_${rowType}.png")` }}
+					className='absolute inset-0 -z-10 h-full w-full bg-cover bg-center'
+				/>
 			</button>
 			<button
 				className={cn(
-					'group relative h-full w-full grow cursor-auto bg-cover bg-center bg-no-repeat ring-4 ring-inset ring-transparent duration-100',
+					'group relative h-full w-full grow cursor-auto bg-center bg-no-repeat ring-4 ring-inset ring-transparent duration-100 [background-size:100%_100%]',
 					(canAddToRow || !cardToAdd) &&
 						'after:absolute after:inset-0 after:bg-yellow-600/15 after:opacity-0 after:duration-100 hover:ring-yellow-600/75 hover:after:opacity-100',
 					canAddToRow && 'cursor-pointer after:opacity-100'

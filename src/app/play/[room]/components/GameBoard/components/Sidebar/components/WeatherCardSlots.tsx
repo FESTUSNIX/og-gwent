@@ -69,7 +69,7 @@ export const WeatherCardSlots = ({ host, opponent }: Props) => {
 
 	return (
 		<div
-			className='relative w-full bg-stone-700 bg-no-repeat px-3 py-4 [background-size:100%_100%]'
+			className='relative w-full bg-no-repeat px-3 py-4 shadow-[4px_8px_6px_#00000070,-2px_-2px_12px_#00000050] [background-size:100%_100%]'
 			style={{ backgroundImage: `url('/game/board/weather_slots.png')` }}>
 			<button
 				className={cn(

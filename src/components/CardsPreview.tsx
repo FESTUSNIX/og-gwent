@@ -239,7 +239,7 @@ export const CardsPreview = forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
 											})
 										]}
 										className='w-full'>
-										<CarouselContent>
+										<CarouselContent className='py-4'>
 											{[...nullEntries, ...items, ...nullEntries].map((card, i) => (
 												<CarouselItem
 													key={i}
@@ -323,7 +323,14 @@ export const CardsPreviewTrigger = forwardRef<
 				{...props}
 				onContextMenu={e => {
 					e.preventDefault()
-					openPreview()
+					openPreview({
+						index,
+						cards,
+						onCardSelect,
+						onClose,
+						slidesToShow,
+						tweenFactor
+					})
 				}}
 			/>
 		)

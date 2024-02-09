@@ -10,7 +10,7 @@ export const Deck = ({ deck, side, faction }: Props) => {
 	const factionDeckImage = FACTIONS.find(f => f.slug === faction)?.images?.deckBack
 
 	return (
-		<div className='relative z-0 flex aspect-[2/3] h-[8.5rem] w-auto items-center justify-center'>
+		<div className='relative z-0 flex aspect-[2/3] w-24 items-center justify-center @6xl:h-[8.5rem] @6xl:w-auto'>
 			<div className='pointer-events-none relative h-full w-full select-none'>
 				{factionDeckImage && deck.length > 0 && (
 					<Image

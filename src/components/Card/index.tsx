@@ -82,7 +82,7 @@ export const Card = ({
 							cardScore && cardScore < card.strength && 'text-red-800'
 						)}>
 						<div className='flex h-1/2 w-1/2 items-center justify-center'>
-							<svg viewBox='0 0 35 35' className='h-full w-full'>
+							<svg viewBox='0 0 36 36' className='h-full w-full'>
 								<text
 									x='50%'
 									y='50%'

@@ -96,19 +96,17 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 	const cards = cardsJson.cards as Card[]
 
 	return (
-		<main className='relative z-10 mx-auto my-auto flex h-full max-h-[980px] w-full max-w-[1740px] grow flex-col bg-background'>
-			<NoticeProvider>
-				<GameContextProvider roomId={room} userId={user.id}>
-					<Suspense>
-						<DeckSelector searchParams={searchParams} cards={cards} user={user} />
-					</Suspense>
+		<NoticeProvider>
+			<GameContextProvider roomId={room} userId={user.id}>
+				<Suspense>
+					<DeckSelector searchParams={searchParams} cards={cards} user={user} />
+				</Suspense>
 
-					<GameBoard user={user} roomId={room} />
+				<GameBoard user={user} roomId={room} />
 
-					{user.role === 'ADMIN' && <GameControls roomId={room} />}
-				</GameContextProvider>
-			</NoticeProvider>
-		</main>
+				{user.role === 'ADMIN' && <GameControls roomId={room} />}
+			</GameContextProvider>
+		</NoticeProvider>
 	)
 }
 
