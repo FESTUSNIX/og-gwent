@@ -47,8 +47,6 @@ export const GameQueue = ({ user, isInQueue, setIsInQueue }: Props) => {
 
 		queue
 			.on('presence', { event: 'join' }, async ({ key, newPresences }) => {
-				console.log('join', key, newPresences)
-
 				const joinedUser = newPresences[0]
 				const state = queue.presenceState<{ id: string; username: string }>()
 

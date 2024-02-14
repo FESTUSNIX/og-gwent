@@ -21,7 +21,7 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 		data: { session }
 	} = await supabase.auth.getSession()
 
-	if (!session) {
+	if (!session || !session.user) {
 		return redirect('/login')
 	}
 

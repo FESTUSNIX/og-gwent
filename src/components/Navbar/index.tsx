@@ -32,12 +32,6 @@ export const Navbar = async (props: Props) => {
 				</Link>
 
 				<div className='hidden sm:block'>
-					{user && !room && (
-						<NewGameShell session={session}>
-							<Button className='rounded-full'>Start a new game</Button>
-						</NewGameShell>
-					)}
-
 					{room && (
 						<Link href={`/play/${room.roomId}`} className={cn(buttonVariants(), 'rounded-full')}>
 							Continue playing

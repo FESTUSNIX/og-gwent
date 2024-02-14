@@ -5,7 +5,7 @@ import { GamePlayer, GameRow, GameState } from '@/types/Game'
 import { Player } from '@/types/Player'
 import { BoardRowTypes } from '@/types/RowType'
 import React, { createContext, useReducer, useState } from 'react'
-import { Action, actions } from '../actions'
+import { Action, actions } from '../actions/gameState'
 import { GameStateHandler } from '../components/GameStateHandler'
 
 export const initialGameState: GameState = {

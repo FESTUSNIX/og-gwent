@@ -2,7 +2,7 @@
 
 import { calculateGameScore } from '@/lib/calculateScores'
 import { CardType } from '@/types/Card'
-import { GamePlayer, GameState } from '@/types/Game'
+import { GamePlayer, GameRow, GameState } from '@/types/Game'
 import { WeatherEffect } from '@/types/WeatherEffect'
 import { Database } from '@/types/supabase'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
+import { drawCard, handleMonstersDeckAbility } from '../actions/utils'
 import { initialRow } from '../context/GameContext'
 import { useNoticeContext } from '../context/NoticeContext'
 import useGameContext from '../hooks/useGameContext'
@@ -228,7 +229,21 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		const hostScore = calculateGameScore(host.rows, weatherEffects)
 		const opponentScore = calculateGameScore(opponent.rows, weatherEffects)
 
-		const winner = hostScore === opponentScore ? 'draw' : hostScore > opponentScore ? host.id : opponent.id
+		let winner = hostScore === opponentScore ? 'draw' : hostScore > opponentScore ? host.id : opponent.id
+
+		// Nilfgaard faction ability
+		if (winner === 'draw') {
+			const nilfgaardPlayers = [host, opponent].filter(player => player.faction === 'nilfgaard')
+			if (nilfgaardPlayers.length === 1) {
+				winner = nilfgaardPlayers[0].id
+
+				await notice({
+					title: 'Nilfgaard faction ability triggered - Nilfgaard wins the tie.',
+					image: `/game/icons/notice/nilfgaard.png`
+				})
+			}
+		}
+		//
 
 		const hostLives = winner === host.id ? host.lives : host.lives - 1
 		const opponentLives = winner === opponent.id ? opponent.lives : opponent.lives - 1
@@ -241,6 +256,8 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 			image: `/game/icons/notice/round_${winner === 'draw' ? 'draw' : winner === host.id ? 'win' : 'defeat'}.png`
 		})
 
+		let monstersAbilityNotice = false
+
 		const newGameState: GameState = {
 			rounds: [
 				...gameState.rounds,
@@ -252,22 +269,40 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 				}
 			],
 			turn: gameOver ? null : winner === 'draw' ? (Math.random() < 0.5 ? host.id : opponent.id) : winner,
-			players: gameState.players.map(p => ({
-				...p,
-				hasPassed: false,
-				discardPile: [
-					...p.discardPile,
-					...Object.values(p.rows).reduce((acc, row) => [...acc, ...row.cards], [] as CardType[]),
-					...(gameState.weatherEffects?.filter(effect => effect.owner === p.id) ?? [])
-				],
-				rows: {
-					melee: { ...initialRow, name: 'melee' },
-					range: { ...initialRow, name: 'range' },
-					siege: { ...initialRow, name: 'siege' }
-				},
-				preview: null,
-				lives: winner === p.id ? p.lives : p.lives - 1
-			})),
+			players: gameState.players.map(p => {
+				let monstersDeckAbility: {
+					rows: { melee: GameRow; range: GameRow; siege: GameRow }
+					cardToKeepInstance: string | null
+				} | null = null
+
+				if (p.faction === 'monsters') {
+					const randomCode = `${gameState.roomOwner}-${p.id}-${gameState.rounds.length}`
+					monstersDeckAbility = handleMonstersDeckAbility({ rows: p.rows, randomCode })
+					monstersAbilityNotice = !!monstersDeckAbility?.cardToKeepInstance
+				}
+
+				return {
+					...p,
+					hasPassed: false,
+					discardPile: [
+						...p.discardPile,
+						...Object.values(p.rows)
+							.reduce((acc, row) => [...acc, ...row.cards], [] as CardType[])
+							.filter(c => monstersDeckAbility && c.instance !== monstersDeckAbility.cardToKeepInstance),
+						...(gameState.weatherEffects?.filter(effect => effect.owner === p.id) ?? [])
+					],
+					rows:
+						p.faction === 'monsters' && monstersDeckAbility
+							? monstersDeckAbility.rows
+							: {
+									melee: { ...initialRow, name: 'melee' },
+									range: { ...initialRow, name: 'range' },
+									siege: { ...initialRow, name: 'siege' }
+							  },
+					preview: null,
+					lives: winner === p.id ? p.lives : p.lives - 1
+				}
+			}),
 			roomOwner: gameState.roomOwner,
 			weatherEffects: []
 		}
@@ -281,12 +316,38 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 
 		sync()
 
+		if (monstersAbilityNotice) {
+			await notice({
+				title: 'Monsters faction ability triggered - one randomly-chosen Monster Unit Card stays on the board',
+				image: '/game/icons/notice/monsters.png'
+			})
+		}
+
 		await notice({
 			title: 'Round Start',
 			image: '/game/icons/notice/round_start.png'
 		})
 
 		newGameState.turn && (await turnNotice(newGameState.turn))
+
+		// Northern Realms faction ability
+		const realmsAbilityNotice = async () => {
+			await notice({
+				title: 'Northern Realms faction ability triggered - North draws an additional card.',
+				image: '/game/icons/notice/north.png'
+			})
+		}
+		if (host.faction === 'northern-realms' && winner === host.id) {
+			const newState = drawCard({ gameState: newGameState, playerId: host.id })
+			if (!newState) return
+
+			setGameState(newState)
+			sync()
+
+			await realmsAbilityNotice()
+		}
+		if (opponent.faction === 'northern-realms' && winner === opponent.id) await realmsAbilityNotice()
+		//
 
 		return newGameState
 	}
