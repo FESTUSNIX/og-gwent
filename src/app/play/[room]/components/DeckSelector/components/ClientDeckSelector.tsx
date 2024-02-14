@@ -58,7 +58,7 @@ export const ClientDeckSelector = ({
 	useEffect(() => {
 		if (debouncedSelectedDeck.length === 0) return
 
-		const selectedDeckString = JSON.stringify(debouncedSelectedDeck)
+		const selectedDeckString = JSON.stringify(debouncedSelectedDeck.map(c => ({ id: c.id, amount: c.amount })))
 		localStorage.setItem(`deck-${currentFaction}`, selectedDeckString)
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,10 +70,19 @@ export const ClientDeckSelector = ({
 		const selectedDeckString = localStorage.getItem(`deck-${currentFaction}`)
 
 		if (selectedDeckString) {
-			const selectedDeck = JSON.parse(selectedDeckString)
-			setSelectedDeck(selectedDeck)
+			const savedDeck: { id: number; amount: number }[] = JSON.parse(selectedDeckString)
+
+			const deck = savedDeck
+				.map(({ id, amount }) => {
+					const cardData = cards.find(c => c.id === id)
+					if (!cardData) return
+					return { ...cardData, amount }
+				})
+				.filter(c => c !== undefined) as CardType[]
+
+			setSelectedDeck(deck)
 		}
-	}, [currentFaction])
+	}, [currentFaction, cards])
 
 	const filterCards = (c: CardType, categoryParam: string, filterFor: 'collection' | 'selected') => {
 		if (!c.factions.includes('neutral') && !c.factions.includes(currentFaction)) return false
@@ -102,10 +111,9 @@ export const ClientDeckSelector = ({
 			faction: currentFaction,
 			deck: newDeck,
 			id: user.id,
-			name: user.username ?? 'Player'
+			name: user.username ?? `Player ${Math.random().toString(36).slice(0, 6)}`
 		}
 
-		// TODO: Check if thats correct
 		if (gameState.players.find(p => p.id === user.id)) {
 			updatePlayerState(user.id, newPlayerState)
 		} else if (gameState.players.length < 2) {

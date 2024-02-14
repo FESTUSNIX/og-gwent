@@ -1631,9 +1631,9 @@
 		{
 			"slug": "roach",
 			"name": "Roach",
-			"type": "hero",
+			"type": "unit",
 			"factions": ["neutral"],
-			"strength": 16,
+			"strength": 3,
 			"row": "melee",
 			"description": "Come on, Roach! Faster!",
 			"group": "roach",
@@ -1784,6 +1784,30 @@
 			"strength": 2,
 			"row": "melee",
 			"description": "Discipline is the Empire's deadliest weapon.",
+			"amount": 1
+		},
+		{
+			"id": 162,
+			"name": "Łysy romantyk",
+			"slug": "lysy_romantyk",
+			"type": "unit",
+			"factions": ["neutral"],
+			"strength": 5,
+			"row": "melee",
+			"description": "Hej mała.",
+			"ability": "morale_boost",
+			"amount": 1
+		},
+		{
+			"id": 163,
+			"name": "Szemrana Jagoda",
+			"slug": "niviriuz",
+			"type": "unit",
+			"factions": ["neutral"],
+			"strength": 8,
+			"row": "agile",
+			"description": "Gram w lola.",
+			"ability": "spy",
 			"amount": 1
 		}
 	]

@@ -45,11 +45,27 @@ export default async function Home() {
 
 						<Separator className='my-6' />
 
-						<div>
-							<H2>How to play</H2>
-							<p className='text-balance text-muted-foreground'>
-								You can create a new room and invite your friends to join, or join a room that your friend has created.
-							</p>
+						<div className='space-y-8'>
+							<div>
+								<H2>How to play</H2>
+								<p className='text-balance text-muted-foreground'>
+									You can create a new room and invite your friends to join, or join a room that your friend has
+									created.
+								</p>
+							</div>
+							<div>
+								<H2>Gwent tutorial</H2>
+
+								<Link
+									href={'https://www.youtube.com/watch?v=3-KEhKf4uqk'}
+									target='_blank'
+									rel='noopener'
+									className='text-muted-foreground underline'>
+									Watch the tutorial on YouTube
+								</Link>
+							</div>
+
+							<Separator className='mt-6 lg:hidden' />
 						</div>
 					</header>
 
@@ -67,16 +83,6 @@ export default async function Home() {
 							</div>
 
 							<Lobby session={session} user={{ ...user, id: session.user.id }} roomId={room?.roomId ?? null} />
-
-							{/* {room && (
-								<section className='flex flex-col items-center gap-4'>
-									<H2>You are already in a game.</H2>
-
-									<Link href={`/play/${room.roomId}`} className={cn(buttonVariants())}>
-										Click here to rejoin.
-									</Link>
-								</section>
-							)} */}
 						</div>
 					)}
 

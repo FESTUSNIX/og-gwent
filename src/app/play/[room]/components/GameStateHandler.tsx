@@ -301,9 +301,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		roomChannel
 			.on('broadcast', { event: 'game' }, payload => onRecieve(payload))
 			.subscribe(async status => {
-				if (status !== 'SUBSCRIBED') {
-					return null
-				}
+				if (status !== 'SUBSCRIBED' || synced === 0) return null
 
 				const broadcastResponse = await roomChannel.send({
 					type: 'broadcast',

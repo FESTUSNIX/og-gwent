@@ -24,13 +24,11 @@ const AccountDropdown = async ({ session }: Props) => {
 		cookies
 	})
 
-	const { data, error } = await supabase
+	const { data: user, error } = await supabase
 		.from('profiles')
 		.select(`username, avatar_url`)
 		.eq('id', session?.user?.id as string)
 		.single()
-
-	const user = data
 
 	return (
 		<DropdownMenu>

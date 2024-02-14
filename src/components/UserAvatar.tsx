@@ -5,14 +5,14 @@ import { AvatarProps } from '@radix-ui/react-avatar'
 import { UserIcon } from 'lucide-react'
 
 type Props = {
-	user: Pick<Tables<'profiles'>, 'username' | 'avatar_url'>
+	user: Pick<Tables<'profiles'>, 'username' | 'avatar_url'> | null
 	useFormattedUrl?: boolean
 } & AvatarProps
 
 export const UserAvatar = ({ user, useFormattedUrl = false, ...props }: Props) => {
 	return (
 		<Avatar {...props}>
-			{user.avatar_url ? (
+			{user && user.avatar_url ? (
 				<AvatarImage
 					src={useFormattedUrl ? user.avatar_url : urlFor('avatars', user.avatar_url).publicUrl}
 					alt={`${user.username}'s profile picture`}
@@ -21,7 +21,7 @@ export const UserAvatar = ({ user, useFormattedUrl = false, ...props }: Props) =
 				/>
 			) : (
 				<AvatarFallback className='aspect-square h-full w-full rounded-[inherit] object-cover'>
-					<span className='sr-only'>{user.username?.slice(0, 2)}</span>
+					<span className='sr-only'>{user?.username ?? 'Player undefined'}</span>
 					<UserIcon className='h-4 w-4' />
 				</AvatarFallback>
 			)}

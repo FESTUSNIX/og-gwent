@@ -282,7 +282,7 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 			</div>
 			<button
 				className={cn(
-					'group relative z-0 mr-px aspect-square h-full w-auto cursor-auto duration-100',
+					'group relative z-0 mr-px aspect-square h-full w-auto cursor-auto pb-1 duration-100',
 					canPlayEffect && 'cursor-pointer'
 				)}
 				onClick={() => {
@@ -306,7 +306,7 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 			</button>
 			<button
 				className={cn(
-					'group relative h-full w-full grow cursor-auto bg-center bg-no-repeat ring-4 ring-inset ring-transparent duration-100 [background-size:100%_100%]',
+					'group relative z-0 h-full w-full grow cursor-auto bg-center bg-no-repeat pb-1 ring-4 ring-inset ring-transparent duration-100 [background-size:100%_100%]',
 					(canAddToRow || !cardToAdd) &&
 						'after:absolute after:inset-0 after:bg-yellow-600/15 after:opacity-0 after:duration-100 hover:ring-yellow-600/75 hover:after:opacity-100',
 					canAddToRow && 'cursor-pointer after:opacity-100'
