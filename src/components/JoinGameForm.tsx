@@ -2,20 +2,22 @@
 
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from './ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/form'
 import { Input } from './ui/input'
-import { useRouter } from 'next/navigation'
 
-type Props = {}
+type Props = {
+	isInGame: boolean
+}
 
 const formSchema = z.object({
-	code: z.string().length(24, 'Provided code is invalid.')
+	code: z.string()
 })
 
-export const JoinGameForm = (props: Props) => {
+export const JoinGameForm = ({ isInGame }: Props) => {
 	const router = useRouter()
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -26,18 +28,19 @@ export const JoinGameForm = (props: Props) => {
 	})
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		// TODO: Check if room exists
-		// If it does, redirect to room page
+		if (isInGame) return
 
-		router.push(`/play/${values.code}`)
+		router.push(`/?wr=${values.code}`)
+		form.reset()
 	}
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className='pb-4'>
+			<form onSubmit={form.handleSubmit(onSubmit)}>
 				<FormField
 					control={form.control}
 					name='code'
+					disabled={isInGame}
 					render={({ field }) => (
 						<FormItem>
 							<FormControl>
@@ -50,10 +53,13 @@ export const JoinGameForm = (props: Props) => {
 											autoComplete={'off'}
 											placeholder='Enter room code'
 											{...field}
-											className='h-full grow bg-transparent py-2 pl-6 pr-2 text-sm outline-none placeholder:text-muted-foreground md:text-lg'
+											className='h-full grow bg-transparent py-2 pl-6 pr-2 text-sm outline-none placeholder:text-muted-foreground disabled:opacity-50 md:text-lg'
 										/>
 
-										<Button className='shrink-0 rounded-full px-6 py-7 font-normal md:text-lg' type='submit'>
+										<Button
+											className='shrink-0 rounded-full px-6 py-7 font-normal md:text-lg'
+											type='submit'
+											disabled={isInGame}>
 											Join game
 										</Button>
 									</label>
@@ -65,7 +71,7 @@ export const JoinGameForm = (props: Props) => {
 											{...field}
 											className='h-auto rounded-full py-4 pl-6 pr-2'
 										/>
-										<Button className='grow rounded-full px-6 py-7 font-normal' type='submit'>
+										<Button className='grow rounded-full px-6 py-7 font-normal' type='submit' disabled={isInGame}>
 											Join game
 										</Button>
 									</div>

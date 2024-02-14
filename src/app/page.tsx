@@ -1,9 +1,12 @@
+import { Lobby } from '@/app/components/Lobby'
 import { JoinGameForm } from '@/components/JoinGameForm'
 import { Navbar } from '@/components/Navbar'
-import { NewGameShell } from '@/components/NewGameShell'
+import { SignOutShell } from '@/components/SignOutShell'
 import { H2 } from '@/components/ui/Typography/H2'
+import { H3 } from '@/components/ui/Typography/H3'
 import { Muted } from '@/components/ui/Typography/Muted'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import { Database } from '@/types/supabase'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
@@ -25,48 +28,78 @@ export default async function Home() {
 	}
 
 	const { data: room } = await supabase.from('room_players').select('roomId').eq('playerId', session.user.id).single()
+	const { data: user } = await supabase
+		.from('profiles')
+		.select(`username, avatar_url`)
+		.eq('id', session?.user?.id)
+		.single()
 
 	return (
 		<>
 			<Navbar />
-			<main className='grid-container py-12'>
-				<header className='mx-auto text-center'>
-					<h1 className='font-heading text-3xl font-bold sm:text-4xl md:text-5xl'>Gwent Multiplayer</h1>
-					<p className='mt-2 text-xl text-muted-foreground'>Play Gwent with your friends online!</p>
-				</header>
+			<main className='grid-container my-auto py-12'>
+				<div className='mx-auto grid max-w-lg grid-cols-1 gap-16 lg:max-w-full lg:grid-cols-2'>
+					<header className=''>
+						<h1 className='font-heading text-3xl font-bold sm:text-4xl md:text-5xl'>Gwent Multiplayer</h1>
+						<p className='mt-2 text-xl text-muted-foreground'>The Witcher 3&apos;s Gwent card game, now multiplayer.</p>
 
-				<div className='mx-auto mt-16 flex w-full max-w-lg flex-col items-center gap-16'>
-					{!room && (
-						<>
-							<section className=''>
-								<NewGameShell session={session}>
-									<Button className='rounded-full px-6 py-7 font-normal md:text-lg'>Create a new room</Button>
-								</NewGameShell>
+						<Separator className='my-6' />
+
+						<div>
+							<H2>How to play</H2>
+							<p className='text-balance text-muted-foreground'>
+								You can create a new room and invite your friends to join, or join a room that your friend has created.
+							</p>
+						</div>
+					</header>
+
+					{user && (
+						<div className='flex w-full flex-col justify-between lg:ml-auto'>
+							<section>
+								<H2>Join your friend</H2>
+								<JoinGameForm isInGame={room !== null} />
 							</section>
 
-							<section className='w-full'>
-								<div>
-									<H2 className='pb-0'>Join a room</H2>
-									<p className='text-muted-foreground'>
-										Enter the room code provided by your friend to join their game.
-									</p>
-								</div>
+							<div className='my-10 flex items-center'>
+								<Separator className='w-auto grow' />
+								<span className='mx-2 shrink-0 text-xs leading-none text-muted-foreground'>OR</span>
+								<Separator className='w-auto grow' />
+							</div>
 
-								<div className='my-6'>
-									<JoinGameForm />
-								</div>
-							</section>
-						</>
+							<Lobby session={session} user={{ ...user, id: session.user.id }} roomId={room?.roomId ?? null} />
+
+							{/* {room && (
+								<section className='flex flex-col items-center gap-4'>
+									<H2>You are already in a game.</H2>
+
+									<Link href={`/play/${room.roomId}`} className={cn(buttonVariants())}>
+										Click here to rejoin.
+									</Link>
+								</section>
+							)} */}
+						</div>
 					)}
 
-					{room && (
-						<section className='flex flex-col items-center gap-4'>
-							<H2>You are already in a game.</H2>
+					{!user && (
+						<div>
+							<H3>Log in to play</H3>
+							<p className='text-pretty text-muted-foreground'>
+								You need to log in to play. If you don&apos;t have an account, you can create one for free.
+							</p>
 
-							<Link href={`/play/${room.roomId}`} className={cn(buttonVariants())}>
-								Click here to rejoin.
-							</Link>
-						</section>
+							<div className='mt-8 flex gap-4'>
+								<SignOutShell>
+									<Link href={'/login'} className={cn(buttonVariants())}>
+										Log in
+									</Link>
+								</SignOutShell>
+								<SignOutShell>
+									<Link href={'/signup'} className={cn(buttonVariants())}>
+										Sign up
+									</Link>
+								</SignOutShell>
+							</div>
+						</div>
 					)}
 				</div>
 			</main>

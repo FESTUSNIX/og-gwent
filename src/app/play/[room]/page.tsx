@@ -92,7 +92,6 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 		if (!roomInsertData) return
 	}
 
-	// const cards = await getCards()
 	const cards = cardsJson.cards as Card[]
 
 	return (
