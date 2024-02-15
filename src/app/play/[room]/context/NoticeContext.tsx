@@ -47,8 +47,10 @@ const noticeReducer = (
 	}
 }
 
+export type NoticeFn = (noticeContent?: NoticeContent, component?: JSX.Element) => Promise<void>
+
 type NoticeContext = {
-	notice: (noticeContent?: NoticeContent, component?: JSX.Element) => Promise<void>
+	notice: NoticeFn
 	closeNotice: () => void
 	noticeState: NoticeState
 	isResolving: boolean

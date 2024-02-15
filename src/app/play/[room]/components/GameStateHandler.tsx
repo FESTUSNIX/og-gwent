@@ -288,7 +288,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 						...p.discardPile,
 						...Object.values(p.rows)
 							.reduce((acc, row) => [...acc, ...row.cards], [] as CardType[])
-							.filter(c => monstersDeckAbility && c.instance !== monstersDeckAbility.cardToKeepInstance),
+							.filter(c => (monstersDeckAbility ? c.instance !== monstersDeckAbility.cardToKeepInstance : true)),
 						...(gameState.weatherEffects?.filter(effect => effect.owner === p.id) ?? [])
 					],
 					rows:

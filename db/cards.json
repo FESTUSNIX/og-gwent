@@ -1809,6 +1809,17 @@
 			"description": "Gram w lola.",
 			"ability": "spy",
 			"amount": 1
+		},
+		{
+			"id": 164,
+			"name": "Tomasz Wpierdol",
+			"slug": "tomasz",
+			"type": "hero",
+			"factions": ["neutral"],
+			"strength": 10,
+			"row": "melee",
+			"description": "Chciałbym prosić o wyjątkową usługę... Zagramy w gwinta?",
+			"amount": 1
 		}
 	]
 }

@@ -34,7 +34,7 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 	if (!user) return null
 
 	const { data: roomPlayers } = await supabase.from('room_players').select('playerId').eq('roomId', room)
-	const { data: roomExists } = await supabase.from('rooms').select('id').eq('id', room)
+	const { data: roomExists } = await supabase.from('rooms').select('id').eq('id', room).single()
 
 	const isInRoom = roomPlayers?.find(p => p.playerId === user.id)
 

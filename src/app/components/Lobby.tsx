@@ -99,7 +99,6 @@ export const Lobby = ({ session, user: _user, roomId }: Props) => {
 		waitingRoomChannel
 			.on('presence', { event: 'sync' }, async () => {
 				const newState = waitingRoomChannel.presenceState<LobbyPlayer>()
-				console.log('sync', newState)
 
 				const players = Object.values(newState).map(presence => presence[0])
 
