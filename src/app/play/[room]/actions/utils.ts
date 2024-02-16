@@ -1,4 +1,4 @@
-import { getRandomEntries } from '@/lib/utils';
+import { getRandomEntries, getRandomItemBasedOnCode } from '@/lib/utils';
 import { GameRow, GameState } from '@/types/Game';
 import { BoardRowTypes } from '@/types/RowType';
 
@@ -42,21 +42,6 @@ const initialRow: GameRow = {
 	name: null
 }
 
-function hashCodeOfString(str: string) {
-	let hash = 0
-	if (str.length === 0) return hash
-	for (let i = 0; i < str.length; i++) {
-		const char = str.charCodeAt(i)
-		hash = (hash << 5) - hash + char
-		hash |= 0 // Convert to 32bit integer
-	}
-	return hash
-}
-
-function getRandomItemBasedOnCode<T>(arr: T[], inputCode: string): T {
-	const hashCode = hashCodeOfString(inputCode)
-	return arr[Math.abs(hashCode) % arr.length]
-}
 
 export const handleMonstersDeckAbility = ({
 	rows,

@@ -39,3 +39,19 @@ export function getRandomEntries<T>(arr: T[], count: number): T[] {
 }
 
 export const capitalize = (s: string) => s && s[0].toUpperCase() + s.slice(1)
+
+export function hashCodeOfString(str: string) {
+	let hash = 0
+	if (str.length === 0) return hash
+	for (let i = 0; i < str.length; i++) {
+		const char = str.charCodeAt(i)
+		hash = (hash << 5) - hash + char
+		hash |= 0 // Convert to 32bit integer
+	}
+	return hash
+}
+
+export function getRandomItemBasedOnCode<T>(arr: T[], inputCode: string): T {
+	const hashCode = hashCodeOfString(inputCode)
+	return arr[Math.abs(hashCode) % arr.length]
+}

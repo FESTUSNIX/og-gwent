@@ -1,6 +1,7 @@
 'use client'
 
 import { Card } from '@/components/Card'
+import { getRandomEntries } from '@/lib/utils'
 import { Card as CardType } from '@/types/Card'
 import { GamePlayer } from '@/types/Game'
 import { ArrowRight } from 'lucide-react'
@@ -8,27 +9,25 @@ import { useEffect, useState } from 'react'
 import useGameContext from '../../../hooks/useGameContext'
 
 type Props = {
-	currentPlayer: GamePlayer
+	host: GamePlayer
+	opponent: GamePlayer
 }
 
 const startingHandSize = 10
 const maxRerolls = 2
 
-export const Reroll = ({ currentPlayer }: Props) => {
+export const Reroll = ({ host, opponent }: Props) => {
 	const {
-		gameState,
 		sync,
 		actions: { addToContainer, removeFromContainer, setPlayerGameStatus }
 	} = useGameContext()
-
-	const gameAccepted = gameState.players.filter(p => p.gameStatus === 'accepted').length === 2
 
 	const [hand, setHand] = useState<CardType[]>([])
 	const [rerolls, setRerolls] = useState(0)
 
 	useEffect(() => {
-		if (gameAccepted && currentPlayer) {
-			const deck = currentPlayer.deck
+		if (host.gameStatus === 'accepted' && host && host.hand.length === 0) {
+			const deck = host.deck
 
 			let newHand: CardType[] = hand
 
@@ -42,27 +41,20 @@ export const Reroll = ({ currentPlayer }: Props) => {
 				newHand.push(newCard)
 			}
 
-			addToContainer(currentPlayer.id, newHand, 'hand')
-			removeFromContainer(currentPlayer.id, newHand, 'deck')
+			addToContainer(host.id, newHand, 'hand')
+			removeFromContainer(host.id, newHand, 'deck')
 			setHand(newHand)
 
 			sync()
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [gameAccepted])
-
-	function selectRandomCard(deck: CardType[]): CardType | undefined {
-		if (deck.length === 0) return undefined
-
-		const randomIndex = Math.floor(Math.random() * deck.length)
-		return deck[randomIndex]
-	}
+	}, [host.gameStatus, opponent.gameStatus])
 
 	function reroll(card: CardType) {
 		if (rerolls >= maxRerolls) return
 
-		const newCard = selectRandomCard(currentPlayer?.deck || [])
+		const newCard = getRandomEntries(host?.deck || [], 1)[0]
 		if (!newCard) return
 
 		const cardToChange = hand.indexOf(card)
@@ -70,10 +62,10 @@ export const Reroll = ({ currentPlayer }: Props) => {
 		const newHand = hand
 		newHand[cardToChange] = newCard
 
-		addToContainer(currentPlayer?.id, newHand, 'hand', true)
+		addToContainer(host?.id, newHand, 'hand', true)
 
-		removeFromContainer(currentPlayer?.id, [newCard], 'deck')
-		addToContainer(currentPlayer?.id, [card], 'deck')
+		removeFromContainer(host?.id, [newCard], 'deck')
+		addToContainer(host?.id, [card], 'deck')
 
 		setHand(newHand)
 		setRerolls(prevRerolls => prevRerolls + 1)
@@ -84,7 +76,7 @@ export const Reroll = ({ currentPlayer }: Props) => {
 	useEffect(() => {
 		if (rerolls === maxRerolls) {
 			setTimeout(() => {
-				setPlayerGameStatus(currentPlayer.id, 'play')
+				setPlayerGameStatus(host.id, 'play')
 				sync()
 			}, 0)
 		}
@@ -92,7 +84,7 @@ export const Reroll = ({ currentPlayer }: Props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [rerolls])
 
-	if (!currentPlayer) return null
+	if (!host) return null
 
 	return (
 		<div className='fixed inset-0 z-50 flex h-full w-full items-center justify-center bg-black/50'>
@@ -118,7 +110,7 @@ export const Reroll = ({ currentPlayer }: Props) => {
 
 				<button
 					onClick={() => {
-						setPlayerGameStatus(currentPlayer.id, 'play')
+						setPlayerGameStatus(host.id, 'play')
 						sync()
 					}}
 					className='fixed right-4 top-4 flex items-center gap-2 bg-secondary px-2 py-0.5'>

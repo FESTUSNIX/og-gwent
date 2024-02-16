@@ -414,14 +414,15 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentPlayer?.hand.length])
 
-	if (gameState) return null
-
-	return (
-		<div className='fixed inset-0 z-50 flex h-full w-full items-center justify-center bg-black/75 text-3xl'>
-			<div className='flex items-center justify-center gap-4'>
-				<Loader2 className='h-8 w-8 animate-spin' />
-				<span>Loading game...</span>
+	if (!gameState)
+		return (
+			<div className='fixed inset-0 z-50 flex h-full w-full items-center justify-center bg-black/75 text-3xl'>
+				<div className='flex items-center justify-center gap-4'>
+					<Loader2 className='h-8 w-8 animate-spin' />
+					<span>Loading game...</span>
+				</div>
 			</div>
-		</div>
-	)
+		)
+
+	return null
 }

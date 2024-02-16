@@ -1,12 +1,12 @@
 'use client'
 
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogContent,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogContent,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle
 } from '@/components/ui/alert-dialog'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -14,11 +14,10 @@ import { cn } from '@/lib/utils'
 type Props = {
 	isOpen: boolean
 	setIsOpen?: (open: boolean) => void
-	handleOpponentChoose: () => void
-	handleHostChoose: () => void
+	handleTurnChoose: (player: 'opponent' | 'host') => Promise<void>
 }
 
-export const ChooseTurnDialog = ({ isOpen, setIsOpen, handleHostChoose, handleOpponentChoose }: Props) => {
+export const ChooseTurnDialog = ({ isOpen, setIsOpen, handleTurnChoose }: Props) => {
 	return (
 		<AlertDialog open={isOpen} onOpenChange={setIsOpen}>
 			<AlertDialogContent>
@@ -34,16 +33,14 @@ export const ChooseTurnDialog = ({ isOpen, setIsOpen, handleHostChoose, handleOp
 					<AlertDialogAction
 						className={cn(buttonVariants({ variant: 'destructive' }))}
 						onClick={() => {
-							console.log('Opponent starts')
-							handleOpponentChoose()
+							handleTurnChoose('opponent')
 						}}>
 						Let Opponent Start
 					</AlertDialogAction>
 					<AlertDialogAction
 						className={cn('bg-green-600 hover:bg-green-600/90')}
 						onClick={() => {
-							console.log('Host starts')
-							handleHostChoose()
+							handleTurnChoose('host')
 						}}>
 						Go First
 					</AlertDialogAction>
