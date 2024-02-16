@@ -1,4 +1,5 @@
-import { type ClassValue, clsx } from 'clsx'
+import { CardType } from '@/types/Card'
+import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
@@ -54,4 +55,19 @@ export function hashCodeOfString(str: string) {
 export function getRandomItemBasedOnCode<T>(arr: T[], inputCode: string): T {
 	const hashCode = hashCodeOfString(inputCode)
 	return arr[Math.abs(hashCode) % arr.length]
+}
+
+export const sortCards = (cards: CardType[]) => {
+	return cards.sort((a, b) => {
+		if (a.strength === b.strength) {
+			if (a.name < b.name) return -1
+			if (a.name > b.name) return 1
+			return 0
+		}
+
+		if (a.strength === undefined) return -1
+		if (b.strength === undefined) return 1
+
+		return a.strength - b.strength
+	})
 }

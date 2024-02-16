@@ -1,9 +1,11 @@
 'use client'
 
-import { Card } from '@/components/Card'
-import { getRandomEntries } from '@/lib/utils'
+import { CardsCarousel } from '@/components/CardsPreview'
+import { Dialog, DialogOverlay, DialogPortal } from '@/components/ui/dialog'
+import { cn, getRandomEntries } from '@/lib/utils'
 import { Card as CardType } from '@/types/Card'
 import { GamePlayer } from '@/types/Game'
+import { DialogContent } from '@radix-ui/react-dialog'
 import { ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import useGameContext from '../../../hooks/useGameContext'
@@ -24,6 +26,28 @@ export const Reroll = ({ host, opponent }: Props) => {
 
 	const [hand, setHand] = useState<CardType[]>([])
 	const [rerolls, setRerolls] = useState(0)
+
+	function reroll(card: CardType) {
+		if (rerolls >= maxRerolls || host.gameStatus === 'play') return
+
+		const newCard = getRandomEntries(host?.deck || [], 1)[0]
+		if (!newCard) return
+
+		const cardToChange = hand.indexOf(card)
+
+		const newHand = hand
+		newHand[cardToChange] = newCard
+
+		addToContainer(host?.id, newHand, 'hand', true)
+
+		removeFromContainer(host?.id, [newCard], 'deck')
+		addToContainer(host?.id, [card], 'deck')
+
+		setHand(newHand)
+		setRerolls(prevRerolls => prevRerolls + 1)
+
+		sync()
+	}
 
 	useEffect(() => {
 		if (host.gameStatus === 'accepted' && host && host.hand.length === 0) {
@@ -51,28 +75,6 @@ export const Reroll = ({ host, opponent }: Props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [host.gameStatus, opponent.gameStatus])
 
-	function reroll(card: CardType) {
-		if (rerolls >= maxRerolls) return
-
-		const newCard = getRandomEntries(host?.deck || [], 1)[0]
-		if (!newCard) return
-
-		const cardToChange = hand.indexOf(card)
-
-		const newHand = hand
-		newHand[cardToChange] = newCard
-
-		addToContainer(host?.id, newHand, 'hand', true)
-
-		removeFromContainer(host?.id, [newCard], 'deck')
-		addToContainer(host?.id, [card], 'deck')
-
-		setHand(newHand)
-		setRerolls(prevRerolls => prevRerolls + 1)
-
-		sync()
-	}
-
 	useEffect(() => {
 		if (rerolls === maxRerolls) {
 			setTimeout(() => {
@@ -87,37 +89,44 @@ export const Reroll = ({ host, opponent }: Props) => {
 	if (!host) return null
 
 	return (
-		<div className='fixed inset-0 z-50 flex h-full w-full items-center justify-center bg-black/50'>
-			<div className='flex w-full flex-col items-center'>
-				<div className='w-full bg-black py-2.5 text-center'>
-					<p className='text-2xl text-primary'>
-						<span>Choose cards to reroll. </span>
-						<span>
-							{rerolls}/{maxRerolls}
-						</span>
-					</p>
-				</div>
-
-				<div className='w-full py-6'>
-					<div className='mx-auto grid max-w-screen-xl grid-cols-5 gap-8 px-16'>
-						{hand.map((card, i) => (
-							<button key={i} onClick={() => reroll(card)}>
-								<Card card={card} mode='preview' />
-							</button>
-						))}
+		<Dialog open={true}>
+			<DialogPortal>
+				<DialogOverlay className='bg-black/60' />
+				<DialogContent className='z-50 max-w-full'>
+					<div
+						className={cn(
+							'fixed left-[50%] top-[47.5%] z-50 flex w-full max-w-full translate-x-[-50%] translate-y-[-50%] flex-col items-center justify-center border-none'
+						)}>
+						<div className='mb-12 w-full bg-black/80 py-2.5 text-center'>
+							<p className='text-2xl text-primary'>
+								<span>Choose cards to reroll. </span>
+								<span>
+									{rerolls}/{maxRerolls}
+								</span>
+							</p>
+						</div>
+						<div className='w-[80vw]'>
+							<CardsCarousel
+								index={0}
+								cards={hand}
+								onCardSelect={reroll}
+								slidesToShow={5}
+								tweenFactor={0.75}
+								isOpen={true}
+							/>
+						</div>
 					</div>
-				</div>
-
-				<button
-					onClick={() => {
-						setPlayerGameStatus(host.id, 'play')
-						sync()
-					}}
-					className='fixed right-4 top-4 flex items-center gap-2 bg-secondary px-2 py-0.5'>
-					<span className='text-sm'>Start game</span>
-					<ArrowRight className='h-4 w-4' />
-				</button>
-			</div>
-		</div>
+					<button
+						onClick={() => {
+							setPlayerGameStatus(host.id, 'play')
+							sync()
+						}}
+						className='fixed right-4 top-4 flex items-center gap-2 bg-secondary px-2 py-0.5'>
+						<span className='text-sm'>Start game</span>
+						<ArrowRight className='h-4 w-4' />
+					</button>
+				</DialogContent>
+			</DialogPortal>
+		</Dialog>
 	)
 }
