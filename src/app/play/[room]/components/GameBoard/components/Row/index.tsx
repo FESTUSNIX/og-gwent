@@ -94,10 +94,15 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 		sync()
 	}
 
-	const handleCardPlay = (card: CardType, _rowType: BoardRowTypes = rowType, _side: 'host' | 'opponent' = side) => {
+	const handleCardPlay = (
+		card: CardType,
+		_rowType: BoardRowTypes = rowType,
+		_side: 'host' | 'opponent' = side,
+		blacklist?: string[]
+	) => {
 		if (card?.ability === 'decoy') return
 		if (canPlaySpy(card, _rowType, _side)) return handleSpy(card, _rowType)
-		if (canPlayMedic(card, _rowType)) return handleMedic(card, _rowType)
+		if (canPlayMedic(card, _rowType)) return handleMedic(card, _rowType, blacklist)
 		if (canPlayMuster(card, _rowType)) return handleMuster(card, _rowType)
 		if (canScorch(card)) return handleScorch(card, _rowType)
 		if (canPlayUnit(card, _rowType)) return handleUnitAdd(card, _rowType)
@@ -133,13 +138,17 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 		cleanAfterPlay()
 	}
 
+	const canPlaceAgile = (card: CardType, rowType: BoardRowTypes) => {
+		return card?.row === 'agile' && ['melee', 'range'].includes(rowType)
+	}
+
 	const handleScorch = (card: CardType, rowType: BoardRowTypes) => {
-		if (!(card?.ability === 'scorch' && (!card.row || card.row === rowType))) return
+		if (!(card?.ability === 'scorch' && (!card.row || canPlaceAgile(card, rowType) || card.row === rowType))) return
 
 		// TODO: Refractor
 		const allRows = gameState.players.flatMap(p => {
 			return Object.entries(p.rows)
-				.filter(([key, value]) => (!card.row ? true : key === card.row && p.id !== host.id))
+				.filter(([key, value]) => (!card.row ? true : key === rowType && p.id !== host.id))
 				.map(([key, value]) => ({ ...value, owner: p.id, rowType: key as BoardRowTypes }))
 		})
 
@@ -160,7 +169,7 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 			.reduce((prev, curr) => prev + (curr.strength ?? 0), 0)
 
 		if (card.row && (rowsTotalScore < 10 || cardsWithDetails.length === 0)) {
-			addToRow(host.id, card, card.row)
+			addToRow(host.id, card, rowType)
 			cleanAfterPlay(card)
 			return
 		}
@@ -181,13 +190,13 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 
 				if (!gameCard) return
 
-				removeFromRow(card.owner, [gameCard], card.row)
+				removeFromRow(card.owner, [gameCard], rowType)
 				addToContainer(card.owner, [gameCard], 'discardPile')
 
 				return gameCard
 			})
 
-		card.row ? addToRow(host.id, card, card.row) : addToContainer(host.id, [card], 'discardPile')
+		card.row ? addToRow(host.id, card, rowType) : addToContainer(host.id, [card], 'discardPile')
 
 		cleanAfterPlay(card)
 	}
@@ -205,10 +214,12 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 		cleanAfterPlay(card)
 	}
 
-	const handleMedic = (card: CardType, rowType: BoardRowTypes) => {
+	const handleMedic = (card: CardType, rowType: BoardRowTypes, blacklist?: string[]) => {
 		if (card?.ability !== 'medic') return
 
-		const cards = host.discardPile.filter(c => c.type === 'unit' && c.instance !== card.instance)
+		const cards = host.discardPile.filter(
+			c => c.type === 'unit' && c.instance !== card.instance && !blacklist?.includes(c.instance)
+		)
 
 		let cardToRevive: CardType | undefined
 
@@ -229,12 +240,17 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 				if (!cardToRevive) cardToRevive = getRandomEntries(cards, 1)[0]
 
 				const reviveToRow = cardToRevive.row === 'agile' ? getRandomEntries(['melee', 'range'], 1)[0] : cardToRevive.row
-
 				if (!reviveToRow) return
 
-				removeFromContainer(host.id, [cardToRevive], 'discardPile')
+				blacklist = [...(blacklist ?? []), cardToRevive.instance]
 
-				handleCardPlay(cardToRevive, reviveToRow as BoardRowTypes, cardToRevive.ability === 'spy' ? 'opponent' : 'host')
+				removeFromContainer(host.id, [cardToRevive], 'discardPile')
+				handleCardPlay(
+					cardToRevive,
+					reviveToRow as BoardRowTypes,
+					cardToRevive.ability === 'spy' ? 'opponent' : 'host',
+					blacklist
+				)
 			}
 		})
 	}

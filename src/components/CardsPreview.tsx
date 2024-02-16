@@ -90,6 +90,11 @@ export const CardsPreview = forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
 		)
 
 		useEffect(() => {
+			if (!isOpen && onClose) onClose()
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [isOpen])
+
+		useEffect(() => {
 			defaultCards !== items && setItems(defaultCards)
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [defaultCards])
@@ -97,12 +102,7 @@ export const CardsPreview = forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
 		return (
 			<CardsPreviewContext.Provider
 				value={{ cards: items, slidesToShow, tweenFactor, isOpen, openPreview, onClose, onCardSelect }}>
-				<Dialog
-					open={isOpen}
-					onOpenChange={open => {
-						setIsOpen(open)
-						if (!open && onClose) onClose()
-					}}>
+				<Dialog open={isOpen} onOpenChange={setIsOpen}>
 					{children}
 
 					<DialogPortal>

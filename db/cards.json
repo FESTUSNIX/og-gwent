@@ -1804,10 +1804,10 @@
 			"slug": "niviriuz",
 			"type": "unit",
 			"factions": ["neutral"],
-			"strength": 8,
+			"strength": 2,
 			"row": "agile",
-			"description": "Gram w lola.",
-			"ability": "spy",
+			"description": "Gra w lola.",
+			"ability": "scorch",
 			"amount": 1
 		},
 		{

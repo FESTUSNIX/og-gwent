@@ -1,5 +1,5 @@
 import { Card } from '@/components/Card'
-import { cn } from '@/lib/utils'
+import { cn, sortCards } from '@/lib/utils'
 import { CardType } from '@/types/Card'
 import { GameRow } from '@/types/Game'
 import { WeatherEffect } from '@/types/WeatherEffect'
@@ -15,18 +15,7 @@ type Props = {
 }
 
 export const Cards = ({ cards: _cards, row, weatherEffect, previewCard, handleDecoy }: Props) => {
-	const cards = _cards.sort((a, b) => {
-		if (a.strength === b.strength) {
-			if (a.name < b.name) return -1
-			if (a.name > b.name) return 1
-			return 0
-		}
-
-		if (a.strength === undefined) return -1
-		if (b.strength === undefined) return 1
-
-		return a.strength - b.strength
-	})
+	const cards = sortCards(_cards)
 
 	const cardRef = useRef<HTMLButtonElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)

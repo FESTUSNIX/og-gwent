@@ -1,12 +1,14 @@
 'use client'
 
 import useGameContext from '@/app/play/[room]/hooks/useGameContext'
-import { CardsPreview, CardsPreviewTrigger } from '@/components/CardsPreview'
+import { CardsPreviewTrigger } from '@/components/CardsPreview'
+import { CardsPreview } from '@/components/CardsPreview'
 import { CardType } from '@/types/Card'
 import { GamePlayer } from '@/types/Game'
 import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { Card } from './components/Card'
+import { sortCards } from '@/lib/utils'
 
 type Props = {
 	player: GamePlayer
@@ -18,18 +20,7 @@ export const Hand = ({ player }: Props) => {
 		actions: { addToPreview, clearPreview }
 	} = useGameContext()
 
-	const cards = player.hand.sort((a, b) => {
-		if (a.strength === b.strength) {
-			if (a.name < b.name) return -1
-			if (a.name > b.name) return 1
-			return 0
-		}
-
-		if (a.strength === undefined) return -1
-		if (b.strength === undefined) return 1
-
-		return a.strength - b.strength
-	})
+	const cards = sortCards(player.hand)
 
 	const cardRef = useRef<HTMLDivElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
