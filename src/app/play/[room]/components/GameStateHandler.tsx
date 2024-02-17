@@ -364,30 +364,46 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 			.subscribe(async status => {
 				if (status !== 'SUBSCRIBED' || synced === 0) return null
 
+				let hostState = currentPlayer
+
+				if (hostState?.hand.length === 0 && gameStarted && !hostState.hasPassed) {
+					console.log('AUTO PASS')
+					updatePlayerState(hostState.id, {
+						hasPassed: true
+					})
+					hostState = { ...hostState, hasPassed: true }
+				}
+
 				const broadcastResponse = await roomChannel.send({
 					type: 'broadcast',
 					event: 'game',
-					payload: { gameState, synced }
+					payload: {
+						gameState: {
+							...gameState,
+							players: gameState.players.map(p => (p.id === hostState?.id ? hostState : p))
+						},
+						synced
+					}
 				})
 
 				let gameStateAfterRoundEnd = undefined
 
-				if (currentPlayer && opponentPlayer) {
-					if (currentPlayer.hasPassed !== previousCurrentPlayer?.hasPassed) {
-						await hasPassedNotice(currentPlayer.hasPassed, opponentPlayer.hasPassed, gameState.turn, 'disable-opponent')
+				if (hostState && opponentPlayer) {
+					if (hostState.hasPassed !== previousCurrentPlayer?.hasPassed) {
+						await hasPassedNotice(hostState.hasPassed, opponentPlayer.hasPassed, gameState.turn, 'disable-opponent')
 					}
 
-					if (currentPlayer.hasPassed && opponentPlayer.hasPassed) {
-						gameStateAfterRoundEnd = await handleRoundEnd(currentPlayer, opponentPlayer)
+					if (hostState.hasPassed && opponentPlayer.hasPassed) {
+						gameStateAfterRoundEnd = await handleRoundEnd(hostState, opponentPlayer)
 					} else if (gameState.turn && !isResolving && gameState.players.filter(p => p.hasPassed).length === 0) {
 						await turnNotice(gameState.turn)
 					}
 				}
 
 				await updateGameStateOnServer(gameStateAfterRoundEnd ?? gameState)
-				if (currentPlayer && opponentPlayer) {
+				if (hostState && opponentPlayer) {
 					await updateUsersOnServer(
-						gameStateAfterRoundEnd ? gameStateAfterRoundEnd?.players : [currentPlayer, opponentPlayer]
+						gameStateAfterRoundEnd ? gameStateAfterRoundEnd?.players : [hostState, opponentPlayer]
 					)
 				}
 			})
@@ -398,21 +414,6 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [roomId, synced])
-
-	useEffect(() => {
-		const setPass = () => {
-			if (currentPlayer?.hand.length === 0 && gameStarted && !currentPlayer.hasPassed) {
-				updatePlayerState(currentPlayer.id, {
-					hasPassed: true
-				})
-				sync()
-			}
-		}
-
-		setPass()
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [currentPlayer?.hand.length])
 
 	if (!gameState)
 		return (
