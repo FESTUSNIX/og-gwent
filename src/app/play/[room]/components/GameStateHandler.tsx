@@ -367,7 +367,6 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 				let hostState = currentPlayer
 
 				if (hostState?.hand.length === 0 && gameStarted && !hostState.hasPassed) {
-					console.log('AUTO PASS')
 					updatePlayerState(hostState.id, {
 						hasPassed: true
 					})

@@ -42,13 +42,12 @@ export type CardContainers = 'deck' | 'hand' | 'discardPile'
 type CUSTOM = {
 	type: 'CUSTOM'
 	gameState: GameState
-	ignoreBroadcast?: boolean
 }
 
 const gameReducer = (state: GameState, action: Action | CUSTOM) => {
 	switch (action.type) {
 		case 'CUSTOM':
-			return { ...action.gameState, ignoreBroadcast: action.ignoreBroadcast }
+			return { ...action.gameState }
 		case 'ACCEPT_GAME':
 			return actions.acceptGame(state, action)
 		case 'ADD_TO_CONTAINER':
@@ -77,7 +76,6 @@ const gameReducer = (state: GameState, action: Action | CUSTOM) => {
 			return initialGameState
 	}
 }
-
 type GameContextProps = {
 	gameState: GameState
 	synced: number
@@ -140,47 +138,43 @@ export const GameContextProvider = ({
 	const [synced, setSynced] = useState(0)
 
 	const sync = (value?: number) => setSynced(prevSynced => value ?? prevSynced + 1)
-	const dispatchAction = (action: Action | CUSTOM) => dispatch(action)
 
-	const acceptGame = (player: Player, startingDeck: Card[]) =>
-		dispatchAction({ type: 'ACCEPT_GAME', player, startingDeck })
+	const acceptGame = (player: Player, startingDeck: Card[]) => dispatch({ type: 'ACCEPT_GAME', player, startingDeck })
 
 	const addToContainer = (
 		playerId: Player['id'],
 		cards: Card[],
 		destination: CardContainers,
 		shouldReplace?: boolean
-	) => dispatchAction({ type: 'ADD_TO_CONTAINER', playerId, cards, destination, shouldReplace })
+	) => dispatch({ type: 'ADD_TO_CONTAINER', playerId, cards, destination, shouldReplace })
 
 	const removeFromContainer = (playerId: Player['id'], cards: Card[], source: CardContainers) =>
-		dispatchAction({ type: 'REMOVE_FROM_CONTAINER', playerId, cards, source })
+		dispatch({ type: 'REMOVE_FROM_CONTAINER', playerId, cards, source })
 
 	const addToRow = (playerId: Player['id'], card: Card, rowType: BoardRowTypes) =>
-		dispatchAction({ type: 'ADD_TO_ROW', playerId, card, rowType })
+		dispatch({ type: 'ADD_TO_ROW', playerId, card, rowType })
 
 	const addToPreview = (playerId: Player['id'], card: Card) => dispatch({ type: 'ADD_TO_PREVIEW', playerId, card })
 	const clearPreview = (playerId: Player['id']) => dispatch({ type: 'CLEAR_PREVIEW', playerId })
 
-	const setTurn = (playerId: Player['id'] | null) => dispatchAction({ type: 'SET_TURN', playerId })
+	const setTurn = (playerId: Player['id'] | null) => dispatch({ type: 'SET_TURN', playerId })
 
 	const setPlayerGameStatus = (playerId: Player['id'], gameStatus: GamePlayer['gameStatus']) =>
-		dispatchAction({ type: 'SET_PLAYER_GAME_STATUS', playerId, status: gameStatus })
+		dispatch({ type: 'SET_PLAYER_GAME_STATUS', playerId, status: gameStatus })
 
-	const setGameState = (newGameState: GameState, ignoreBroadcast?: boolean) =>
-		dispatchAction({ type: 'CUSTOM', gameState: newGameState, ignoreBroadcast })
+	const setGameState = (newGameState: GameState) => dispatch({ type: 'CUSTOM', gameState: newGameState })
 
 	const updatePlayerState = (playerId: Player['id'], playerState: Partial<GamePlayer>) =>
-		dispatchAction({ type: 'UPDATE_PLAYER_STATE', playerId, playerState })
+		dispatch({ type: 'UPDATE_PLAYER_STATE', playerId, playerState })
 
 	const saveRoundScores = (players: { id: GamePlayer['id']; score: number }[]) =>
-		dispatchAction({ type: 'SAVE_ROUND_SCORES', players })
+		dispatch({ type: 'SAVE_ROUND_SCORES', players })
 
 	const setRowEffect = (playerId: Player['id'], effect: Card, rowType: BoardRowTypes) =>
-		dispatchAction({ type: 'SET_ROW_EFFECT', playerId, rowType, effect })
+		dispatch({ type: 'SET_ROW_EFFECT', playerId, rowType, effect })
 
 	const removeFromRow = (playerId: Player['id'], cards: (Card | undefined)[], rowType: BoardRowTypes) =>
-		dispatchAction({ type: 'REMOVE_FROM_ROW', playerId, rowType, cards })
-
+		dispatch({ type: 'REMOVE_FROM_ROW', playerId, rowType, cards })
 
 	return (
 		<GameContext.Provider

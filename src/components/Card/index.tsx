@@ -8,20 +8,18 @@ import Image from 'next/image'
 import { HTMLAttributes } from 'react'
 import cardsJson from '../../../db/cards.json'
 
-type Props = (
+type Props = {
+	row?: GameRow
+	weatherEffect?: WeatherEffect
+	card: Pick<CardType, 'id' | 'instance' | 'amount'>
+} & (
 	| {
-			mode: 'preview'
-			card: CardType
-			row?: GameRow
-			weatherEffect?: WeatherEffect
+			mode?: 'preview'
 			forceBanner?: FactionType
 			displayAmount?: boolean
 	  }
 	| {
-			mode: 'game'
-			card: CardType
-			row?: GameRow
-			weatherEffect?: WeatherEffect
+			mode?: 'game'
 			forceBanner?: undefined
 			displayAmount?: undefined
 	  }
@@ -31,7 +29,7 @@ type Props = (
 const ASSET_PATH = '/game/card/'
 
 export const Card = ({
-	card: { id, amount, instance },
+	card: _card,
 	mode = 'preview',
 	forceBanner,
 	row,
@@ -41,6 +39,8 @@ export const Card = ({
 	style,
 	...props
 }: Props) => {
+	const { id, amount, instance } = _card
+
 	const cards = cardsJson.cards as Omit<CardType, 'instance'>[]
 	const card: CardType = { ...cards.find(c => c.id === id)!, instance }
 
@@ -53,14 +53,14 @@ export const Card = ({
 			style={style}
 			className={cn(
 				'relative z-0 flex h-full w-auto max-w-full flex-col',
-				mode === 'preview' && 'aspect-[410/775] rounded-xl',
+				mode === 'preview' && 'aspect-[410/775]',
 				mode === 'game' && 'aspect-[3/4] rounded-sm',
 				className
 			)}>
 			<div
 				className={cn(
 					'relative z-0 w-full grow overflow-hidden object-cover',
-					mode === 'preview' && 'aspect-[2/3] h-auto w-full basis-3/4 rounded-t-lg',
+					mode === 'preview' && 'aspect-[2/3] h-auto w-full basis-3/4 rounded-t-xl',
 					mode === 'game' && 'rounded-[2%]'
 				)}>
 				<Image
@@ -162,7 +162,11 @@ export const Card = ({
 			)}
 
 			{mode === 'preview' && (
-				<div className='relative flex h-1/4 w-full shrink-0 basis-1/4 flex-col text-center'>
+				<div
+					className={cn(
+						'relative flex h-1/4 w-full shrink-0 basis-1/4 flex-col text-center',
+						mode === 'preview' && 'overflow-hidden rounded-b-xl'
+					)}>
 					<h3
 						className={cn(
 							'relative z-10 h-3/5 pr-[5%] pt-[5%] text-sm font-bold leading-tight text-[#333]',
