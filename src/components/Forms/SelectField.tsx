@@ -7,7 +7,7 @@ type Props<T extends FieldValues> = {
 	accessorKey: FieldPath<T>
 	options: {
 		label: string
-		value: string
+		value: string | 'null'
 	}[]
 	label?: string
 	placeholder?: string
@@ -22,6 +22,8 @@ export const SelectField = <T extends FieldValues>({
 	placeholder = 'Select an option',
 	description
 }: Props<T>) => {
+	const getValue = (v: string) => (v === 'null' ? null : v)
+
 	return (
 		<FormField
 			control={control}
@@ -29,22 +31,24 @@ export const SelectField = <T extends FieldValues>({
 			render={({ field }) => (
 				<FormItem>
 					{label && <FormLabel>{label}</FormLabel>}
-					<FormControl>
-						<Select onValueChange={field.onChange as (value: string) => void} defaultValue={field.value}>
-							<FormControl>
-								<SelectTrigger>
-									<SelectValue placeholder={placeholder} />
-								</SelectTrigger>
-							</FormControl>
-							<SelectContent>
-								{options.map(option => (
-									<SelectItem key={option.value} value={option.value}>
-										{option.label}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</FormControl>
+					<Select
+						name={field.name}
+						onValueChange={value => value && field.onChange(getValue(value))}
+						value={field.value?.toString()}
+						defaultValue={field.value?.toString()}>
+						<FormControl>
+							<SelectTrigger>
+								<SelectValue placeholder={placeholder} />
+							</SelectTrigger>
+						</FormControl>
+						<SelectContent>
+							{options.map(option => (
+								<SelectItem key={option.value} value={option.value}>
+									{option.label}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
 					{description && <FormDescription>{description}</FormDescription>}
 					<FormMessage />
 				</FormItem>

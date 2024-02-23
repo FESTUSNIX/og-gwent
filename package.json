@@ -10,6 +10,7 @@
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.3.3",
+		"@hugocxl/react-to-image": "^0.0.9",
 		"@paralleldrive/cuid2": "^2.2.2",
 		"@prisma/client": "^5.7.1",
 		"@radix-ui/react-alert-dialog": "^1.0.5",
@@ -48,6 +49,7 @@
 		"react-copy-to-clipboard": "^5.1.0",
 		"react-dom": "^18",
 		"react-hook-form": "^7.49.2",
+		"react-parallax-tilt": "^1.7.212",
 		"react-resizable-panels": "^1.0.5",
 		"react-slugify": "^3.0.3",
 		"react-youtube": "^10.1.0",
