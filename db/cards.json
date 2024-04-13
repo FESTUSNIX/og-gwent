@@ -1785,41 +1785,6 @@
 			"row": "melee",
 			"description": "Discipline is the Empire's deadliest weapon.",
 			"amount": 1
-		},
-		{
-			"id": 162,
-			"name": "Łysy romantyk",
-			"slug": "lysy_romantyk",
-			"type": "unit",
-			"factions": ["neutral"],
-			"strength": 5,
-			"row": "melee",
-			"description": "Hej mała.",
-			"ability": "morale_boost",
-			"amount": 1
-		},
-		{
-			"id": 163,
-			"name": "Szemrana Jagoda",
-			"slug": "niviriuz",
-			"type": "unit",
-			"factions": ["neutral"],
-			"strength": 2,
-			"row": "agile",
-			"description": "Gra w lola.",
-			"ability": "scorch",
-			"amount": 1
-		},
-		{
-			"id": 164,
-			"name": "Tomasz Wpierdol",
-			"slug": "tomasz",
-			"type": "hero",
-			"factions": ["neutral"],
-			"strength": 10,
-			"row": "melee",
-			"description": "Chciałbym prosić o wyjątkową usługę... Zagramy w gwinta?",
-			"amount": 1
 		}
 	]
 }
