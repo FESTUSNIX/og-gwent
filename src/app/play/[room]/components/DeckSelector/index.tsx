@@ -1,6 +1,5 @@
 'use client'
 
-import { FactionSwitch } from './components/FactionSwitch'
 import { FACTIONS } from '@/constants/FACTIONS'
 import { ROW_TYPES } from '@/constants/ROW_TYPES'
 import { getFirstParamValue } from '@/lib/utils'
@@ -9,6 +8,7 @@ import { Tables } from '@/types/supabase'
 import { Suspense } from 'react'
 import useGameContext from '../../hooks/useGameContext'
 import { ClientDeckSelector } from './components/ClientDeckSelector'
+import { FactionSwitch } from './components/FactionSwitch'
 
 type Props = {
 	cards: Card[]
@@ -56,7 +56,7 @@ export const DeckSelector = ({ cards, searchParams, user }: Props) => {
 						</h4>
 					</div>
 
-					<p className='text-muted-foreground'>Draw a card from your deck whenever you win a round.</p>
+					<p className='text-muted-foreground'>TODO: Faction passive ability</p>
 
 					<div className='text-end'>
 						<h3 className='text-2xl'>Cards in Deck</h3>

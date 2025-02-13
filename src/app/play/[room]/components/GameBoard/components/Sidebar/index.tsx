@@ -1,5 +1,6 @@
 import { GamePlayer } from '@/types/Game'
 import { WeatherEffect } from '@/types/WeatherEffect'
+import { GiveUpButton } from '../GiveUpButton'
 import { PassButton } from './components/PassButton'
 import { PlayerStats } from './components/PlayerStats'
 import { WeatherCardSlots } from './components/WeatherCardSlots'
@@ -25,6 +26,8 @@ export const Sidebar = ({ host, opponent, turn, weatherEffects }: Props) => {
 			<PlayerStats player={host} opponent={opponent} side='host' turn={turn} weatherEffects={weatherEffects} />
 
 			<div className="absolute inset-0 -z-30 bg-[url('/game/board/sidebar.png')] bg-cover bg-right" />
+
+			<GiveUpButton playerId={host.id} />
 		</div>
 	)
 }

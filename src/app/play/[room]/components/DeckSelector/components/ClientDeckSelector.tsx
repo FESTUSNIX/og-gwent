@@ -1,19 +1,15 @@
 'use client'
 
 import { Card } from '@/components/Card'
-import { Button } from '@/components/ui/button'
 import { Card as CardType } from '@/types/Card'
 import { FactionType } from '@/types/Faction'
-import { GamePlayer } from '@/types/Game'
 import { Tables } from '@/types/supabase'
-import { createId } from '@paralleldrive/cuid2'
 import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
 import { useDebounce } from 'usehooks-ts'
-import { initialPlayer } from '../../../context/GameContext'
 import useGameContext from '../../../hooks/useGameContext'
 import { CardTypeSwitch } from './CardTypeSwitch'
 import { DeckDetails } from './DeckDetails'
+import { GameStatusBar } from './GameStatusBar'
 import { LeaderCardSelector } from './LeaderCardSelector'
 
 type Props = {
@@ -31,19 +27,11 @@ export const ClientDeckSelector = ({
 	inDeckCardTypeParam,
 	user
 }: Props) => {
-	const {
-		gameState,
-		sync,
-		actions: { updatePlayerState, setGameState }
-	} = useGameContext()
+	const { gameState } = useGameContext()
 
 	const [selectedDeck, setSelectedDeck] = useState<CardType[]>([])
 	const debouncedSelectedDeck = useDebounce(selectedDeck, 1000)
-	const flattenedSelectedDeck = selectedDeck.flatMap(card =>
-		Array.from({ length: card.amount ?? 1 }, () => ({ ...card, amount: 1 }))
-	)
 
-	const minDeckLength = 18
 	const currentPlayer = gameState.players.find(p => p.id === user.id)
 
 	const accepted = currentPlayer?.gameStatus === 'accepted'
@@ -100,36 +88,13 @@ export const ClientDeckSelector = ({
 		return false
 	}
 
-	const acceptGame = () => {
-		toast(accepted ? 'Canceled accept' : 'Accepted game!')
-
-		const newDeck: CardType[] = flattenedSelectedDeck.map(card => ({ ...card, instance: createId() }))
-
-		const newPlayerState: GamePlayer = {
-			...initialPlayer,
-			gameStatus: !accepted ? 'accepted' : 'select-deck',
-			faction: currentFaction,
-			deck: newDeck,
-			id: user.id,
-			name: user.username ?? `Player ${Math.random().toString(36).slice(0, 6)}`
-		}
-
-		if (gameState.players.find(p => p.id === user.id)) {
-			updatePlayerState(user.id, newPlayerState)
-		} else if (gameState.players.length < 2) {
-			setGameState({
-				...gameState,
-				players: [...gameState.players.filter(p => p.id !== user.id), newPlayerState]
-			})
-		}
-
-		sync()
-	}
-
 	return (
 		<div className='grid grid-cols-[1fr_auto_1fr]'>
 			<section>
-				<CardTypeSwitch className='sticky top-0 z-10 mb-4 bg-background py-4' paramName='collection_card_type' />
+				<CardTypeSwitch
+					className='sticky top-0 z-10 mb-4 -translate-y-px bg-background/75 py-4 backdrop-blur-md'
+					paramName='collection_card_type'
+				/>
 
 				<ul className='grid max-h-full grid-cols-3 gap-4 overflow-y-hidden'>
 					{cards
@@ -182,21 +147,14 @@ export const ClientDeckSelector = ({
 					</div>
 
 					<DeckDetails deck={selectedDeck} />
-
-					<div className='mt-8'>
-						<Button
-							variant={'secondary'}
-							size={'sm'}
-							onClick={() => acceptGame()}
-							disabled={flattenedSelectedDeck.length < minDeckLength}>
-							{!accepted ? 'Start game' : 'Cancel'}
-						</Button>
-					</div>
 				</div>
 			</section>
 
 			<section>
-				<CardTypeSwitch className='sticky top-0 z-10 mb-4 bg-background py-4' paramName='in_deck_card_type' />
+				<CardTypeSwitch
+					className='sticky top-0 z-10 mb-4 -translate-y-px bg-background/75 py-4 backdrop-blur-md'
+					paramName='in_deck_card_type'
+				/>
 
 				<ul className='grid grid-cols-3 gap-4 overflow-y-hidden'>
 					{selectedDeck
@@ -219,6 +177,8 @@ export const ClientDeckSelector = ({
 						))}
 				</ul>
 			</section>
+
+			<GameStatusBar accepted={accepted} selectedDeck={selectedDeck} player={user} currentFaction={currentFaction} />
 		</div>
 	)
 }

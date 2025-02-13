@@ -17,7 +17,7 @@ const cardTypes = ['all', 'melee', 'range', 'siege', 'hero', 'weather', 'special
 export const CardTypeSwitch = ({ className, paramName = 'type' }: Props) => {
 	const router = useRouter()
 	const pathname = usePathname()
-	const searchParams = useSearchParams()
+	const searchParams = useSearchParams()!
 
 	const currentType = searchParams.get(paramName) ?? cardTypes[0]
 
@@ -25,7 +25,7 @@ export const CardTypeSwitch = ({ className, paramName = 'type' }: Props) => {
 
 	const createQueryString = useCallback(
 		(queries: { [key: string]: string | undefined }) => {
-			const params = new URLSearchParams(searchParams)
+			const params = new URLSearchParams(searchParams as any)
 
 			Object.entries(queries).map(([key, value]) => {
 				if (value === undefined || value === null) return params.delete(key)
@@ -53,7 +53,7 @@ export const CardTypeSwitch = ({ className, paramName = 'type' }: Props) => {
 						})
 					}}
 					className={cn(
-						'basis-[calc(100%/7)] cursor-pointer p-2 text-muted',
+						'basis-[calc(100%/7)] cursor-pointer p-2 text-foreground/30',
 						type === currentType && 'text-foreground'
 					)}>
 					<span className='aspect-square h-auto w-full'>

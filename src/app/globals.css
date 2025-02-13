@@ -71,10 +71,10 @@
 		@apply border-border;
 	}
 	html {
-		@apply h-full overflow-auto scroll-smooth selection:bg-primary/75 selection:text-primary-foreground;
+		@apply h-full min-w-full overflow-auto scroll-smooth selection:bg-primary/75 selection:text-primary-foreground;
 	}
 	body {
-		@apply flex min-h-full flex-col bg-background font-body text-foreground;
+		@apply flex min-h-full min-w-full flex-col bg-background font-body text-foreground;
 	}
 }
 

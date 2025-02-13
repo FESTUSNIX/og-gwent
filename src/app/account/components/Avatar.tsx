@@ -47,13 +47,18 @@ export default function Avatar({
 			}
 
 			const file = event.target.files[0]
-			const fileExt = file.name.split('.').pop()
-			const filePath = `${uid}-${Math.random()}.${fileExt}`
+			const filePath = `/${uid}/avatar`
 
-			const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file)
+			const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true })
 
 			if (uploadError) {
-				throw uploadError
+				throw new Error(uploadError.message)
+			}
+
+			const { error } = await supabase.from('profiles').upsert({ id: uid, avatar_url: filePath })
+
+			if (error) {
+				throw new Error(error.message)
 			}
 
 			console.log('uploaded', filePath)

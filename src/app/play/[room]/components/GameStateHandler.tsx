@@ -121,6 +121,18 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		sync(newSynced)
 
 		if (currentPlayer && newOpponent) {
+			if (newOpponent?.lives === -1) {
+				await notice({
+					title: 'Your opponent has given up',
+					description: 'You win the game!',
+					image: '/game/icons/end_win.png',
+					duration: 5000,
+					onClose: async () => {
+						await resetGameState()
+					}
+				})
+			}
+
 			if (newOpponent.hasPassed !== opponentPlayer?.hasPassed) {
 				await hasPassedNotice(currentPlayer.hasPassed, newOpponent.hasPassed, newGameState.turn, 'disable-host')
 			}
@@ -202,6 +214,22 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		router.replace('/')
 	}
 
+	const saveMatch = async (host: GamePlayer, opponent: GamePlayer, rounds: GameState['rounds']) => {
+		try {
+			const { error } = await supabase.from('matches').insert({
+				player1: host.id,
+				player2: opponent.id,
+				player1_result: host.lives === 0 ? 'lose' : 'win',
+				player2_result: opponent.lives === 0 ? 'lose' : 'win',
+				scores: rounds
+			})
+
+			if (error) throw new Error(error.message)
+		} catch (error) {
+			console.log('Error saving match:', error)
+		}
+	}
+
 	const onGameOver = async (host: GamePlayer, opponent: GamePlayer, rounds: GameState['rounds']) => {
 		if (!host || !opponent) return
 
@@ -212,6 +240,8 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 			{
 				duration: 15000,
 				onClose: async () => {
+					if (host.id === gameState.roomOwner) await saveMatch(host, opponent, rounds)
+
 					await resetGameState()
 				}
 			},
