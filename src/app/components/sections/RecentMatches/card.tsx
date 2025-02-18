@@ -1,40 +1,34 @@
 import { UserAvatar } from '@/components/UserAvatar'
+import { Match } from '@/lib/queries'
 import { createClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
 import { GameState } from '@/types/Game'
-import { Tables } from '@/types/supabase'
-import { format } from 'date-fns'
-import {} from 'lucide-react'
 import { Fragment } from 'react'
+import CrossedSabers from '/public/assets/crossed-sabers.svg'
 import SkullIcon from '/public/assets/skull.svg'
 import TrophyIcon from '/public/assets/trophy.svg'
 
 type Props = {
 	userId: string
-	match: Tables<'matches'>
+	match: Match
 }
 
 export const MatchCard = async ({ match, userId }: Props) => {
 	const supabase = await createClient()
 
-	const { player1, player2, date, id, player1_result, player2_result, scores } = match
+	const { scores, opponent, result } = match
 
 	const { data: user } = await supabase.from('profiles').select('*').eq('id', userId).single()
-
-	const opponentId = player1 === userId ? player2 : player1
-	const { data: opponent } = await supabase.from('profiles').select('*').eq('id', opponentId).single()
 
 	if (!user || !opponent) return null
 
 	const players = [user, opponent]
 	const rounds = scores as GameState['rounds']
 
-	const hasWon = player1 === userId ? player1_result === 'win' : player2_result === 'win'
-
 	const matchScore = rounds.reduce(
 		(acc, round) => {
 			const userScore = round.players.find(p => p.id === userId)?.score
-			const opponentScore = round.players.find(p => p.id === opponentId)?.score
+			const opponentScore = round.players.find(p => p.id === opponent.id)?.score
 
 			if (userScore && opponentScore) {
 				if (userScore > opponentScore) acc[0]++
@@ -46,22 +40,28 @@ export const MatchCard = async ({ match, userId }: Props) => {
 		[0, 0]
 	)
 
+	const resultClass = (win: string, defeat: string, draw: string) => {
+		return result === 'win' ? win : result === 'lose' ? defeat : draw
+	}
+
 	return (
 		<div
 			className={cn(
 				'relative z-0 grid grid-cols-3 overflow-hidden rounded-lg border border-border bg-background/10 px-8 py-4 shadow-md backdrop-blur-lg',
-				hasWon ? 'border-yellow-700' : 'border-red-800'
+				resultClass('border-yellow-800', 'border-red-800', 'border-gray-600')
 			)}>
 			<div
 				className={cn(
 					'absolute -left-8 top-0 z-20 size-48 rounded-full opacity-50 blur-[100px]',
-					hasWon ? 'bg-yellow-800' : 'bg-red-800'
+					resultClass('bg-yellow-800', 'bg-red-800', 'bg-gray-600')
 				)}>
 				/
 			</div>
 			<div className='absolute top-0 -z-10 flex h-[120%] w-auto items-center justify-center opacity-15'>
-				{hasWon ? (
+				{result === 'win' ? (
 					<TrophyIcon className='size-[150%] -translate-x-[30%] -translate-y-[0%] rotate-12 fill-yellow-700 stroke-background text-background' />
+				) : result === 'draw' ? (
+					<CrossedSabers className='size-[100%] -translate-x-[0%] -translate-y-[10%] rotate-12 stroke-black text-gray-600' />
 				) : (
 					<SkullIcon className='size-[100%] -translate-x-[30%] -translate-y-[10%] rotate-12 text-red-800' />
 				)}
@@ -70,9 +70,9 @@ export const MatchCard = async ({ match, userId }: Props) => {
 			<p
 				className={cn(
 					'pointer-events-none absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 select-none font-heading text-[9rem] font-bold uppercase leading-none opacity-5',
-					hasWon ? 'text-yellow-800' : 'text-red-800'
+					resultClass('text-yellow-800', 'text-red-800', 'text-gray-600')
 				)}>
-				<span className='mt-5 block'>{hasWon ? 'Victory' : 'Defeat'}</span>
+				<span className='mt-5 block'>{result === 'win' ? 'Victory' : result === 'lose' ? 'Defeat' : 'Draw'}</span>
 			</p>
 
 			{rounds && (

@@ -1,5 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
-import React from 'react'
+import { getMatchesOfUser } from '@/lib/queries'
 import { MatchCard } from './card'
 
 type Props = {
@@ -7,15 +6,9 @@ type Props = {
 }
 
 export const RecentMatches = async ({ userId }: Props) => {
-	const supabase = await createClient()
+	const matches = await getMatchesOfUser(userId)
 
-	// Fetch all the matches of the current user
-	const { data: matches, error } = await supabase
-		.from('matches')
-		.select('*')
-		.or(`player1.eq.${userId},player2.eq.${userId}`)
-
-	if (error || !matches.length) {
+	if (!matches.length) {
 		return <div className='text-center text-muted-foreground'>No recent matches found</div>
 	}
 

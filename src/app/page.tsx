@@ -11,6 +11,7 @@ import { createClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { RecentMatches } from './components/sections/RecentMatches'
+import { UserStats } from './components/sections/user-stats'
 
 export default async function Home() {
 	const supabase = await createClient()
@@ -32,38 +33,44 @@ export default async function Home() {
 		<LayoutContainer>
 			<>
 				<main className='grid-container z-0 my-auto py-12'>
-					<div className='mx-auto mt-12 grid max-w-lg grid-cols-1 gap-16 lg:max-w-full lg:grid-cols-2'>
-						<header className=''>
-							<h1 className='font-heading text-3xl font-bold sm:text-4xl md:text-5xl'>Gwent Multiplayer</h1>
-							<p className='mt-2 text-xl text-muted-foreground'>
-								The Witcher 3&apos;s Gwent card game, now multiplayer.
-							</p>
+					<div className='mx-auto mt-12 grid w-full max-w-lg grid-cols-1 gap-24 lg:max-w-full lg:grid-cols-2 xl:gap-36'>
+						<div className='flex flex-col'>
+							<header>
+								<h1 className='font-heading text-3xl font-bold sm:text-4xl md:text-5xl'>Gwent Multiplayer</h1>
+								<p className='mt-2 text-xl text-muted-foreground'>
+									The Witcher 3&apos;s Gwent card game, now multiplayer.
+								</p>
 
-							<Separator className='my-6' />
+								<Separator className='my-6' />
 
-							<div className='space-y-8'>
-								<div>
-									<H2>How to play</H2>
-									<p className='text-balance text-muted-foreground'>
-										You can create a new room and invite your friends to join, or join a room that your friend has
-										created.
-									</p>
-								</div>
-								<div>
-									<H2>Gwent tutorial</H2>
+								{!user && (
+									<div className='space-y-8'>
+										<div>
+											<H2>How to play</H2>
+											<p className='text-balance text-muted-foreground'>
+												You can create a new room and invite your friends to join, or join a room that your friend has
+												created.
+											</p>
+										</div>
+										<div>
+											<H2>Gwent tutorial</H2>
 
-									<Link
-										href={'https://www.youtube.com/watch?v=3-KEhKf4uqk'}
-										target='_blank'
-										rel='noopener'
-										className='text-muted-foreground underline'>
-										Watch the tutorial on YouTube
-									</Link>
-								</div>
+											<Link
+												href={'https://www.youtube.com/watch?v=3-KEhKf4uqk'}
+												target='_blank'
+												rel='noopener'
+												className='text-muted-foreground underline'>
+												Watch the tutorial on YouTube
+											</Link>
+										</div>
 
-								<Separator className='mt-6 lg:hidden' />
-							</div>
-						</header>
+										<Separator className='mt-6 lg:hidden' />
+									</div>
+								)}
+							</header>
+
+							{user && <UserStats user={user} />}
+						</div>
 
 						{user && (
 							<div className='flex w-full flex-col justify-between lg:ml-auto'>

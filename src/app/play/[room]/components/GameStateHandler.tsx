@@ -48,7 +48,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 			const { error } = await supabase
 				.from('players')
 				.upsert({ ...player })
-				.in('id', [userId, opponentPlayer?.id])
+				.in('id', [userId, opponentPlayer?.id ?? ''])
 
 			if (error) {
 				console.error(error)
@@ -204,7 +204,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		const { error: playersError } = await supabase
 			.from('players')
 			.delete()
-			.in('id', [currentPlayer?.id, opponentPlayer?.id])
+			.in('id', [currentPlayer?.id ?? '', opponentPlayer?.id ?? ''])
 		if (playersError) return console.error(playersError)
 
 		const { error: roomError } = await supabase.from('rooms').delete().eq('id', roomId)
@@ -218,8 +218,8 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 			const { error } = await supabase.from('matches').insert({
 				player1: host.id,
 				player2: opponent.id,
-				player1_result: host.lives === 0 ? 'lose' : 'win',
-				player2_result: opponent.lives === 0 ? 'lose' : 'win',
+				player1_result: host.lives === 0 && opponent.lives === 0 ? 'draw' : host.lives === 0 ? 'lose' : 'win',
+				player2_result: host.lives === 0 && opponent.lives === 0 ? 'draw' : opponent.lives === 0 ? 'lose' : 'win',
 				scores: rounds
 			})
 
