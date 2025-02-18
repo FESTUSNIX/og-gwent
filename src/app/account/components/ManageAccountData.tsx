@@ -4,9 +4,9 @@ import { EditField } from '@/components/Forms/EditField'
 import { TextField } from '@/components/Forms/TextField'
 import { H3 } from '@/components/ui/Typography/H3'
 import { Separator } from '@/components/ui/separator'
+import { createClient } from '@/lib/supabase/client'
 import { ProfileValidator } from '@/lib/validators/Profile'
-import { Database, Tables } from '@/types/supabase'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Tables } from '@/types/supabase'
 import React, { Fragment } from 'react'
 import { Control, FieldPath, FieldValues } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -22,7 +22,7 @@ const ProfileValidatorWithEmail = ProfileValidator.extend({
 })
 
 export const ManageAccountData = ({ user }: Props) => {
-	const supabase = createClientComponentClient<Database>()
+	const supabase = createClient()
 	const items: {
 		accessorKey: keyof z.infer<typeof ProfileValidatorWithEmail>
 		title: string

@@ -1,7 +1,6 @@
 'use client'
 
 import { UserAvatar } from '@/components/UserAvatar'
-import { supabase } from '@/lib/supabase/supabase'
 import { cn } from '@/lib/utils'
 import { CardType } from '@/types/Card'
 import { FactionType } from '@/types/Faction'
@@ -10,6 +9,7 @@ import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import useGameContext from '../../../hooks/useGameContext'
 import { StartGameButton } from './StartGameButton'
+import { createClient } from '@/lib/supabase/client'
 
 type Props = {
 	selectedDeck: CardType[]
@@ -26,19 +26,19 @@ export const GameStatusBar = ({ accepted, currentFaction, player, selectedDeck }
 	const currentUser = players.find(p => p.id === player.id)
 	const opponent = players.find(p => p.id !== player.id)
 
-	const supabaseClient = supabase()
+	const supabase = createClient()
 	const [currentUserAvatar, setCurrentUserAvatar] = useState<string | null>(null)
 	const [opponentAvatar, setOpponentAvatar] = useState<string | null>(null)
 
 	useEffect(() => {
 		async function getAvatarUrl() {
 			try {
-				const { data: user } = await supabaseClient.from('profiles').select('avatar_url').eq('id', player.id).single()
+				const { data: user } = await supabase.from('profiles').select('avatar_url').eq('id', player.id).single()
 				setCurrentUserAvatar(user?.avatar_url ?? null)
 
 				if (!opponent) return
 
-				const { data: opp } = await supabaseClient.from('profiles').select('avatar_url').eq('id', opponent?.id).single()
+				const { data: opp } = await supabase.from('profiles').select('avatar_url').eq('id', opponent?.id).single()
 				setOpponentAvatar(opp?.avatar_url ?? null)
 			} catch (error) {
 				console.log('Error fetching user: ', error)
@@ -48,7 +48,7 @@ export const GameStatusBar = ({ accepted, currentFaction, player, selectedDeck }
 		getAvatarUrl()
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [supabase])
+	}, [])
 
 	return (
 		<motion.div

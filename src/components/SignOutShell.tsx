@@ -1,7 +1,7 @@
 'use client'
 
+import { createClient } from '@/lib/supabase/client'
 import { Slot, SlotProps } from '@radix-ui/react-slot'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { SignOut } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import { forwardRef } from 'react'
@@ -12,7 +12,7 @@ type Props = SlotProps &
 	}
 
 export const SignOutShell = forwardRef<HTMLElement, Props>(({ onClick, signOutOptions, children, ...props }, ref) => {
-	const supabase = createClientComponentClient()
+	const supabase = createClient()
 	const router = useRouter()
 
 	async function signOut() {

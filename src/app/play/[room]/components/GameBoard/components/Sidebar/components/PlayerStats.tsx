@@ -1,7 +1,7 @@
 import { UserAvatar } from '@/components/UserAvatar'
 import { FACTIONS } from '@/constants/FACTIONS'
 import { calculateGameScore } from '@/lib/calculateScores'
-import { supabase } from '@/lib/supabase/supabase'
+import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import { GamePlayer } from '@/types/Game'
 import { WeatherEffect } from '@/types/WeatherEffect'
@@ -18,7 +18,7 @@ type Props = {
 
 export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Props) => {
 	const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
-	const supabaseClient = supabase()
+	const supabase = createClient()
 
 	const score = calculateGameScore(player.rows, weatherEffects)
 	const opponentScore = calculateGameScore(opponent.rows, weatherEffects)
@@ -29,7 +29,7 @@ export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Pr
 	useEffect(() => {
 		async function getAvatarUrl() {
 			try {
-				const { data: user } = await supabaseClient.from('profiles').select('avatar_url').eq('id', player.id).single()
+				const { data: user } = await supabase.from('profiles').select('avatar_url').eq('id', player.id).single()
 
 				setAvatarUrl(user?.avatar_url ?? null)
 			} catch (error) {
@@ -40,7 +40,7 @@ export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Pr
 		getAvatarUrl()
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [supabase])
+	}, [])
 
 	const factionShieldImage = FACTIONS.find(f => f.slug === player.faction)?.images?.deckShield
 

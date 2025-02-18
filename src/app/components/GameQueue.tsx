@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Database, Tables } from '@/types/supabase'
 import { createId } from '@paralleldrive/cuid2'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -15,7 +15,7 @@ type Props = {
 }
 
 export const GameQueue = ({ user, isInQueue, setIsInQueue }: Props) => {
-	const supabase = createClientComponentClient<Database>()
+	const supabase = createClient()
 	const router = useRouter()
 
 	const createNewRoom = async () => {
@@ -104,7 +104,7 @@ export const GameQueue = ({ user, isInQueue, setIsInQueue }: Props) => {
 	return (
 		<Button
 			onClick={() => setIsInQueue(prev => !prev)}
-			className='w-full rounded-full px-6 py-7 font-normal md:text-lg'>
+			className='w-full rounded-full border bg-background/10 px-6 py-7 font-normal border-primary text-foreground backdrop-blur-md hover:bg-background/75 md:text-lg'>
 			{isInQueue ? 'Cancel' : 'Join game'}
 		</Button>
 	)

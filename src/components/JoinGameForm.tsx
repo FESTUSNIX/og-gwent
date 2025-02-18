@@ -47,7 +47,7 @@ export const JoinGameForm = ({ isInGame }: Props) => {
 								<>
 									<label
 										className={cn(
-											'relative hidden w-full cursor-text items-center overflow-hidden rounded-full border border-input bg-transparent ring-offset-background focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 sm:flex'
+											'relative hidden w-full cursor-text items-center overflow-hidden rounded-full border border-input bg-background/10 ring-offset-background backdrop-blur-md focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 sm:flex'
 										)}>
 										<input
 											autoComplete={'off'}

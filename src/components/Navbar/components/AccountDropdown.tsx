@@ -1,4 +1,4 @@
-import { LogIn, LogOut, User } from 'lucide-react'
+import { SignOutShell } from '@/components/SignOutShell'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -7,27 +7,22 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Session } from '@supabase/supabase-js'
-import Link from 'next/link'
-import { SignOutShell } from '@/components/SignOutShell'
 import { UserAvatar } from '@/components/UserAvatar'
-import { Database } from '@/types/supabase'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createClient } from '@/lib/supabase/server'
+import { LogIn, LogOut, User } from 'lucide-react'
+import Link from 'next/link'
 
 type Props = {
-	session: Session | null
+	userId: string
 }
 
-const AccountDropdown = async ({ session }: Props) => {
-	const supabase = createServerComponentClient<Database>({
-		cookies
-	})
+const AccountDropdown = async ({ userId }: Props) => {
+	const supabase = await createClient()
 
 	const { data: user, error } = await supabase
 		.from('profiles')
 		.select(`username, avatar_url`)
-		.eq('id', session?.user?.id as string)
+		.eq('id', userId as string)
 		.single()
 
 	return (

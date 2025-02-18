@@ -2,7 +2,7 @@
 
 import { UserAvatar } from '@/components/UserAvatar'
 import { Database } from '@/types/supabase'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 type Profiles = Database['public']['Tables']['profiles']['Row']
@@ -16,7 +16,7 @@ export default function Avatar({
 	url: Profiles['avatar_url']
 	username: Profiles['username']
 }) {
-	const supabase = createClientComponentClient<Database>()
+	const supabase = createClient()
 	const [avatarUrl, setAvatarUrl] = useState<Profiles['avatar_url']>(null)
 	const [uploading, setUploading] = useState(false)
 

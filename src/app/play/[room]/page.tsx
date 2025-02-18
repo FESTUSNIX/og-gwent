@@ -1,4 +1,4 @@
-import { supabaseServer } from '@/lib/supabase/supabaseServer'
+import { createClient } from '@/lib/supabase/server'
 import { Card } from '@/types/Card'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
@@ -15,11 +15,9 @@ type Props = {
 }
 
 const RoomPage = async ({ params: { room }, searchParams }: Props) => {
-	const supabase = supabaseServer()
+	const supabase = await createClient()
 
-	const {
-		data: { session }
-	} = await supabase.auth.getSession()
+	const { data: session } = await supabase.auth.getUser()
 
 	if (!session || !session.user) {
 		return redirect('/login')

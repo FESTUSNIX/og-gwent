@@ -1,10 +1,10 @@
 'use client'
 
+import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
-import { Database } from '@/types/supabase'
 import { createId } from '@paralleldrive/cuid2'
 import { Slot } from '@radix-ui/react-slot'
-import { Session, createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Session } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import React, { forwardRef } from 'react'
 import { toast } from 'sonner'
@@ -16,7 +16,7 @@ type Props = {
 
 export const NewGameShell = forwardRef<HTMLButtonElement, Props>(({ children, session, ...props }, ref) => {
 	const router = useRouter()
-	const supabase = createClientComponentClient<Database>()
+	const supabase = createClient()
 
 	const createNewRoom = async () => {
 		try {
@@ -30,7 +30,7 @@ export const NewGameShell = forwardRef<HTMLButtonElement, Props>(({ children, se
 
 			const { error: createRoomError } = await supabase.from('rooms').insert({
 				id: id,
-				roomOwner: session.user.id,
+				roomOwner: session.user.id
 			})
 			if (createRoomError) throw Error(createRoomError.message)
 

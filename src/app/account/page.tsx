@@ -4,23 +4,17 @@ import { H2 } from '@/components/ui/Typography/H2'
 import { Muted } from '@/components/ui/Typography/Muted'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Database } from '@/types/supabase'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/server'
 import { LogOut } from 'lucide-react'
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { ManageAccountData } from './components/ManageAccountData'
 
 export default async function AccountPage() {
-	const supabase = createServerComponentClient<Database>({
-		cookies
-	})
+	const supabase = await createClient()
 
-	const {
-		data: { session }
-	} = await supabase.auth.getSession()
+	const { data: session } = await supabase.auth.getUser()
 
-	if (!session) {
+	if (!session?.user) {
 		redirect('/login')
 	}
 

@@ -42,7 +42,7 @@ export const InviteToLobby = ({ lobbyCode, isInGame, setUser }: Props) => {
 
 					setIsOpen(true)
 				}}
-				className='relative flex h-auto items-center justify-center gap-3 text-lg font-normal text-muted-foreground'>
+				className='relative flex h-auto items-center justify-center gap-3 bg-background/10 text-lg font-normal text-muted-foreground backdrop-blur-md hover:bg-background/75'>
 				<Mail className='size-4' />
 				<span>Invite to lobby</span>
 			</Button>

@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { cn } from '@/lib/utils'
 import { Database, Tables } from '@/types/supabase'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { Session } from '@supabase/supabase-js'
 import { X } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -23,7 +23,6 @@ import { GameQueue } from './GameQueue'
 import { InviteToLobby } from './InviteToLobby'
 
 type Props = {
-	session: Session
 	user: Pick<Tables<'profiles'>, 'username' | 'avatar_url'> & { id: string }
 	roomId: string | null
 }
@@ -42,12 +41,12 @@ type LobbyState = {
 	players: LobbyPlayer[]
 }
 
-export const Lobby = ({ session, user: _user, roomId }: Props) => {
+export const Lobby = ({ user: _user, roomId }: Props) => {
 	const router = useRouter()
 	const searchParams = useSearchParams()
 	const lobbyId = searchParams.get('wr')
 
-	const supabase = createClientComponentClient<Database>()
+	const supabase = createClient()
 
 	const defaultUser: LobbyPlayer = {
 		id: _user.id,
@@ -73,7 +72,7 @@ export const Lobby = ({ session, user: _user, roomId }: Props) => {
 		try {
 			if (!lobbyId || isInGame) return
 
-			const { data } = await supabase.from('room_players').select('playerId').eq('playerId', session.user.id).single()
+			const { data } = await supabase.from('room_players').select('playerId').eq('playerId', user.id).single()
 
 			if (data?.playerId) {
 				throw Error('You are already in a room!')
@@ -81,7 +80,7 @@ export const Lobby = ({ session, user: _user, roomId }: Props) => {
 
 			const { error: createRoomError } = await supabase.from('rooms').insert({
 				id: lobbyId,
-				roomOwner: session.user.id
+				roomOwner: user.id
 			})
 			if (createRoomError) throw Error(createRoomError.message)
 
@@ -146,7 +145,7 @@ export const Lobby = ({ session, user: _user, roomId }: Props) => {
 						<div
 							key={player.id}
 							className={cn(
-								'relative flex gap-4 rounded-md border border-input px-2 py-2',
+								'relative flex gap-4 rounded-md border border-input px-2 py-2 backdrop-blur-md',
 								player.accepted && 'border-green-600'
 							)}>
 							<UserAvatar user={player} className='size-14 rounded-md' />

@@ -1,11 +1,10 @@
 'use client'
 
 import { calculateGameScore } from '@/lib/calculateScores'
+import { createClient } from '@/lib/supabase/client'
 import { CardType } from '@/types/Card'
 import { GamePlayer, GameRow, GameState } from '@/types/Game'
 import { WeatherEffect } from '@/types/WeatherEffect'
-import { Database } from '@/types/supabase'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo } from 'react'
@@ -31,7 +30,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 	} = useGameContext()
 	const { notice, isResolving } = useNoticeContext()
 
-	const supabase = createClientComponentClient<Database>()
+	const supabase = createClient()
 	const router = useRouter()
 
 	const currentPlayer = useMemo(() => gameState.players.find(player => player?.id === userId), [gameState, userId])

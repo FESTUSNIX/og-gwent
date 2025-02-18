@@ -3,10 +3,9 @@
 import { TextField } from '@/components/Forms/TextField'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
+import { createClient } from '@/lib/supabase/client'
 import { RegisterPayload, RegisterValidator } from '@/lib/validators/Register'
-import { Database } from '@/types/supabase'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useMutation } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -14,7 +13,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 export const SignupForm = () => {
-	const supabase = createClientComponentClient<Database>()
+	const supabase = createClient()
 
 	const searchParams = useSearchParams()
 	const callbackUrl = searchParams.get('callbackUrl')

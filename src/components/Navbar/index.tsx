@@ -1,22 +1,15 @@
+import { createClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
-import { Database } from '@/types/supabase'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
 import Link from 'next/link'
-import { NewGameShell } from '../NewGameShell'
-import { Button, buttonVariants } from '../ui/button'
+import { buttonVariants } from '../ui/button'
 import AccountDropdown from './components/AccountDropdown'
 
 type Props = {}
 
 export const Navbar = async (props: Props) => {
-	const supabase = createServerComponentClient<Database>({
-		cookies
-	})
+	const supabase = await createClient()
 
-	const {
-		data: { session }
-	} = await supabase.auth.getSession()
+	const { data: session } = await supabase.auth.getUser()
 
 	const user = session?.user
 
@@ -25,8 +18,8 @@ export const Navbar = async (props: Props) => {
 		: { data: null }
 
 	return (
-		<nav className='grid-container sticky top-0 z-40 w-full border-b bg-background py-4'>
-			<div className='flex items-center justify-between'>
+		<nav className='grid-container sticky top-0 z-40 w-full bg-background/90 backdrop-blur-[2px]'>
+			<div className='flex items-center justify-between border-b py-4'>
 				<Link href={'/'}>
 					<div className='font-heading text-3xl font-black'>Gwent</div>
 				</Link>
@@ -40,7 +33,7 @@ export const Navbar = async (props: Props) => {
 				</div>
 
 				<div>
-					{user && <AccountDropdown session={session} />}
+					{user && <AccountDropdown userId={user.id} />}
 					{!user && (
 						<Link href={'/login'} className={cn(buttonVariants({}), 'rounded-full')}>
 							Log in to play

@@ -4,39 +4,7 @@
 
 @layer base {
 	:root {
-		--background: 0 0% 100%;
-		--foreground: 0 0% 3.9%;
-
-		--card: 0 0% 100%;
-		--card-foreground: 0 0% 3.9%;
-
-		--popover: 0 0% 100%;
-		--popover-foreground: 0 0% 3.9%;
-
-		--primary: 36 51% 56%;
-		--primary-foreground: 36 0% 98%;
-
-		--secondary: 0 0% 96.1%;
-		--secondary-foreground: 0 0% 9%;
-
-		--muted: 0 0% 96.1%;
-		--muted-foreground: 0 0% 45.1%;
-
-		--accent: 0 0% 96.1%;
-		--accent-foreground: 0 0% 9%;
-
-		--destructive: 355 70% 30%;
-		--destructive-foreground: 353 0% 89%;
-
-		--border: 0 0% 89.8%;
-		--input: 0 0% 89.8%;
-		--ring: 0 0% 3.9%;
-
-		--radius: 0.5rem;
-	}
-
-	.dark {
-		--background: 0 0% 7%;
+		--background: 0 0% 4%;
 		--foreground: 210 4% 89%;
 
 		--card: 0 0% 11%;
@@ -45,8 +13,8 @@
 		--popover: 0 0% 11%;
 		--popover-foreground: 0 0% 87%;
 
-		--primary: 35 70% 69%;
-		--primary-foreground: 0 0% 10%;
+		--primary: 35 92% 40%;
+		--primary-foreground: 0 0% 100%;
 
 		--secondary: 0 0% 11%;
 		--secondary-foreground: 0 0% 87%;
@@ -63,6 +31,8 @@
 		--border: 0 0% 14%;
 		--input: 0 0% 22%;
 		--ring: 0 0% 83.1%;
+
+		--radius: 0.5rem;
 	}
 }
 
@@ -96,5 +66,9 @@
 
 	.layout-grid {
 		@apply grid grid-cols-4 gap-x-2 md:grid-cols-12 md:gap-x-2.5 xl:gap-x-8;
+	}
+
+	.ambient-background {
+		@apply bg-[url('/images/witcher4.jpg')] bg-cover bg-fixed bg-top bg-no-repeat;
 	}
 }

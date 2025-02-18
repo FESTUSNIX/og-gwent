@@ -2,9 +2,8 @@
 
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
-import { Database } from '@/types/supabase'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Braces, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -23,7 +22,7 @@ export const GameControls = ({ roomId }: Props) => {
 		actions: { setGameState }
 	} = useGameContext()
 
-	const supabase = createClientComponentClient<Database>()
+	const supabase = createClient()
 	const router = useRouter()
 
 	const [isVisible, setIsVisible] = useState(false)

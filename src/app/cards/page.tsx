@@ -1,10 +1,8 @@
 import { Card } from '@/components/Card'
 import { CardsPreview, CardsPreviewTrigger } from '@/components/CardsPreview'
 import { FACTIONS } from '@/constants/FACTIONS'
+import { createClient } from '@/lib/supabase/server'
 import { CardType } from '@/types/Card'
-import { Database } from '@/types/supabase'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import cardsJson from '../../../db/cards.json'
@@ -16,15 +14,11 @@ type Props = {
 }
 
 const CardsPage = async ({ searchParams }: Props) => {
-	const supabase = createServerComponentClient<Database>({
-		cookies
-	})
+	const supabase = await createClient()
 
-	const {
-		data: { session }
-	} = await supabase.auth.getSession()
+	const { data: session } = await supabase.auth.getUser()
 
-	if (!session) redirect('/login')
+	if (!session.user) redirect('/login')
 
 	const { data: user } = await supabase
 		.from('profiles')
