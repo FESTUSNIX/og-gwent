@@ -92,7 +92,7 @@ export const Cards = ({ cards: _cards, row, weatherEffect, previewCard, handleDe
 							ref={cardRef}
 							className={cn(
 								'relative flex aspect-[3/4] h-full w-auto max-w-full cursor-auto items-center justify-center duration-100 hover:z-10 hover:mb-6',
-								previewCard?.ability === 'decoy' && card.type === 'unit' && 'cursor-pointer'
+								previewCard?.ability === 'decoy' && card.type === 'unit' && 'nter'
 							)}
 							onClick={() => {
 								handleDecoy(card)

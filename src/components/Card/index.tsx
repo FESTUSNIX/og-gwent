@@ -1,11 +1,12 @@
+'use client'
+
 import { calculateCardStrength } from '@/lib/calculateScores'
 import { cn } from '@/lib/utils'
 import { Card as CardType } from '@/types/Card'
 import { FactionType } from '@/types/Faction'
 import { GameRow } from '@/types/Game'
 import { WeatherEffect } from '@/types/WeatherEffect'
-import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion'
-import Image from 'next/image'
+import { HTMLMotionProps, motion } from 'framer-motion'
 import cardsJson from '../../../db/cards.json'
 
 type Props = {
@@ -65,18 +66,11 @@ export const Card = ({
 			)}>
 			<div
 				className={cn(
-					'relative z-0 w-full grow overflow-hidden object-cover',
-					mode === 'preview' && 'aspect-[2/3] h-auto w-full basis-3/4 rounded-t-xl',
+					'relative z-0 w-full grow overflow-hidden bg-cover bg-center bg-no-repeat object-cover',
+					mode === 'preview' && 'aspect-[2/3] h-auto w-full basis-3/4 rounded-t-[1vw]',
 					mode === 'game' && 'rounded-[2%]'
-				)}>
-				<Image
-					src={ASSET_PATH + `image/${card.factions[0]}/${card.slug}.jpg`}
-					alt=''
-					width={300}
-					height={450}
-					className='pointer-events-none absolute h-full w-full select-none object-cover'
-				/>
-			</div>
+				)}
+				style={{ backgroundImage: `url(${ASSET_PATH}image/${card.factions[0]}/${card.slug}.jpg)` }}></div>
 
 			<div className={cn('absolute left-0 top-0 z-20 aspect-square h-auto', mode === 'preview' ? 'w-3/5' : 'w-2/3')}>
 				{card.strength !== undefined && (
@@ -102,21 +96,17 @@ export const Card = ({
 						</div>
 					</div>
 				)}
-				<Image
-					src={
-						ASSET_PATH +
-						`power/${
+				<div
+					className='pointer-events-none absolute left-0 top-0 h-full w-full -translate-x-[7%] -translate-y-[7%] select-none bg-cover bg-center bg-no-repeat'
+					style={{
+						backgroundImage: `url(${ASSET_PATH}power/${
 							card.type === 'hero'
 								? 'hero'
 								: card.type === 'special' || card.type === 'weather'
 								? card.ability
 								: 'normal'
-						}.png`
-					}
-					width={200}
-					height={200}
-					alt=''
-					className='pointer-events-none absolute left-0 top-0 h-full w-full -translate-x-[7%] -translate-y-[7%] select-none'
+						}.png)`
+					}}
 				/>
 			</div>
 
@@ -128,41 +118,38 @@ export const Card = ({
 							? 'left-0 top-[28%] w-[30%] flex-col items-center'
 							: 'bottom-[5%] right-0 w-full flex-row-reverse items-center'
 					)}>
-					<div className={cn('aspect-square h-auto rounded-full', mode === 'preview' ? 'w-[85%]' : 'w-[30%]')}>
-						<Image
-							src={ASSET_PATH + `row/row_${card.row}.png`}
-							alt=''
-							width={80}
-							height={80}
-							className={cn('pointer-events-none h-full w-full select-none')}
-						/>
-					</div>
+					<div
+						className={cn(
+							'aspect-square h-auto rounded-full bg-contain bg-center bg-no-repeat',
+							mode === 'preview' ? 'w-[85%]' : 'w-[30%]'
+						)}
+						style={{
+							backgroundImage: `url(${ASSET_PATH}row/row_${card.row}.png)`
+						}}
+					/>
 					{card.ability && (
 						<div
 							className={cn(
-								'aspect-square h-auto rounded-full',
+								'aspect-square h-auto rounded-full bg-contain bg-center bg-no-repeat',
 								mode === 'preview' ? 'mt-[25%] w-[85%]' : 'mr-[5%] w-[30%]'
-							)}>
-							<Image
-								src={ASSET_PATH + `ability/${card.ability.split('-')[0]}.png`}
-								alt=''
-								width={80}
-								height={80}
-								className={cn('pointer-events-none h-full w-full select-none')}
-							/>
-						</div>
+							)}
+							style={{
+								backgroundImage: `url(${ASSET_PATH}ability/${card.ability.split('-')[0]}.png)`
+							}}
+						/>
 					)}
 				</div>
 			)}
 
 			{useBanner && (
 				<div className='absolute left-0 z-10 flex h-full w-[30%] flex-col items-center'>
-					<Image
-						src={ASSET_PATH + `banner/banner_${forceBanner ?? card.factions[0]}.png`}
-						alt=''
-						width={80}
-						height={80}
-						className={cn('pointer-events-none mt-[90%] h-[77%] w-auto -translate-x-[5%] select-none')}
+					<div
+						className={cn(
+							'pointer-events-none mt-[90%] h-[77%] w-auto -translate-x-[5%] select-none bg-contain bg-center bg-no-repeat'
+						)}
+						style={{
+							backgroundImage: `url(${ASSET_PATH}banner/banner_${forceBanner ?? card.factions[0]}.png)`
+						}}
 					/>
 				</div>
 			)}
@@ -171,7 +158,7 @@ export const Card = ({
 				<div
 					className={cn(
 						'relative flex h-1/4 w-full shrink-0 basis-1/4 flex-col text-center',
-						mode === 'preview' && 'overflow-hidden rounded-b-xl'
+						mode === 'preview' && 'overflow-hidden rounded-b-[1vw]'
 					)}>
 					<h3
 						className={cn(
@@ -187,13 +174,7 @@ export const Card = ({
 					</h3>
 					{displayAmount && (
 						<div className='relative z-10 flex h-full items-center px-[5%] pt-[5%]'>
-							<Image
-								src={'/game/icons/card_amount.png'}
-								alt='Cards amount'
-								width={50}
-								height={50}
-								className='mr-[2%] h-2/3 w-auto'
-							/>
+							<div className='mr-[2%] h-2/3 w-auto bg-[url(/game/icons/card_amount.png)] bg-contain bg-center bg-no-repeat' />
 
 							<div className='text-start font-normal leading-none tracking-tight text-[#726549]'>
 								<span className='sr-only'>{amount ?? 1}</span>
@@ -215,12 +196,11 @@ export const Card = ({
 							</svg>
 						</div>
 					)}
-					<Image
-						src={ASSET_PATH + `details/details_${card.type === 'hero' ? 'hero' : 'normal'}.png`}
-						alt=''
-						width={300}
-						height={150}
-						className='pointer-events-none absolute top-0 z-0 h-full w-full select-none object-fill'
+					<div
+						style={{
+							backgroundImage: `url(${ASSET_PATH}details/details_${card.type === 'hero' ? 'hero' : 'normal'}.png)`
+						}}
+						className='pointer-events-none absolute top-0 z-0 h-full w-full select-none bg-cover bg-center bg-no-repeat object-fill'
 					/>
 				</div>
 			)}

@@ -2,7 +2,7 @@ import useGameContext from '@/app/play/[room]/hooks/useGameContext'
 import { Card } from '@/components/Card'
 import { useCardsPreview } from '@/components/CardsPreview'
 import { calculateCardStrength, calculateRowScore } from '@/lib/calculateScores'
-import { cn, getRandomEntries } from '@/lib/utils'
+import { cn, getRandomEntries, getVw } from '@/lib/utils'
 import { CardType } from '@/types/Card'
 import { GamePlayer } from '@/types/Game'
 import { BoardRowTypes } from '@/types/RowType'
@@ -281,12 +281,13 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 
 	return (
 		<div className={cn('relative z-10 flex h-[calc(100%/7)] grow items-center', className)} style={style}>
-			<div className='absolute left-0 z-10 flex h-full translate-x-[calc(-100%+4px)] items-center'>
+			<div className='absolute left-0 z-10 flex h-full translate-x-[calc(-100%+6%)] items-center'>
 				<div
-					className={cn(
-						'z-10 -mr-1.5 flex aspect-square h-12 w-12 translate-x-0.5 items-center justify-center text-black'
-					)}>
-					<span className='z-10 text-2xl [text-shadow:0_0_4px_#fff,0_0_2px_#fff,0_0_6px_#fff]'>
+					className={cn('z-10 flex aspect-square translate-x-[15%] items-center justify-center text-black')}
+					style={{ width: getVw(48), height: getVw(48) }}>
+					<span
+						className='z-10 leading-tight [text-shadow:0_0_4px_#fff,0_0_2px_#fff,0_0_6px_#fff]'
+						style={{ fontSize: getVw(24) }}>
 						{calculateRowScore(row, weatherEffect)}
 					</span>
 					<div
@@ -298,8 +299,8 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 			</div>
 			<button
 				className={cn(
-					'group relative z-0 mr-px aspect-square h-full w-auto cursor-auto pb-1 duration-100',
-					canPlayEffect && 'cursor-pointer'
+					'group relative z-0 mr-px aspect-square h-full w-auto cursor-auto pb-[0.5%] duration-100',
+					canPlayEffect && 'nter'
 				)}
 				onClick={() => {
 					handleEffectAdd()
@@ -312,7 +313,7 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 					className={cn(
 						'pointer-events-none absolute inset-0 bg-yellow-600/15 opacity-0 ring-4 ring-inset ring-transparent duration-100',
 						(canPlayEffect || !cardToAdd) && 'group-hover:opacity-100 group-hover:ring-yellow-600/75',
-						canPlayEffect && 'cursor-pointer opacity-100'
+						canPlayEffect && 'opacity-100'
 					)}
 				/>
 				<div
@@ -323,10 +324,10 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 			<div
 				tabIndex={0}
 				className={cn(
-					'group relative z-0 h-full w-full min-w-0 grow cursor-auto bg-center bg-no-repeat pb-1 ring-4 ring-inset ring-transparent duration-100 [background-size:100%_100%]',
+					'group relative z-0 h-full w-full min-w-0 grow cursor-auto bg-center bg-no-repeat pb-[0.5%] ring-4 ring-inset ring-transparent duration-100 [--tw-ring-shadow:var(--tw-ring-inset)_0_0_0_calc(0.2vw_+_var(--tw-ring-offset-width))_var(--tw-ring-color);] [background-size:100%_100%]',
 					(canAddToRow || !cardToAdd) &&
 						'after:absolute after:inset-0 after:bg-yellow-600/15 after:opacity-0 after:duration-100 hover:ring-yellow-600/75 hover:after:opacity-100',
-					canAddToRow && 'cursor-pointer after:opacity-100'
+					canAddToRow && 'after:opacity-100'
 				)}
 				onClick={() => {
 					cardToAdd && handleCardPlay(cardToAdd)

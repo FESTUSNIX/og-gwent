@@ -1,6 +1,6 @@
 import useGameContext from '@/app/play/[room]/hooks/useGameContext'
 import { Card } from '@/components/Card'
-import { cn } from '@/lib/utils'
+import { cn, getVw } from '@/lib/utils'
 import { CardType } from '@/types/Card'
 import { GamePlayer } from '@/types/Game'
 
@@ -69,13 +69,14 @@ export const WeatherCardSlots = ({ host, opponent }: Props) => {
 
 	return (
 		<div
-			className='relative w-full bg-no-repeat px-3 py-4 shadow-[4px_8px_6px_#00000070,-2px_-2px_12px_#00000050] [background-size:100%_100%]'
+			className='relative w-full bg-no-repeat px-[4%] py-[5%] shadow-[4px_8px_6px_#00000070,-2px_-2px_12px_#00000050] [background-size:100%_100%]'
 			style={{ backgroundImage: `url('/game/board/weather_slots.png')` }}>
 			<button
 				className={cn(
-					'flex aspect-[2/1] h-full w-full cursor-auto items-center justify-center gap-1 p-1',
-					canPlayWeather && 'cursor-pointer ring-4 ring-inset ring-yellow-600/50 hover:ring-yellow-600'
+					'flex aspect-[2/1] h-full w-full cursor-auto items-center justify-center p-[1.5%]',
+					canPlayWeather && 'ring-4 ring-inset ring-yellow-600/50 hover:ring-yellow-600'
 				)}
+				style={{ gap: getVw(4) }}
 				onClick={() => {
 					handlePlayWeather()
 				}}>

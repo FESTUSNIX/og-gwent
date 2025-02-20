@@ -106,3 +106,10 @@ export function setRef<T>(val: T, ...refs: MutableRefList<T>): void {
 export const delay = async (ms: number) => {
 	return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+export const getVw = (baseSize: number) => {
+	const BASE_VW = 1920
+	const vw = (baseSize / BASE_VW) * 100
+
+	return `min(${vw}vw,${baseSize}px)`
+}

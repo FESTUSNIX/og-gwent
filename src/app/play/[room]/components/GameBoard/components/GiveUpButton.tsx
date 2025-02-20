@@ -12,7 +12,7 @@ import {
 	AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { cn, getVw } from '@/lib/utils'
 import { FlagIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useNoticeContext } from '../../../context/NoticeContext'
@@ -47,15 +47,16 @@ export const GiveUpButton = ({ playerId }: Props) => {
 	}
 
 	return (
-		<div className='absolute bottom-8 right-4'>
+		<div className=''>
 			<AlertDialog>
 				<AlertDialogTrigger asChild>
 					<Button
 						variant={'ghost'}
 						size={'sm'}
-						className='gap-2 hover:bg-destructive hover:text-destructive-foreground'>
+						className='h-auto leading-tight hover:bg-destructive hover:text-destructive-foreground'
+						style={{ fontSize: getVw(14), gap: getVw(8), padding: `${getVw(8)} ${getVw(12)}` }}>
 						<span>Give Up</span>
-						<FlagIcon className='size-3 fill-destructive-foreground' />
+						<FlagIcon className='h-auto fill-destructive-foreground' style={{ width: getVw(12) }} />
 					</Button>
 				</AlertDialogTrigger>
 				<AlertDialogContent>

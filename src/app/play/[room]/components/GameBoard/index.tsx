@@ -4,7 +4,7 @@ import { Hand } from '@/app/play/[room]/components/GameBoard/components/Hand'
 import { BackgroundMusic } from '@/components/BackgroundMusic'
 import { Card } from '@/components/Card'
 import { CardsPreview } from '@/components/CardsPreview'
-import { delay, getRandomItemBasedOnCode } from '@/lib/utils'
+import { delay, getRandomItemBasedOnCode, getVw } from '@/lib/utils'
 import { CardType } from '@/types/Card'
 import { WeatherEffect } from '@/types/WeatherEffect'
 import { Tables } from '@/types/supabase'
@@ -218,8 +218,8 @@ export const GameBoard = ({ user, roomId }: Props) => {
 	const cardsToAnimate = animatedCards.filter(animatedCard => shouldAnimateToPreview(animatedCard))
 
 	return (
-		<main className='relative z-10 flex h-full w-full grow flex-col overflow-hidden bg-black'>
-			<div className='relative mx-auto my-auto grid max-h-[980px] w-full max-w-[1780px] grow grid-cols-[375px_1fr]'>
+		<main className='fixed z-10 flex h-full w-full grow flex-col items-center overflow-y-auto overflow-x-hidden bg-black'>
+			<div className='absolute grid h-[min(calc((100vw_*_960_/_1920)),960px)] w-full max-w-[1920px] grow grid-cols-[25%_1fr]'>
 				<ChooseTurnDialog
 					isOpen={showChooseTurnDialog}
 					setIsOpen={setShowChooseTurnDialog}
@@ -235,13 +235,13 @@ export const GameBoard = ({ user, roomId }: Props) => {
 					weatherEffects={gameState.weatherEffects?.map(effect => effect.ability as WeatherEffect)}
 				/>
 
-				<div className='relative flex h-full min-w-0 bg-black pb-12 pl-28 pt-2 @container'>
+				<div className='relative flex h-full min-h-0 min-w-0 bg-black pb-[4%] pl-[10%] pt-[0.75%] @container'>
 					<div className='z-10 flex h-full min-w-0 grow flex-col'>
-						<div className='relative flex h-full flex-col gap-y-2 pt-2'>
+						<div className='relative flex h-full flex-col gap-y-[0.9%] pt-[1%]'>
 							<CardsPreview>
 								<Side host={host} opponent={opponent} side='opponent' />
 
-								<div className='pointer-events-none z-0 my-1.5 -ml-8 h-2 w-[calc(100%+2rem)] bg-[url("/game/board/rows_separator.png")] bg-center [background-size:100%_100%]' />
+								<div className='pointer-events-none z-0 my-[0.625%] ml-[-3.25%] h-[0.9%] w-[calc(100%+3.25%)] bg-[url("/game/board/rows_separator.png")] bg-center [background-size:100%_100%]' />
 
 								<Side host={host} opponent={opponent} side='host' />
 							</CardsPreview>
@@ -250,12 +250,14 @@ export const GameBoard = ({ user, roomId }: Props) => {
 						</div>
 					</div>
 
-					<div className='z-10 flex h-full min-w-max flex-col items-center justify-between gap-y-4 pl-6 pr-4 pt-8'>
+					<div
+						className='z-10 flex h-full w-[25%] flex-col items-center justify-between pl-[2%] pr-[1.25%] pt-[2.5%]'
+						style={{ rowGap: getVw(20) }}>
 						<CardPiles player={opponent} side='opponent' />
 
 						<div
 							id='card-preview-container'
-							className='absolute right-0 top-1/2 z-20 flex w-72 max-w-[80vw] grow -translate-y-1/2 items-center justify-center @6xl:relative @6xl:top-0 @6xl:w-full @6xl:translate-y-0'>
+							className='relative right-0 top-0 z-20 flex w-full max-w-[80vw] grow translate-y-0 items-center justify-center'>
 							{cardsToAnimate.length > 0 && (
 								<motion.div
 									key={cardsToAnimate[0].instance}
@@ -276,11 +278,11 @@ export const GameBoard = ({ user, roomId }: Props) => {
 
 				<BackgroundMusic />
 
-				<div className='pointer-events-none absolute left-0 top-0 z-0 h-full w-20 -translate-x-1/2 bg-gradient-to-r from-black from-50% to-black/0' />
-				<div className='pointer-events-none absolute right-0 top-0 z-0 h-full w-20 translate-x-1/2 bg-gradient-to-l from-black from-50% to-black/0' />
+				<div className='pointer-events-none absolute left-0 top-0 z-0 h-full w-[5%] -translate-x-1/2 bg-gradient-to-r from-black from-50% to-black/0' />
+				<div className='pointer-events-none absolute right-0 top-0 z-0 h-full w-[5%] translate-x-1/2 bg-gradient-to-l from-black from-50% to-black/0' />
 
-				<div className='pointer-events-none absolute top-0 z-0 h-10 w-full -translate-y-1/2 bg-gradient-to-b from-black from-50% to-black/0' />
-				<div className='pointer-events-none absolute bottom-0 z-0 h-10 w-full translate-y-1/2 bg-gradient-to-t from-black from-50% to-black/0' />
+				<div className='pointer-events-none absolute top-0 z-0 h-[5%] w-full -translate-y-1/2 bg-gradient-to-b from-black from-50% to-black/0' />
+				<div className='pointer-events-none absolute bottom-0 z-0 h-[5%] w-full translate-y-1/2 bg-gradient-to-t from-black from-50% to-black/0' />
 			</div>
 		</main>
 	)

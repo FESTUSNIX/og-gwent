@@ -2,7 +2,7 @@ import { UserAvatar } from '@/components/UserAvatar'
 import { FACTIONS } from '@/constants/FACTIONS'
 import { calculateGameScore } from '@/lib/calculateScores'
 import { createClient } from '@/lib/supabase/client'
-import { cn } from '@/lib/utils'
+import { cn, getVw } from '@/lib/utils'
 import { GamePlayer } from '@/types/Game'
 import { WeatherEffect } from '@/types/WeatherEffect'
 import Image from 'next/image'
@@ -45,8 +45,8 @@ export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Pr
 	const factionShieldImage = FACTIONS.find(f => f.slug === player.faction)?.images?.deckShield
 
 	return (
-		<div className={cn('flex flex-col gap-6', side === 'opponent' && 'flex-col-reverse')}>
-			<div className='relative flex items-center gap-4 py-2.5 pl-12'>
+		<div className={cn('flex flex-col', side === 'opponent' && 'flex-col-reverse')} style={{ gap: getVw(24) }}>
+			<div className='relative flex items-center py-[2.2%] pl-[10%]' style={{ gap: getVw(16) }}>
 				<div
 					className={cn(
 						'pointer-events-none relative flex aspect-square h-full w-auto select-none items-center justify-center rounded-full'
@@ -54,7 +54,7 @@ export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Pr
 					{avatarUrl && (
 						<UserAvatar
 							user={{ username: player.name, avatar_url: avatarUrl }}
-							className='absolute h-[calc(100%-10px)] w-[calc(100%-10px)] object-cover'
+							className='absolute h-[calc(100%-3%)] w-[calc(100%-3%)] object-cover'
 						/>
 					)}
 					{!avatarUrl && (
@@ -63,7 +63,7 @@ export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Pr
 							alt=''
 							width={120}
 							height={120}
-							className='absolute h-[calc(100%-10px)] w-[calc(100%-10px)] rounded-full object-cover'
+							className='absolute h-[calc(100%-3%)] w-[calc(100%-3%)] rounded-full object-cover'
 						/>
 					)}
 
@@ -72,7 +72,7 @@ export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Pr
 						alt=''
 						width={120}
 						height={120}
-						className='absolute top-0 z-10 h-[calc(100%+8px)] w-[calc(100%+10px)]'
+						className='absolute top-0 z-10 h-[calc(100%+8%)] w-[calc(100%+5%)]'
 					/>
 
 					{factionShieldImage && (
@@ -82,29 +82,36 @@ export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Pr
 							width={50}
 							height={50}
 							className={cn(
-								'absolute left-0 z-10 h-auto w-12 -translate-x-2.5 ',
-								side === 'opponent' ? 'top-0 -translate-y-1' : 'bottom-0 translate-y-2.5'
+								'absolute left-0 z-10 h-auto w-[45%] translate-x-[-22%] ',
+								side === 'opponent' ? 'top-0 translate-y-[-8%]' : 'bottom-0 translate-y-[19%]'
 							)}
 						/>
 					)}
 				</div>
 
 				<div
-					className={cn('flex grow flex-col gap-4 pr-12', side === 'opponent' ? 'flex-col-reverse pb-2.5' : 'pt-2.5')}>
-					<div className='flex items-center gap-4'>
-						<div className='flex items-center gap-2'>
+					className={cn(
+						'flex grow flex-col pr-[11%]',
+						side === 'opponent' ? 'flex-col-reverse pb-[2.3%]' : 'pt-[2.3%]'
+					)}
+					style={{ gap: getVw(16) }}>
+					<div className='flex items-center' style={{ gap: getVw(16) }}>
+						<div className='flex items-center' style={{ gap: getVw(8) }}>
 							<Image
 								src={'/game/icons/icon_card_count.png'}
 								alt=''
 								width={28}
 								height={40}
-								className='pointer-events-none h-auto w-6 select-none object-contain'
+								className='pointer-events-none h-auto select-none object-contain'
+								style={{ width: getVw(24) }}
 							/>
-							<span className='text-3xl font-bold'>{player.hand.length}</span>
+							<span className='font-bold leading-tight' style={{ fontSize: getVw(30) }}>
+								{player.hand.length}
+							</span>
 						</div>
-						<div className='flex items-center gap-1'>
+						<div className='flex items-center' style={{ gap: getVw(4) }}>
 							{[0, 1].map((life, i) => (
-								<div key={i} className={'aspect-square w-9 rounded-full'}>
+								<div key={i} className='aspect-square h-auto rounded-full' style={{ width: getVw(36) }}>
 									<Image
 										src={`/game/icons/icon_gem_${i >= player.lives ? 'off' : 'on'}.png`}
 										alt=''
@@ -118,20 +125,27 @@ export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Pr
 					</div>
 
 					<div>
-						<h3 className='font-bold'>{player.name}</h3>
-						<p className='w-max text-sm'>{FACTIONS.find(f => f.slug === player.faction)?.name}</p>
+						<h3 className='font-bold' style={{ fontSize: getVw(16) }}>
+							{player.name}
+						</h3>
+						<p className='w-max leading-tight' style={{ fontSize: getVw(14) }}>
+							{FACTIONS.find(f => f.slug === player.faction)?.name}
+						</p>
 					</div>
 				</div>
 
 				{hasPassed && (
-					<div className='absolute right-0 top-0 z-10 -translate-y-2 translate-x-1/2 text-2xl font-bold'>Passed</div>
+					<div
+						className='absolute right-0 top-0 z-10 translate-x-1/2 translate-y-[-25%] font-bold leading-tight'
+						style={{ fontSize: getVw(24) }}>
+						Passed
+					</div>
 				)}
 
 				<div className='absolute right-0 top-1/2 z-10 -translate-y-1/2 translate-x-1/2'>
 					<div
-						className={cn(
-							'relative z-10 flex aspect-square w-[3.25rem] items-center justify-center rounded-full text-black'
-						)}>
+						className='relative z-10 flex aspect-square items-center justify-center rounded-full text-black'
+						style={{ width: getVw(52) }}>
 						<Image
 							src={`/game/icons/score_total_${side}.png`}
 							alt=''
@@ -139,19 +153,23 @@ export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Pr
 							height={54}
 							className='pointer-events-none absolute h-full w-full select-none'
 						/>
-						<span className='z-10 text-3xl font-bold [text-shadow:0px_0px_6px_#fff]'>{score}</span>
+						<span
+							className='z-10 font-bold leading-tight [text-shadow:0px_0px_6px_#fff]'
+							style={{ fontSize: getVw(30) }}>
+							{score}
+						</span>
 					</div>
 					{isWinning && (
 						<div
 							className={cn(
-								'absolute left-1/2 top-1/2 z-0 h-[calc(100%+2.5rem)] w-[calc(100%+2.5rem)] -translate-x-1/2 -translate-y-1/2 rounded-full'
+								'absolute left-1/2 top-1/2 z-0 h-[calc(100%+76.95%)] w-[calc(100%+76.95%)] -translate-x-1/2 -translate-y-1/2 rounded-full'
 							)}>
 							<Image
 								src={'/game/icons/icon_high_score.png'}
 								alt=''
 								width={100}
 								height={80}
-								className='pointer-events-none absolute bottom-1 h-auto w-full select-none'
+								className='pointer-events-none absolute bottom-[4%] h-auto w-full select-none'
 							/>
 						</div>
 					)}
@@ -166,7 +184,7 @@ export const PlayerStats = ({ player, opponent, side, turn, weatherEffects }: Pr
 			</div>
 
 			<div
-				className='relative ml-12 flex aspect-[45/60] w-28 items-center justify-center bg-no-repeat shadow-[8px_8px_6px_#00000070] [background-size:100%_100%]'
+				className='relative ml-[10%] flex aspect-[45/60] w-[24%] items-center justify-center bg-no-repeat shadow-[8px_8px_6px_#00000070] [background-size:100%_100%]'
 				style={{ backgroundImage: `url('/game/board/leader_slot.png')` }}>
 				<div
 					style={{ backgroundImage: `url('/game/board/leader_ability.png')` }}

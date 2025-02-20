@@ -21,7 +21,7 @@ export const Navbar = async (props: Props) => {
 		<nav className='grid-container sticky top-0 z-40 w-full bg-background/90 backdrop-blur-[2px]'>
 			<div className='flex items-center justify-between border-b py-4'>
 				<Link href={'/'}>
-					<div className='font-heading text-3xl font-black'>Gwent</div>
+					<div className='font-heading text-3xl font-black duration-150 hover:text-foreground/80'>Gwent</div>
 				</Link>
 
 				<div className='hidden sm:block'>

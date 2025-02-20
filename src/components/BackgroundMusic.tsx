@@ -1,5 +1,6 @@
 'use client'
 
+import { getVw } from '@/lib/utils'
 import { Volume1Icon, Volume2Icon, VolumeXIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import YouTube, { YouTubeEvent, YouTubeProps } from 'react-youtube'
@@ -55,22 +56,22 @@ export const BackgroundMusic = (props: Props) => {
 	}
 
 	return (
-		<div className='absolute bottom-6 right-10 z-20 w-48 max-w-full translate-y-1/2'>
-			<div className='flex items-center gap-2'>
+		<div className='absolute bottom-[3%] right-[2%] z-20 w-[15%] max-w-full translate-y-1/2'>
+			<div className='flex items-center' style={{ gap: getVw(16) }}>
 				<div>
 					<span className='sr-only'>Music volume</span>
 					<button
-						className='p-1'
+						className='p-[15%]'
 						onClick={() => {
 							setVolume(prevVolume => (prevVolume === 0 ? savedVolume : 0))
 						}}>
 						<>
 							{volume === 0 ? (
-								<VolumeXIcon className='h-6 w-6' />
+								<VolumeXIcon className='aspect-square h-auto' style={{ width: getVw(24) }} />
 							) : volume < 50 ? (
-								<Volume1Icon className='h-6 w-6' />
+								<Volume1Icon className='aspect-square h-auto' style={{ width: getVw(24) }} />
 							) : (
-								<Volume2Icon className='h-6 w-6' />
+								<Volume2Icon className='aspect-square h-auto' style={{ width: getVw(24) }} />
 							)}
 						</>
 					</button>

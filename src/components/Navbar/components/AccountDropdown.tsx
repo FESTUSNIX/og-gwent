@@ -31,7 +31,7 @@ const AccountDropdown = async ({ userId }: Props) => {
 				<button className='rounded-full'>
 					<UserAvatar
 						user={{ avatar_url: user?.avatar_url ?? null, username: user?.username ?? null }}
-						className='cursor-pointer border duration-300 hover:shadow'
+						className='border duration-300 hover:shadow'
 					/>
 				</button>
 			</DropdownMenuTrigger>

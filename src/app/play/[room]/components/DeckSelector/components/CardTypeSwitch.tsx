@@ -52,10 +52,7 @@ export const CardTypeSwitch = ({ className, paramName = 'type' }: Props) => {
 							})
 						})
 					}}
-					className={cn(
-						'basis-[calc(100%/7)] cursor-pointer p-2 text-foreground/30',
-						type === currentType && 'text-foreground'
-					)}>
+					className={cn('basis-[calc(100%/7)] p-2 text-foreground/30', type === currentType && 'text-foreground')}>
 					<span className='aspect-square h-auto w-full'>
 						{type === 'all' && <Icons.Cards className='h-[inherit] w-[inherit] stroke-black' />}
 						{type === 'melee' && <Sword className='h-[inherit] w-[inherit]' />}

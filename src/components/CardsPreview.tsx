@@ -341,7 +341,7 @@ export const CardsCarousel = forwardRef<
 								className={cn(
 									'relative h-full origin-top',
 									current === i && card && 'rounded-xl bg-primary p-1',
-									current === i && onCardSelect && 'cursor-pointer'
+									current === i && onCardSelect && 'nter'
 								)}
 								onClick={() => {
 									if (card && i !== current) {

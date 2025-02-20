@@ -1,5 +1,5 @@
 import { FACTIONS } from '@/constants/FACTIONS'
-import { cn } from '@/lib/utils'
+import { cn, getVw } from '@/lib/utils'
 import { FactionType } from '@/types/Faction'
 import { GamePlayer } from '@/types/Game'
 import { motion } from 'framer-motion'
@@ -11,7 +11,7 @@ export const Deck = ({ deck, side, faction }: Props) => {
 	const factionDeckImage = FACTIONS.find(f => f.slug === faction)?.images?.deckBack
 
 	return (
-		<div className='relative z-0 flex aspect-[2/3] w-24 items-center justify-center @6xl:h-[8.5rem] @6xl:w-auto'>
+		<div className='relative z-0 flex aspect-[2/3] w-[50%] items-center justify-center'>
 			<div className='pointer-events-none relative h-full w-full select-none'>
 				{factionDeckImage && deck.length > 0 && (
 					<Image
@@ -32,15 +32,17 @@ export const Deck = ({ deck, side, faction }: Props) => {
 							'before:absolute before:-right-px before:top-0 before:z-0 before:block before:h-full before:w-[1px] before:bg-[#8c7413]'
 						)}
 						style={{
-							transform: `translate(${i}px, ${i}px)`
+							transform: `translate(${(i * 2) / 2}%, ${(i * 2) / 3}%)`
 						}}
 					/>
 				))}
 			</div>
 
-			<div className='absolute bottom-0 left-1/2 z-20 -translate-x-1/2 bg-black/80 px-4 py-0.5'>
+			<div className='absolute bottom-0 left-1/2 z-20 -translate-x-1/2 bg-black/80 px-[18%] py-[2.25%]'>
 				<span className='sr-only'>Deck length </span>
-				<span className='text-2xl font-bold'>{deck.length}</span>
+				<span className='font-bold leading-tight' style={{ fontSize: getVw(24) }}>
+					{deck.length}
+				</span>
 			</div>
 
 			<div className='absolute'>

@@ -38,7 +38,7 @@
 
 @layer base {
 	* {
-		@apply border-border;
+		@apply border-border !cursor-[url('/cursor.png'),auto];
 	}
 	html {
 		@apply h-full min-w-full overflow-auto scroll-smooth selection:bg-primary/75 selection:text-primary-foreground;

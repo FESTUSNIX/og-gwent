@@ -2,7 +2,7 @@
 
 import useGameContext from '@/app/play/[room]/hooks/useGameContext'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
+import { getVw } from '@/lib/utils'
 import { GamePlayer } from '@/types/Game'
 
 type Props = {
@@ -27,17 +27,17 @@ export const PassButton = ({ player, opponent }: Props) => {
 	}
 
 	return (
-		<div className='flex w-full items-center gap-2'>
-			<Separator className='w-auto grow bg-primary/25' />
+		<div className=''>
 			<Button
-				variant={'secondary'}
+				variant={'default'}
 				size={'sm'}
 				onClick={() => {
 					handlePass()
-				}}>
+				}}
+				className='h-auto px-[3%] py-[2%] leading-tight hover:bg-primary/80'
+				style={{ fontSize: getVw(14), padding: `${getVw(8)} ${getVw(12)}` }}>
 				Pass the round
 			</Button>
-			<Separator className='w-auto grow bg-primary/25' />
 		</div>
 	)
 }

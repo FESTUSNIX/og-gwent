@@ -8,6 +8,7 @@ import { Suspense } from 'react'
 import cardsJson from '../../../db/cards.json'
 import { CardCreator } from './components/CardCreator'
 import { FactionSwitch } from './components/FactionSwitch'
+import LayoutContainer from '@/components/layout/container'
 
 type Props = {
 	searchParams: { [key: string]: string | string[] | undefined }
@@ -36,29 +37,31 @@ const CardsPage = async ({ searchParams }: Props) => {
 	const cards = cardsJson.cards.filter(c => c.factions.includes(currentFaction)) as CardType[]
 
 	return (
-		<main className='grid-container pt-12'>
-			<h1 className='font-heading text-4xl'>Gwent cards</h1>
+		<LayoutContainer>
+			<main className='grid-container pt-12'>
+				<h1 className='font-heading text-4xl'>Cards list</h1>
 
-			<section className='my-16'>
-				<h2 className='mb-4 text-2xl'>All cards</h2>
-				<div className='mb-8 flex items-center justify-between'>
-					<Suspense>
-						<FactionSwitch />
-					</Suspense>
-					{user.role === 'ADMIN' && <CardCreator />}
-				</div>
+				<section className='my-16'>
+					<h2 className='mb-4 text-2xl'>All cards</h2>
+					<div className='mb-8 flex items-center justify-between'>
+						<Suspense>
+							<FactionSwitch />
+						</Suspense>
+						{user.role === 'ADMIN' && <CardCreator />}
+					</div>
 
-				<CardsPreview cards={cards}>
-					<ul className='grid grid-cols-5 gap-4'>
-						{cards.map((card, i) => (
-							<CardsPreviewTrigger index={i} key={card.id}>
-								<Card card={card} mode='preview' />
-							</CardsPreviewTrigger>
-						))}
-					</ul>
-				</CardsPreview>
-			</section>
-		</main>
+					<CardsPreview cards={cards}>
+						<ul className='grid grid-cols-5 gap-4'>
+							{cards.map((card, i) => (
+								<CardsPreviewTrigger index={i} key={card.id}>
+									<Card card={card} mode='preview' />
+								</CardsPreviewTrigger>
+							))}
+						</ul>
+					</CardsPreview>
+				</section>
+			</main>
+		</LayoutContainer>
 	)
 }
 

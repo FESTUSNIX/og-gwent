@@ -11,10 +11,7 @@ type Props = {
 export const CardPiles = ({ player, side }: Props) => {
 	return (
 		<div
-			className={cn(
-				'flex items-center justify-between gap-6 @6xl:gap-14 pr-6 @6xl:flex-row',
-				side === 'host' ? 'flex-col' : 'flex-col-reverse'
-			)}>
+			className={cn('flex w-full flex-row items-center justify-between gap-[25%] pr-[9%]', side === 'host' ? '' : '')}>
 			<DiscardPile discardPile={player.discardPile} side={side} />
 			<Deck deck={player.deck} side={side} faction={player.faction} />
 		</div>

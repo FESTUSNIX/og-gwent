@@ -101,7 +101,9 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 				</Suspense>
 
 				<AnimatedCardsProvider>
-					<GameBoard user={user} roomId={room} />
+					<Suspense>
+						<GameBoard user={user} roomId={room} />
+					</Suspense>
 				</AnimatedCardsProvider>
 
 				{user.role === 'ADMIN' && <GameControls roomId={room} />}

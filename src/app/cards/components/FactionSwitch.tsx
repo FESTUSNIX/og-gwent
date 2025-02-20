@@ -18,7 +18,7 @@ export const FactionSwitch = (props: Props) => {
 
 	const createQueryString = useCallback(
 		(queries: { [key: string]: string | undefined }) => {
-			const params = new URLSearchParams(searchParams)
+			const params = new URLSearchParams(searchParams as any)
 
 			Object.entries(queries).map(([key, value]) => {
 				if (value === undefined || value === null) return params.delete(key)

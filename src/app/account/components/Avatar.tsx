@@ -71,7 +71,7 @@ export default function Avatar({
 	}
 
 	return (
-		<label className='group relative flex h-36 w-36 cursor-pointer items-center justify-center overflow-hidden rounded-lg border'>
+		<label className='group relative flex h-36 w-36 items-center justify-center overflow-hidden rounded-lg border'>
 			<UserAvatar
 				user={{ avatar_url: avatarUrl, username: username }}
 				useFormattedUrl
