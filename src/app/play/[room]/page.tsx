@@ -8,6 +8,7 @@ import { GameBoard } from './components/GameBoard'
 import { GameControls } from './components/GameControls'
 import { GameContextProvider } from './context/GameContext'
 import { NoticeProvider } from './context/NoticeContext'
+import { AnimatedCardsProvider } from './context/AnimatedCardsContext'
 
 type Props = {
 	params: { room: string }
@@ -99,7 +100,9 @@ const RoomPage = async ({ params: { room }, searchParams }: Props) => {
 					<DeckSelector searchParams={searchParams} cards={cards} user={user} />
 				</Suspense>
 
-				<GameBoard user={user} roomId={room} />
+				<AnimatedCardsProvider>
+					<GameBoard user={user} roomId={room} />
+				</AnimatedCardsProvider>
 
 				{user.role === 'ADMIN' && <GameControls roomId={room} />}
 			</GameContextProvider>

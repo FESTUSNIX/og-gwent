@@ -102,3 +102,7 @@ export function setRef<T>(val: T, ...refs: MutableRefList<T>): void {
 		}
 	})
 }
+
+export const delay = async (ms: number) => {
+	return new Promise(resolve => setTimeout(resolve, ms))
+}

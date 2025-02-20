@@ -4,14 +4,15 @@ import { Card as CardType } from '@/types/Card'
 import { FactionType } from '@/types/Faction'
 import { GameRow } from '@/types/Game'
 import { WeatherEffect } from '@/types/WeatherEffect'
+import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion'
 import Image from 'next/image'
-import { HTMLAttributes } from 'react'
 import cardsJson from '../../../db/cards.json'
 
 type Props = {
 	row?: GameRow
 	weatherEffect?: WeatherEffect
 	card: Pick<CardType, 'id' | 'instance' | 'amount'>
+	useLayoutAnimation?: boolean
 } & (
 	| {
 			mode?: 'preview'
@@ -24,7 +25,7 @@ type Props = {
 			displayAmount?: undefined
 	  }
 ) &
-	HTMLAttributes<HTMLDivElement>
+	HTMLMotionProps<'div'>
 
 const ASSET_PATH = '/game/card/'
 
@@ -37,6 +38,7 @@ export const Card = ({
 	displayAmount,
 	className,
 	style,
+	useLayoutAnimation = false,
 	...props
 }: Props) => {
 	const { id, amount, instance } = _card
@@ -47,9 +49,13 @@ export const Card = ({
 	const useBanner = forceBanner ?? (card?.factions[0] !== 'neutral' && mode === 'preview')
 	const cardScore = calculateCardStrength(card, row, weatherEffect)
 
+	const getLayoutId = (suffix?: string) =>
+		useLayoutAnimation ? `card-${card.id}-${instance}${suffix ? `-${suffix}` : ''}` : undefined
+
 	return (
-		<div
+		<motion.div
 			{...props}
+			layoutId={getLayoutId()}
 			style={style}
 			className={cn(
 				'relative z-0 flex h-full w-auto max-w-full flex-col',
@@ -218,6 +224,6 @@ export const Card = ({
 					/>
 				</div>
 			)}
-		</div>
+		</motion.div>
 	)
 }

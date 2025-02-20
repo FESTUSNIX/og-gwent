@@ -46,8 +46,8 @@ export const Card = ({ card, selectedCard, setSelectedCard, disabled }: Props) =
 					<CardUI
 						card={card}
 						mode={isPreviewing ? 'preview' : 'game'}
+						useLayoutAnimation
 						className={cn(isPreviewing && 'cursor-pointer shadow-2xl')}
-						
 					/>
 				</button>
 			</ConditionalWrapper>

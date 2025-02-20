@@ -80,7 +80,7 @@ export const WeatherCardSlots = ({ host, opponent }: Props) => {
 					handlePlayWeather()
 				}}>
 				{weatherEffects?.map(card => (
-					<Card key={card.id} card={card} mode='game' className='max-w-[33%]' />
+					<Card key={card.id} card={card} mode='game' useLayoutAnimation className='max-w-[33%]' />
 				))}
 			</button>
 		</div>

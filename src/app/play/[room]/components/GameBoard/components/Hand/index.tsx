@@ -1,14 +1,13 @@
 'use client'
 
 import useGameContext from '@/app/play/[room]/hooks/useGameContext'
-import { CardsPreviewTrigger } from '@/components/CardsPreview'
-import { CardsPreview } from '@/components/CardsPreview'
+import { CardsPreview, CardsPreviewTrigger } from '@/components/CardsPreview'
+import { sortCards } from '@/lib/utils'
 import { CardType } from '@/types/Card'
 import { GamePlayer } from '@/types/Game'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { Card } from './components/Card'
-import { sortCards } from '@/lib/utils'
 
 type Props = {
 	player: GamePlayer
@@ -107,8 +106,10 @@ export const Hand = ({ player }: Props) => {
 							index={i}
 							style={{ marginRight: gap }}
 							ref={cardRef}
-							className='group relative flex aspect-[3/4] h-full w-auto max-w-full items-center justify-center duration-100 hover:z-10'>
-							<Card card={card} setSelectedCard={setSelectedCard} selectedCard={selectedCard} disabled={!isMyTurn} />
+							className='group relative flex aspect-[3/4] h-full w-auto max-w-full items-center justify-center duration-100 hover:z-[100]'>
+							<AnimatePresence mode='wait' key={card.instance}>
+								<Card card={card} setSelectedCard={setSelectedCard} selectedCard={selectedCard} disabled={!isMyTurn} />
+							</AnimatePresence>
 						</CardsPreviewTrigger>
 					))}
 				</motion.div>

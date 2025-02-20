@@ -144,7 +144,8 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 				!isResolving &&
 				newGameState.players.filter(p => p.hasPassed).length === 0
 			) {
-				await turnNotice(newGameState.turn)
+				// We're handling it in GameBoard now, beacuse we need to wait for the animations to finish
+				// await turnNotice(newGameState.turn)
 			}
 		}
 	}
@@ -180,10 +181,10 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 		}
 	}
 
-	const turnNotice = async (turn: string) => {
+	const turnNotice = async (turn: string, disable?: 'host' | 'opponent') => {
 		if (!gameStarted) return
 
-		if (turn === currentPlayer.id) {
+		if (turn === currentPlayer.id && disable !== 'host') {
 			await notice({
 				title: 'Your turn',
 				image: '/game/icons/notice/turn_host.png'
@@ -191,7 +192,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 			return
 		}
 
-		if (turn === opponentPlayer.id) {
+		if (turn === opponentPlayer.id && disable !== 'opponent') {
 			await notice({
 				title: "Opponent's turn",
 				image: '/game/icons/notice/turn_opponent.png'
@@ -395,6 +396,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 
 				let hostState = currentPlayer
 
+				// Auto-pass if hand is empty
 				if (hostState?.hand.length === 0 && gameStarted && !hostState.hasPassed) {
 					updatePlayerState(hostState.id, {
 						hasPassed: true
@@ -402,6 +404,7 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 					hostState = { ...hostState, hasPassed: true }
 				}
 
+				// Send the updated player state to the opponent
 				const broadcastResponse = await roomChannel.send({
 					type: 'broadcast',
 					event: 'game',
@@ -417,18 +420,23 @@ export const GameStateHandler = ({ roomId, userId }: Props) => {
 				let gameStateAfterRoundEnd = undefined
 
 				if (hostState && opponentPlayer) {
+					// If we have passed, display a notice
 					if (hostState.hasPassed !== previousCurrentPlayer?.hasPassed) {
 						await hasPassedNotice(hostState.hasPassed, opponentPlayer.hasPassed, gameState.turn, 'disable-opponent')
 					}
 
+					// If both players have passed, handle the round end
 					if (hostState.hasPassed && opponentPlayer.hasPassed) {
 						gameStateAfterRoundEnd = await handleRoundEnd(hostState, opponentPlayer)
-					} else if (gameState.turn && !isResolving && gameState.players.filter(p => p.hasPassed).length === 0) {
-						await turnNotice(gameState.turn)
+					}
+					// If no players have passed, display a notice for the next turn
+					else if (gameState.turn && !isResolving && gameState.players.filter(p => p.hasPassed).length === 0) {
+						await turnNotice(gameState.turn, 'host')
 					}
 				}
 
 				await updateGameStateOnServer(gameStateAfterRoundEnd ?? gameState)
+
 				if (hostState && opponentPlayer) {
 					await updateUsersOnServer(
 						gameStateAfterRoundEnd ? gameStateAfterRoundEnd?.players : [hostState, opponentPlayer]

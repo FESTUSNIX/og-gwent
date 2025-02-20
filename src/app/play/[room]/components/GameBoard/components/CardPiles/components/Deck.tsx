@@ -2,6 +2,7 @@ import { FACTIONS } from '@/constants/FACTIONS'
 import { cn } from '@/lib/utils'
 import { FactionType } from '@/types/Faction'
 import { GamePlayer } from '@/types/Game'
+import { motion } from 'framer-motion'
 import Image from 'next/image'
 
 type Props = Pick<GamePlayer, 'deck'> & { side: 'host' | 'opponent'; faction: Omit<FactionType, 'neutral'> }
@@ -40,6 +41,15 @@ export const Deck = ({ deck, side, faction }: Props) => {
 			<div className='absolute bottom-0 left-1/2 z-20 -translate-x-1/2 bg-black/80 px-4 py-0.5'>
 				<span className='sr-only'>Deck length </span>
 				<span className='text-2xl font-bold'>{deck.length}</span>
+			</div>
+
+			<div className='absolute'>
+				{deck.map(card => (
+					<motion.div
+						layoutId={`card-${card.id}-${card.instance}`}
+						key={card.instance}
+						className='pointer-events-none absolute z-50'></motion.div>
+				))}
 			</div>
 		</div>
 	)

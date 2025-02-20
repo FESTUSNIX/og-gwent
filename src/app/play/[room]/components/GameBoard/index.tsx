@@ -2,13 +2,18 @@
 
 import { Hand } from '@/app/play/[room]/components/GameBoard/components/Hand'
 import { BackgroundMusic } from '@/components/BackgroundMusic'
+import { Card } from '@/components/Card'
 import { CardsPreview } from '@/components/CardsPreview'
-import { getRandomItemBasedOnCode } from '@/lib/utils'
+import { delay, getRandomItemBasedOnCode } from '@/lib/utils'
+import { CardType } from '@/types/Card'
 import { WeatherEffect } from '@/types/WeatherEffect'
 import { Tables } from '@/types/supabase'
-import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import { useEffect, useMemo, useState } from 'react'
+import { AnimatedCardType, useAnimatedCards } from '../../context/AnimatedCardsContext'
 import { useNoticeContext } from '../../context/NoticeContext'
 import useGameContext from '../../hooks/useGameContext'
+import usePrevious from '../../hooks/usePrevious'
 import { CardPiles } from './components/CardPiles'
 import { ChooseTurnDialog } from './components/ChooseTurnDialog'
 import { Reroll } from './components/Reroll'
@@ -27,7 +32,7 @@ export const GameBoard = ({ user, roomId }: Props) => {
 		sync,
 		actions: { setTurn }
 	} = useGameContext()
-	const { notice } = useNoticeContext()
+	const { notice, isResolving } = useNoticeContext()
 
 	const host = gameState.players.find(p => p?.id === user.id)
 	const opponent = gameState.players.find(p => p?.id !== user.id)
@@ -109,8 +114,108 @@ export const GameBoard = ({ user, roomId }: Props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [gameState.turn])
 
+	// CARD ANIMATIONS ===================================================
+
+	const { animatedCards, setAnimatedCards } = useAnimatedCards()
+
+	const allRowCards = useMemo(() => {
+		const allCards: (CardType & { side: string })[] = []
+
+		gameState.players.forEach(player => {
+			if (!player) return
+
+			Object.values(player.rows).forEach(row => {
+				allCards.push(...row.cards.map(card => ({ ...card, side: player.id === user.id ? 'host' : 'opponent' })))
+			})
+		})
+
+		return allCards
+	}, [gameState.players])
+
+	const previousCards = usePrevious(allRowCards)
+	const previousDiscardPile = usePrevious(opponent?.discardPile)
+	const previousOpponentHand = usePrevious(opponent?.hand)
+	const previousOpponentDeck = usePrevious(opponent?.deck)
+
+	const shouldAnimateToPreview = (card: AnimatedCardType) => {
+		return (
+			![...(previousDiscardPile ?? []), ...(previousOpponentDeck ?? [])]?.some(c => card.instance === c.instance) &&
+			!card.ignorePreview
+		)
+	}
+
+	const animateCards = async (cards: CardType[]) => {
+		if (cards.length === 0) return
+
+		setAnimatedCards(cards)
+
+		await delay(shouldAnimateToPreview(cards[0]) ? 2000 : 500)
+
+		const [firstCard, ...remainingCards] = cards
+
+		if (remainingCards.length === 0) {
+			return setAnimatedCards([])
+		}
+
+		animateCards(remainingCards)
+	}
+
+	useEffect(() => {
+		const handleAnimation = async () => {
+			if (!opponent?.hand || !previousOpponentHand) return
+
+			const newCards = allRowCards.filter(card => !previousCards?.find(prevCard => prevCard.instance === card.instance))
+
+			if (previousOpponentHand?.length === opponent?.hand.length && !newCards.some(card => card.ability === 'decoy')) {
+				return
+			}
+
+			let filteredNewCards: CardType[] = []
+
+			filteredNewCards = newCards
+				.filter(
+					card =>
+						(card.side === 'opponent' && card.ability !== 'spy') || (card.side === 'host' && card.ability === 'spy')
+				)
+				.toReversed()
+				.sort((a, b) => (a.ability === 'medic' ? -1 : b.ability === 'medic' ? 1 : 0))
+
+			// If theres multiple "muster" cards we want to animate in only the first one
+			const musterCards = filteredNewCards.filter(card => card.ability === 'muster')
+			if (musterCards.length > 1) {
+				filteredNewCards = filteredNewCards.filter(card => card.ability !== 'muster')
+				filteredNewCards.push(
+					...[
+						musterCards[musterCards.length - 1],
+						...musterCards.slice(0, musterCards.length - 1).map(card => ({ ...card, ignorePreview: true }))
+					]
+				)
+			}
+
+			if (filteredNewCards.length > 0) {
+				await animateCards(filteredNewCards)
+
+				if (!gameState.players.some(p => p?.hasPassed) && gameState.turn === user.id && !isResolving) {
+					await delay(2000)
+					await notice({
+						title: 'Your turn',
+						image: '/game/icons/notice/turn_host.png'
+					})
+				}
+			}
+		}
+
+		handleAnimation()
+
+		return () => {
+			setAnimatedCards([])
+		}
+	}, [allRowCards])
+
 	if (!host || !opponent) return null
 	if (gameState.players.filter(p => p?.gameStatus === 'select-deck').length >= 1) return null
+
+	const cardsToAnimate = animatedCards.filter(animatedCard => shouldAnimateToPreview(animatedCard))
 
 	return (
 		<main className='relative z-10 flex h-full w-full grow flex-col overflow-hidden bg-black'>
@@ -150,7 +255,18 @@ export const GameBoard = ({ user, roomId }: Props) => {
 
 						<div
 							id='card-preview-container'
-							className='absolute right-0 top-1/2 z-20 flex w-72 max-w-[80vw] grow -translate-y-1/2 items-center justify-center @6xl:relative @6xl:top-0 @6xl:w-full @6xl:translate-y-0'></div>
+							className='absolute right-0 top-1/2 z-20 flex w-72 max-w-[80vw] grow -translate-y-1/2 items-center justify-center @6xl:relative @6xl:top-0 @6xl:w-full @6xl:translate-y-0'>
+							{cardsToAnimate.length > 0 && (
+								<motion.div
+									key={cardsToAnimate[0].instance}
+									initial={{ y: -1000, x: -500 }}
+									animate={{ y: 0, x: 0 }}
+									transition={{ duration: 0.6, ease: 'easeInOut', type: 'tween' }}
+									className='absolute z-30 h-auto w-full py-6'>
+									<Card card={animatedCards[0]} mode='preview' useLayoutAnimation />
+								</motion.div>
+							)}
+						</div>
 
 						<CardPiles player={host} side='host' />
 					</div>

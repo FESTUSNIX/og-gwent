@@ -305,7 +305,7 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 					handleEffectAdd()
 				}}>
 				<div className='flex aspect-square h-full w-auto items-center justify-center'>
-					{row.effect && <Card card={row.effect} mode='game' row={row} />}
+					{row.effect && <Card card={row.effect} mode='game' row={row} useLayoutAnimation />}
 				</div>
 
 				<div
@@ -320,9 +320,10 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 					className='absolute inset-0 -z-10 h-full w-full bg-cover bg-center'
 				/>
 			</button>
-			<button
+			<div
+				tabIndex={0}
 				className={cn(
-					'group relative z-0 h-full w-full grow cursor-auto bg-center bg-no-repeat pb-1 ring-4 ring-inset ring-transparent duration-100 [background-size:100%_100%]',
+					'group relative z-0 h-full w-full min-w-0 grow cursor-auto bg-center bg-no-repeat pb-1 ring-4 ring-inset ring-transparent duration-100 [background-size:100%_100%]',
 					(canAddToRow || !cardToAdd) &&
 						'after:absolute after:inset-0 after:bg-yellow-600/15 after:opacity-0 after:duration-100 hover:ring-yellow-600/75 hover:after:opacity-100',
 					canAddToRow && 'cursor-pointer after:opacity-100'
@@ -337,8 +338,9 @@ export const Row = ({ rowType, side, host, opponent, className, style }: Props) 
 					weatherEffect={weatherEffect}
 					previewCard={cardToAdd}
 					handleDecoy={handleDecoy}
+					side={side}
 				/>
-			</button>
+			</div>
 
 			{weatherEffect && (
 				<div className='pointer-events-none absolute top-0 z-10 h-[calc(100%+3px)] w-full'>
