@@ -53,6 +53,13 @@ export const StartGameButton = ({ accepted, selectedDeck, player, currentFaction
 		}
 
 		sync()
+
+		if (localStorage === undefined) return
+
+		const recentFaction = localStorage.getItem('recent-faction')
+		if (recentFaction !== currentFaction) {
+			localStorage.setItem('recent-faction', currentFaction)
+		}
 	}
 
 	return (

@@ -9,6 +9,7 @@ import { Suspense } from 'react'
 import useGameContext from '../../hooks/useGameContext'
 import { ClientDeckSelector } from './components/ClientDeckSelector'
 import { FactionSwitch } from './components/FactionSwitch'
+import { useLocalStorage } from 'usehooks-ts'
 
 type Props = {
 	cards: Card[]
@@ -33,8 +34,10 @@ export const DeckSelector = ({ cards, searchParams, user }: Props) => {
 	if (gameState.players.length === 2 && !(gameState.players.filter(p => p?.gameStatus === 'select-deck').length >= 1))
 		return null
 
-	const factionParam = getFirstParamValue(searchParams.faction, FACTIONS[0].slug)
-	const currentFaction = FACTIONS.find(f => f.slug === factionParam)?.slug ?? FACTIONS[0].slug
+	const [initialFaction, setInitialFaction] = useLocalStorage('recent-faction', FACTIONS[0].slug)
+
+	const factionParam = getFirstParamValue(searchParams.faction, initialFaction)
+	const currentFaction = FACTIONS.find(f => f.slug === factionParam)?.slug ?? initialFaction
 
 	const inDeckCardTypeParam = getFirstParamValue(searchParams.in_deck_card_type, cardTypesOptions[0].value)!
 	const collectionCardTypeParam = getFirstParamValue(searchParams.collection_card_type, cardTypesOptions[0].value)!
