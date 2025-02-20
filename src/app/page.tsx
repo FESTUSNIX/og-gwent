@@ -5,11 +5,14 @@ import LayoutContainer from '@/components/layout/container'
 import { H2 } from '@/components/ui/Typography/H2'
 import { H3 } from '@/components/ui/Typography/H3'
 import { Muted } from '@/components/ui/Typography/Muted'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { buttonVariants } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { createClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
+import { MessageCircleWarningIcon } from 'lucide-react'
 import Link from 'next/link'
+import { DevelopmentProgress } from './components/sections/DevelopmentProgress'
 import { RecentMatches } from './components/sections/RecentMatches'
 import { UserStats } from './components/sections/user-stats'
 
@@ -113,16 +116,56 @@ export default async function Home() {
 					</div>
 
 					{user && (
-						<section className='py-32'>
+						<div className='mt-16'>
+							<Alert variant={'warning'} className=''>
+								<MessageCircleWarningIcon className='h-4 w-4' />
+								<AlertTitle>Heads up!</AlertTitle>
+								<AlertDescription>
+									If something doesn't work as expected (while playing), refresh the page - it might help. If the
+									problem persists, please contact me.
+								</AlertDescription>
+							</Alert>
+						</div>
+					)}
+
+					{user && (
+						<section className='pb-12 pt-24'>
 							<H2 className='mb-6'>Recent games</H2>
 
 							<RecentMatches userId={user.id} />
 						</section>
 					)}
+
+					<DevelopmentProgress />
+
+					<section className='mb-12'>
+						<H2>Support the developer ❤️</H2>
+
+						<Muted className='max-w-prose text-pretty'>
+							I've been working on this project on the side for a while now. If you like it and want to support me, you
+							can{' '}
+							<Link href={'https://buymeacoffee.com/mhada'} className='font-bold hover:underline'>
+								buy me a coffee ☕️
+							</Link>{' '}
+							or just share it with your friends.
+						</Muted>
+
+						<Muted className='mt-4'>
+							All help is appreciated! Thank you for being here and playing the game. Good luck on the path! 🐺
+						</Muted>
+					</section>
 				</main>
 
-				<footer className='grid-container z-20 mt-auto w-full py-4 text-center backdrop-blur-md'>
-					<Muted>This is a fan-made project for demo purposes. All rights belong to CD Projekt Red.</Muted>
+				<footer className='grid-container absolute bottom-0 z-20 mt-auto w-full bg-background/20 py-2 backdrop-blur-lg'>
+					<div className='flex flex-wrap items-center justify-between gap-x-6 gap-y-1'>
+						<Muted>This is a fan-made project for learning purposes. All rights belong to CD Projekt Red.</Muted>
+						<Link
+							href={`https://mateuszhada.com`}
+							target='_blank'
+							className='text-sm text-muted-foreground hover:underline'>
+							<span>Created by Mateusz Hada</span>
+						</Link>
+					</div>
 				</footer>
 			</>
 		</LayoutContainer>

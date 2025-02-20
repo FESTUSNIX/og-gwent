@@ -44,7 +44,6 @@ export const SignupForm = () => {
 			})
 
 			if (error || !data.user) throw Error(error?.message ?? 'An error occurred')
-			console.log(data.user)
 
 			const { data: profileData, error: profileError } = await supabase.from('profiles').upsert({
 				id: data.user.id,
@@ -52,7 +51,7 @@ export const SignupForm = () => {
 			})
 
 			if (profileError) throw Error(profileError.message)
-			console.log(profileData)
+
 			return 'OK'
 		},
 		onError: err => {

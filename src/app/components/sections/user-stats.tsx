@@ -51,10 +51,8 @@ export const UserStats = async ({ user }: Props) => {
 		return maxStreak
 	})()
 
-	if (matches.length === 0) return null
-
 	return (
-		<div className='h-full w-full overflow-hidden rounded-lg border bg-background/10 p-6 backdrop-blur-sm'>
+		<div className='flex h-full w-full flex-col justify-between overflow-hidden rounded-lg border bg-background/10 p-6 backdrop-blur-sm'>
 			<div className='flex items-center gap-4'>
 				<UserAvatar user={{ ...user }} className='size-12 border' />
 				<div>
@@ -83,17 +81,19 @@ export const UserStats = async ({ user }: Props) => {
 				</div>
 			</div>
 
-			<div
-				className='relative grid h-2 w-full overflow-hidden rounded-full bg-primary'
-				style={{
-					gridTemplateColumns: `${(matchesWon / totalMatchesPlayed) * 100}% ${
-						(matchesDrawn / totalMatchesPlayed) * 100
-					}% ${(matchesLost / totalMatchesPlayed) * 100}%`
-				}}>
-				<div className='h-full w-full bg-green-500'></div>
-				<div className='h-full w-full bg-gray-500'></div>
-				<div className='h-full w-full bg-red-700'></div>
-			</div>
+			{matches.length > 0 && (
+				<div
+					className='relative grid h-2 w-full overflow-hidden rounded-full bg-primary'
+					style={{
+						gridTemplateColumns: `${(matchesWon / totalMatchesPlayed) * 100}% ${
+							(matchesDrawn / totalMatchesPlayed) * 100
+						}% ${(matchesLost / totalMatchesPlayed) * 100}%`
+					}}>
+					<div className='h-full w-full bg-green-500'></div>
+					<div className='h-full w-full bg-gray-500'></div>
+					<div className='h-full w-full bg-red-700'></div>
+				</div>
+			)}
 
 			<div className='mt-8 grid grid-cols-2 gap-x-2'>
 				<div className='relative flex flex-col items-center gap-y-1 overflow-hidden rounded-md border px-2 py-2'>

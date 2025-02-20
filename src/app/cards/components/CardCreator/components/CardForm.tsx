@@ -45,8 +45,6 @@ export const CardForm = ({ setIsOpen }: Props) => {
 
 	const { mutate: createCard, isPending } = useMutation({
 		mutationFn: async (values: CardPayload) => {
-			console.log('CREATING', values)
-
 			const { data } = await axios.post(`/api/cards`, values)
 
 			return data

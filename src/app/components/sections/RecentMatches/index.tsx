@@ -14,7 +14,7 @@ export const RecentMatches = async ({ userId }: Props) => {
 
 	return (
 		<div className='flex w-full flex-col gap-4'>
-			{matches.map(match => {
+			{matches.slice(0, 5).map(match => {
 				return <MatchCard key={match.id} userId={userId} match={match} />
 			})}
 		</div>
