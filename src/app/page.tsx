@@ -121,7 +121,7 @@ export default async function Home() {
 								<MessageCircleWarningIcon className='h-4 w-4' />
 								<AlertTitle>Heads up!</AlertTitle>
 								<AlertDescription>
-									If something doesn't work as expected (while playing), refresh the page - it might help. If the
+									If something doesn&apos;t work as expected (while playing), refresh the page - it might help. If the
 									problem persists, please contact me.
 								</AlertDescription>
 							</Alert>
@@ -142,8 +142,8 @@ export default async function Home() {
 						<H2>Support the developer ❤️</H2>
 
 						<Muted className='max-w-prose text-pretty'>
-							I've been working on this project on the side for a while now. If you like it and want to support me, you
-							can{' '}
+							I&apos;ve been working on this project on the side for a while now. If you like it and want to support
+							me, you can{' '}
 							<Link href={'https://buymeacoffee.com/mhada'} className='font-bold hover:underline'>
 								buy me a coffee ☕️
 							</Link>{' '}

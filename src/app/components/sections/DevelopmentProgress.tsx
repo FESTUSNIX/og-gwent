@@ -11,9 +11,9 @@ export const DevelopmentProgress = (props: Props) => {
 			<div>
 				<H2 className=''>About the project</H2>
 				<Muted className='max-w-prose text-pretty'>
-					This is a fan-made multiplayer version of Gwent from The Witcher 3. I don't have the time and resources to
-					develop this project further, {/* I'm not opensourcing it*/} but if you're interested in continuing the
-					project, feel free to reach out to me at{' '}
+					This is a fan-made multiplayer version of Gwent from The Witcher 3. I don&apos;t have the time and resources
+					to develop this project further, but if you&apos;re interested in continuing the project, feel free to reach
+					out to me at{' '}
 				</Muted>
 
 				<Muted className='mt-6 max-w-prose text-pretty'>

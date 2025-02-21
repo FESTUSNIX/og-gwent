@@ -30,11 +30,10 @@ const cardTypesOptions = [
 
 export const DeckSelector = ({ cards, searchParams, user }: Props) => {
 	const { gameState } = useGameContext()
+	const [initialFaction, setInitialFaction] = useLocalStorage('recent-faction', FACTIONS[0].slug)
 
 	if (gameState.players.length === 2 && !(gameState.players.filter(p => p?.gameStatus === 'select-deck').length >= 1))
 		return null
-
-	const [initialFaction, setInitialFaction] = useLocalStorage('recent-faction', FACTIONS[0].slug)
 
 	const factionParam = getFirstParamValue(searchParams.faction, initialFaction)
 	const currentFaction = FACTIONS.find(f => f.slug === factionParam)?.slug ?? initialFaction
